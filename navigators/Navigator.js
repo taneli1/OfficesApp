@@ -8,6 +8,7 @@ import {
 import {MainContext} from '../contexts/MainContext';
 import {Icon} from 'react-native-elements';
 import PlaceHolder from '../views/PlaceHolder';
+import Home from '../views/Home';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -36,7 +37,7 @@ const TabScreen = () => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={PlaceHolder} />
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Discover" component={PlaceHolder} />
       <Tab.Screen name="Upload" component={PlaceHolder} />
       <Tab.Screen name="Profile" component={PlaceHolder} />
