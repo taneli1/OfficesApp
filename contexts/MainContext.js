@@ -4,7 +4,18 @@ import PropTypes from 'prop-types';
 const MainContext = React.createContext({});
 
 const MainProvider = ({children}) => {
-  return <MainContext.Provider>{children}</MainContext.Provider>;
+  const [update, setUpdate] = useState(0);
+
+  return (
+    <MainContext.Provider
+      value={{
+        update,
+        setUpdate,
+      }}
+    >
+      {children}
+    </MainContext.Provider>
+  );
 };
 
 MainProvider.propTypes = {
