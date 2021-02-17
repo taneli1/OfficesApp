@@ -8,6 +8,7 @@ import {
 import {MainContext} from '../contexts/MainContext';
 import {Icon} from 'react-native-elements';
 import PlaceHolder from '../views/PlaceHolder';
+import Login from '../views/Login';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -45,18 +46,31 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
+  const {isLoggedIn} = useContext(MainContext);
   return (
-    <>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={TabScreen}
-          options={({route}) => ({
-            headerTitle: getFocusedRouteNameFromRoute(route),
-          })}
-        />
-      </Stack.Navigator>
-    </>
+    <Stack.Navigator>
+      {isLoggedIn ? (
+        <>
+          <Stack.Screen
+            name="Home"
+            component={TabScreen}
+            options={({route}) => ({
+              headerTitle: getFocusedRouteNameFromRoute(route),
+            })}
+          />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+        </>
+      )}
+    </Stack.Navigator>
   );
 };
 

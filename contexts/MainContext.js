@@ -4,7 +4,24 @@ import PropTypes from 'prop-types';
 const MainContext = React.createContext({});
 
 const MainProvider = ({children}) => {
-  return <MainContext.Provider>{children}</MainContext.Provider>;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState({});
+  const [update, setUpdate] = useState(0);
+
+  return (
+    <MainContext.Provider
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        user,
+        setUser,
+        update,
+        setUpdate,
+      }}
+    >
+      {children}
+    </MainContext.Provider>
+  );
 };
 
 MainProvider.propTypes = {
