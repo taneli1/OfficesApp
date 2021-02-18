@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, View} from 'react-native';
+import {Alert, View, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import {useLogin, useUser} from '../hooks/ApiHooks';
 import useSignUpForm from '../hooks/RegisterHooks';
@@ -55,6 +55,7 @@ const RegisterForm = ({navigation}) => {
           handleInputEnd('username', event.nativeEvent.text);
         }}
         errorMessage={registerErrors.username}
+        style={styles.inputField}
       />
       <Input
         autoCapitalize="none"
@@ -65,6 +66,7 @@ const RegisterForm = ({navigation}) => {
         }
         secureTextEntry={true}
         errorMessage={registerErrors.password}
+        style={styles.inputField}
       />
       <Input
         autoCapitalize="none"
@@ -75,6 +77,7 @@ const RegisterForm = ({navigation}) => {
         }
         secureTextEntry={true}
         errorMessage={registerErrors.confirmPassword}
+        style={styles.inputField}
       />
       <Input
         autoCapitalize="none"
@@ -84,6 +87,7 @@ const RegisterForm = ({navigation}) => {
           handleInputEnd('email', event.nativeEvent.text)
         }
         errorMessage={registerErrors.email}
+        style={styles.inputField}
       />
       <Input
         autoCapitalize="none"
@@ -93,11 +97,31 @@ const RegisterForm = ({navigation}) => {
           handleInputEnd('full_name', event.nativeEvent.text)
         }
         errorMessage={registerErrors.full_name}
+        style={styles.inputField}
       />
-      <Button title="Register!" onPress={doRegister} />
+      <Button
+        title="Register!"
+        onPress={doRegister}
+        buttonStyle={styles.button}
+      />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#157A46',
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  inputField: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#157A46',
+    padding: 5,
+  },
+});
 
 RegisterForm.propTypes = {
   navigation: PropTypes.object,
