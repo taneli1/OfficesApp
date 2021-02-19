@@ -7,6 +7,7 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  TouchableHighlight,
   ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -55,34 +56,42 @@ const Login = ({navigation}) => {
               style={styles.image}
             >
               <View style={styles.form}>
-                <Card>
+                {formToggle ? (
+                  <>
+                    <Text style={styles.title}>Login</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.title}>Register</Text>
+                  </>
+                )}
+                <Card containerStyle={styles.card}>
                   {formToggle ? (
                     <>
-                      <Card.Title h5>Login</Card.Title>
-                      <Card.Divider />
                       <LoginForm navigation={navigation} />
                     </>
                   ) : (
                     <>
-                      <Card.Title h5>Register</Card.Title>
-                      <Card.Divider />
                       <RegisterForm navigation={navigation} />
                     </>
                   )}
-                  <ListItem
+                  <TouchableHighlight
+                    underlayColor={'transparent'}
                     onPress={() => {
                       setFormToggle(!formToggle);
                     }}
                   >
-                    <ListItem.Content>
-                      <Text style={styles.text}>
-                        {formToggle
-                          ? 'No account? Register here.'
-                          : 'Already registered? Login here.'}
-                      </Text>
-                    </ListItem.Content>
-                    <ListItem.Chevron />
-                  </ListItem>
+                    <ListItem containerStyle={styles.listItem}>
+                      <ListItem.Content>
+                        <Text style={styles.text}>
+                          {formToggle
+                            ? 'No account? Register here.'
+                            : 'Already registered? Login here.'}
+                        </Text>
+                      </ListItem.Content>
+                      <ListItem.Chevron />
+                    </ListItem>
+                  </TouchableHighlight>
                 </Card>
               </View>
             </ImageBackground>
@@ -112,9 +121,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  title: {
+    backgroundColor: '#157A46',
+    color: 'white',
+    fontSize: 30,
+    alignSelf: 'flex-start',
+    padding: 10,
+    marginLeft: 30,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  card: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderTopLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  listItem: {
+    backgroundColor: 'rgba(255, 255, 255, 0)',
+  },
   text: {
     alignSelf: 'center',
-    padding: 20,
+    padding: 10,
   },
 });
 
