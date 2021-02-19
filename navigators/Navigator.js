@@ -51,6 +51,11 @@ const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="Single"
+        component={Single}
+        options={{headerShown: false}}
+      />
       {isLoggedIn ? (
         <>
           <Stack.Screen
