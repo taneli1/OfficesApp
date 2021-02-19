@@ -9,6 +9,7 @@ import {MainContext} from '../contexts/MainContext';
 import {Icon} from 'react-native-elements';
 import PlaceHolder from '../views/PlaceHolder';
 import Home from '../views/Home';
+import Single from '../views/Single';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -55,6 +56,11 @@ const StackScreen = () => {
           options={({route}) => ({
             headerTitle: getFocusedRouteNameFromRoute(route),
           })}
+        />
+        <Stack.Screen
+          name="Single"
+          component={Single}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </>
