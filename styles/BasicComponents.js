@@ -2,6 +2,8 @@ import {Colors} from './Colors';
 import {Dimens} from './Dimens';
 
 // ------------------------ Text elements --------------------
+
+// --- SinglePost header
 const bigHeader = {
   fontSize: Dimens.fontSizes.bigHeader,
   backgroundColor: Colors.white,
