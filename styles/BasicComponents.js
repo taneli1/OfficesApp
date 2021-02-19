@@ -17,6 +17,8 @@ const bigHeader = {
   elevation: Dimens.elevations.baseElevation,
 };
 
+// All header need to be inside <View> tag which implements this style.
+// Wraps the header width to match content
 const headerContainer = {
   alignSelf: 'baseline',
   marginLeft: 25,

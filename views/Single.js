@@ -10,7 +10,6 @@ import {Dimensions} from 'react-native';
 
 const Single = ({route}) => {
   const {data} = route.params;
-
   return (
     <View style={{flex: 1}}>
       <View style={singlePostStyles.bgContainer}>
@@ -39,4 +38,5 @@ const Single = ({route}) => {
 Single.propTypes = {
   route: PropTypes.object,
 };
+
 export default Single;
