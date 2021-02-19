@@ -11,6 +11,7 @@ import PlaceHolder from '../views/PlaceHolder';
 import Login from '../views/Login';
 import Home from '../views/Home';
 import Single from '../views/Single';
+import Profile from '../views/Profile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,7 +43,7 @@ const TabScreen = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Discover" component={PlaceHolder} />
       <Tab.Screen name="Upload" component={PlaceHolder} />
-      <Tab.Screen name="Profile" component={PlaceHolder} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };

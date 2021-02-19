@@ -118,4 +118,30 @@ const useUser = () => {
   return {postRegister, checkToken, checkIsUserAvailable, getUser};
 };
 
-export {useLoadMedia, useLogin, useUser};
+const useTag = () => {
+  const getFilesByTag = async (tag) => {
+    try {
+      const tagList = await doFetch(tagURL + tag);
+      return tagList;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+  const postTag = async (tag, token) => {
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'x-access-token': token},
+      body: JSON.stringify(tag),
+    };
+    try {
+      const result = await doFetch(tagURL, options);
+      return result;
+    } catch (error) {
+      throw new Error('postTag error: ' + error.message);
+    }
+  };
+
+  return {getFilesByTag, postTag};
+};
+
+export {useLoadMedia, useLogin, useUser, useTag};
