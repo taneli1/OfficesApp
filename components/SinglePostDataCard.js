@@ -7,6 +7,7 @@ import {
   headerContainer,
   cardLayout,
 } from '../styles/BasicComponents';
+import ProfileContainer from './ProfileContainer';
 
 const SinglePostDataCard = ({postData}) => {
   return (
@@ -16,7 +17,7 @@ const SinglePostDataCard = ({postData}) => {
       </View>
 
       <Card containerStyle={cardLayout}>
-        <Text>{postData.description}</Text>
+        <ProfileContainer userData={null}></ProfileContainer>
         <Text>{postData.description}</Text>
         <Text>{postData.description}</Text>
         <Text>{postData.description}</Text>

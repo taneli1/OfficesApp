@@ -51,11 +51,6 @@ const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Single"
-        component={Single}
-        options={{headerShown: false}}
-      />
       {isLoggedIn ? (
         <>
           <Stack.Screen
@@ -65,13 +60,18 @@ const StackScreen = () => {
               headerTitle: getFocusedRouteNameFromRoute(route),
             })}
           />
+          <Stack.Screen
+            name="Single"
+            component={Single}
+            options={{headerShown: false}}
+          />
         </>
       ) : (
         <>
           <Stack.Screen
             name="Login"
             component={Login}
-            options={() => ({
+            options={({route}) => ({
               headerShown: false,
             })}
           />
