@@ -10,6 +10,7 @@ import {Icon} from 'react-native-elements';
 import PlaceHolder from '../views/PlaceHolder';
 import Login from '../views/Login';
 import Home from '../views/Home';
+import Single from '../views/Single';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
