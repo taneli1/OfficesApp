@@ -10,10 +10,12 @@ const bigHeader = {
   color: Colors.darkGreen,
   paddingTop: 5,
   paddingBottom: 5,
-  paddingLeft: 10,
-  paddingRight: 10,
+  paddingLeft: 15,
+  paddingRight: 15,
   borderBottomLeftRadius: 10,
   borderTopRightRadius: 10,
+  borderColor: Colors.primary,
+  borderWidth: 1,
   elevation: Dimens.elevations.baseElevation,
 };
 
