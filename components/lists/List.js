@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
-import PostDefault from './listitems/PostDefault';
+import PostDefault from '../listitems/PostDefault';
 
 /*
   This list component can be used when the app needs a list of posts.
