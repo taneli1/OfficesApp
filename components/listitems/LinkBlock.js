@@ -21,7 +21,6 @@ const LinkBlock = ({item}) => {
 const s = StyleSheet.create({
   container: {
     borderRadius: 10,
-    elevation: 2,
     padding: 5,
     borderColor: Colors.primary,
     borderWidth: 0.8,

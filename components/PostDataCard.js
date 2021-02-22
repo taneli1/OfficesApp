@@ -13,7 +13,6 @@ import Favorite from './common/Favorite';
 import TagList from './lists/TagList';
 import {Colors} from '../styles/Colors';
 import LinkList from './lists/LinkList';
-import {Dimens} from '../styles/Dimens';
 import CommentList from './lists/CommentList';
 import {Icon} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
