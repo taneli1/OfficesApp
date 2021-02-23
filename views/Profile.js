@@ -2,25 +2,21 @@ import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Card, Text, ListItem, Avatar, Image} from 'react-native-elements';
+import {Text, Image} from 'react-native-elements';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/Variables';
-import {ScrollView} from 'react-native-gesture-handler';
 import {View} from 'react-native';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
+import List from '../components/List';
+import {useLoadMedia} from '../hooks/ApiHooks';
 
 const Profile = ({navigation}) => {
-  const {isLoggedIn, setIsLoggedIn, user} = useContext(MainContext);
+  const {user} = useContext(MainContext);
   const [avatar, setAvatar] = useState('http://placekitten.com/640');
   const {getFilesByTag} = useTag();
-
-  const logout = async () => {
-    setIsLoggedIn(false);
-    await AsyncStorage.clear();
-    navigation.navigate('Login');
-  };
+  const usersPostsOnly = true;
+  const data = useLoadMedia(usersPostsOnly, user.user_id);
 
   useEffect(() => {
     const fetchAvatar = async () => {
@@ -37,7 +33,7 @@ const Profile = ({navigation}) => {
   }, []);
 
   return (
-    <ScrollView>
+    <View>
       <View style={styles.userInfoContainer}>
         <Image
           source={{uri: avatar}}
@@ -54,24 +50,14 @@ const Profile = ({navigation}) => {
         </View>
       </View>
       <Text style={styles.postsHeader}>Posts</Text>
-      <View style={styles.usersPostsContainer}>
-        <Card containerStyle={styles.usersPostCard}>
-          <Image
-            source={{uri: avatar}}
-            style={styles.postImage}
-            PlaceholderContent={<ActivityIndicator />}
-          />
-          <Text>Title</Text>
-        </Card>
-      </View>
-    </ScrollView>
+      <List navigation={navigation} mediaArray={data} layout="profile" />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   userInfoContainer: {
     flexDirection: 'row',
-    backgroundColor: 'red',
     height: 250,
   },
   profileImage: {
@@ -101,22 +87,9 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingLeft: 10,
     paddingRight: 100,
-    margin: 30,
+    margin: 15,
+    marginLeft: 30,
     alignSelf: 'flex-start',
-  },
-  usersPostsContainer: {
-    backgroundColor: 'lightblue',
-    width: '100%',
-    height: 1000,
-  },
-  usersPostCard: {
-    height: 300,
-    backgroundColor: 'yellow',
-  },
-  postImage: {
-    width: 150,
-    height: undefined,
-    aspectRatio: 4 / 3,
   },
 });
 
