@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, {useContext} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -12,6 +13,7 @@ import Login from '../views/Login';
 import Home from '../views/Home';
 import Single from '../views/Single';
 import Profile from '../views/Profile';
+import Upload from '../views/Upload';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -20,7 +22,7 @@ const TabScreen = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
+        tabBarIcon: ({_, color, size}) => {
           let iconName;
           switch (route.name) {
             case 'Home':
@@ -42,7 +44,7 @@ const TabScreen = () => {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Discover" component={PlaceHolder} />
-      <Tab.Screen name="Upload" component={PlaceHolder} />
+      <Tab.Screen name="Upload" component={Upload} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
