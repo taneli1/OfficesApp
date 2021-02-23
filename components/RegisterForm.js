@@ -55,7 +55,7 @@ const RegisterForm = ({navigation}) => {
           handleInputEnd('username', event.nativeEvent.text);
         }}
         errorMessage={registerErrors.username}
-        style={styles.inputField}
+        style={[styles.inputField, {marginTop: 20}]}
       />
       <Input
         autoCapitalize="none"

@@ -34,7 +34,7 @@ const LoginForm = ({navigation}) => {
         autoCapitalize="none"
         placeholder="username"
         onChangeText={(txt) => handleInputChange('username', txt)}
-        style={styles.inputField}
+        style={[styles.inputField, {marginTop: 20}]}
       />
       <Input
         autoCapitalize="none"

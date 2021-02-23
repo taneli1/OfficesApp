@@ -15,7 +15,7 @@ import {Text} from 'react-native';
 import {Dimens} from '../styles/Dimens';
 import {Icon} from 'react-native-elements';
 import {smallHeader, headerContainer} from '../styles/BasicComponents';
-import TagSelector from './common/TagSelector';
+import TagSelector from './tag/TagSelector';
 
 const UploadForm = ({navigation}) => {
   const {
@@ -138,7 +138,16 @@ const UploadForm = ({navigation}) => {
           }
           errorMessage={uploadErrors.description}
         />
-        <TagSelector />
+      </View>
+
+      <View style={s.sHeaderContainer}>
+        <View style={[headerContainer, {marginLeft: 15, marginTop: 0}]}>
+          <Text style={smallHeader}>Tags & Item links</Text>
+        </View>
+      </View>
+
+      <View style={s.inputContainer}>
+        <TagSelector></TagSelector>
       </View>
 
       <Button
