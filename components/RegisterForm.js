@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {Input, Button} from 'react-native-elements';
+import {Colors} from '../styles/Colors';
 
 const RegisterForm = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
@@ -110,7 +111,7 @@ const RegisterForm = ({navigation}) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#157A46',
+    backgroundColor: Colors.primary,
     marginLeft: 30,
     marginRight: 30,
   },
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: '#157A46',
+    borderColor: Colors.primary,
     padding: 5,
   },
 });

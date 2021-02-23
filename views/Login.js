@@ -18,6 +18,7 @@ import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
 import {Card, ListItem, Text} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
+import {Colors} from '../styles/Colors';
 
 const Login = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    backgroundColor: '#157A46',
+    backgroundColor: Colors.primary,
     color: 'white',
     fontSize: 30,
     alignSelf: 'flex-start',
