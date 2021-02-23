@@ -10,7 +10,7 @@ const Tag = ({navigation, tag}) => {
   return (
     <View style={s.maincontainer}>
       <TouchableOpacity>
-        <Text style={s.tag}>Genre 1</Text>
+        <Text style={s.tag}>{tag}</Text>
       </TouchableOpacity>
     </View>
   );

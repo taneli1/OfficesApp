@@ -20,6 +20,9 @@ const Stack = createStackNavigator();
 const TabScreen = () => {
   return (
     <Tab.Navigator
+      tabBarOptions={{
+        keyboardHidesTabBar: true,
+      }}
       screenOptions={({route}) => ({
         tabBarIcon: ({_, color, size}) => {
           let iconName;
