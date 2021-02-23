@@ -9,6 +9,7 @@ import {uploadsUrl} from '../utils/Variables';
 import {ScrollView} from 'react-native-gesture-handler';
 import {View} from 'react-native';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
+import {Colors} from '../styles/Colors';
 
 const Profile = ({navigation}) => {
   const {isLoggedIn, setIsLoggedIn, user} = useContext(MainContext);
@@ -54,8 +55,13 @@ const Profile = ({navigation}) => {
       </View>
       <Text style={styles.postsHeader}>Posts</Text>
       <View style={styles.usersPostsContainer}>
-        <Card style={styles.myPostCard}>
-          <Card.Title>Test</Card.Title>
+        <Card containerStyle={styles.usersPostCard}>
+          <Image
+            source={{uri: avatar}}
+            style={styles.postImage}
+            PlaceholderContent={<ActivityIndicator />}
+          />
+          <Text>Title</Text>
         </Card>
       </View>
     </ScrollView>
@@ -65,6 +71,8 @@ const Profile = ({navigation}) => {
 const styles = StyleSheet.create({
   userInfoContainer: {
     flexDirection: 'row',
+    backgroundColor: 'red',
+    height: 250,
   },
   profileImage: {
     flex: 1,
@@ -84,12 +92,31 @@ const styles = StyleSheet.create({
     margin: 10,
     marginLeft: 25,
   },
+  postsHeader: {
+    fontSize: 20,
+    color: 'white',
+    backgroundColor: Colors.primary,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    padding: 5,
+    paddingLeft: 10,
+    paddingRight: 100,
+    margin: 30,
+    alignSelf: 'flex-start',
+  },
   usersPostsContainer: {
     backgroundColor: 'lightblue',
     width: '100%',
+    height: 1000,
   },
-  myPostCard: {
-    height: 60,
+  usersPostCard: {
+    height: 300,
+    backgroundColor: 'yellow',
+  },
+  postImage: {
+    width: 150,
+    height: undefined,
+    aspectRatio: 4 / 3,
   },
 });
 
