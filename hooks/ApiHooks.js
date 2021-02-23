@@ -18,7 +18,7 @@ const throwErr = (string) => {
   throw new Error(TAG + ' ' + string);
 };
 
-const useLoadMedia = () => {
+const useLoadMedia = (usersPostsOnly, userId) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
 
@@ -26,12 +26,15 @@ const useLoadMedia = () => {
   const loadMedia = async () => {
     try {
       const postsData = await doFetch(tagURL + appTag);
-      const media = await Promise.all(
+      let media = await Promise.all(
         postsData.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
           return postFile;
         })
       );
+      if (usersPostsOnly) {
+        media = media.filter((item) => item.user_id === userId);
+      }
       setMediaArray(media.reverse());
     } catch (e) {
       throwErr('loadMedia err: ', e.message);

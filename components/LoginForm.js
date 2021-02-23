@@ -6,6 +6,7 @@ import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useLogin} from '../hooks/ApiHooks';
 import useLoginForm from '../hooks/LoginHooks';
+import {Colors} from '../styles/Colors';
 
 const LoginForm = ({navigation}) => {
   const [loading, setLoading] = useState(false);
@@ -55,7 +56,7 @@ const LoginForm = ({navigation}) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#157A46',
+    backgroundColor: Colors.primary,
     marginLeft: 30,
     marginRight: 30,
   },
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: '#157A46',
+    borderColor: Colors.primary,
     padding: 5,
   },
 });
