@@ -19,7 +19,22 @@ const bigHeader = {
   elevation: Dimens.elevations.baseElevation,
 };
 
-// All header need to be inside <View> tag which implements this style.
+const smallHeader = {
+  fontSize: Dimens.fontSizes.textSmall,
+  backgroundColor: Colors.white,
+  color: Colors.primary,
+  paddingTop: 5,
+  paddingBottom: 5,
+  paddingLeft: 15,
+  paddingRight: 15,
+  borderBottomRightRadius: 10,
+  borderTopLeftRadius: 10,
+  borderColor: Colors.primary,
+  borderWidth: 1,
+  elevation: Dimens.elevations.baseElevation,
+};
+
+// All headers above need to be inside <View> tag which implements this style.
 // Wraps the header width to match content
 const headerContainer = {
   alignSelf: 'baseline',
@@ -34,4 +49,4 @@ const cardLayout = {
   elevation: Dimens.elevations.baseElevation,
 };
 
-export {bigHeader, headerContainer, cardLayout};
+export {bigHeader, smallHeader, headerContainer, cardLayout};

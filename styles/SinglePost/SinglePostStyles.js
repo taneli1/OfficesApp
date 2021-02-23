@@ -13,7 +13,7 @@ const singlePostStyles = StyleSheet.create({
   bgImage: {
     height: Dimensions.get('window').height / 1.8,
     width: '100%',
-    resizeMode: 'cover', // or 'stretch'
+    resizeMode: 'contain', // or 'stretch'
   },
   container: {
     paddingTop: Dimensions.get('window').height / 1.8 - 50,

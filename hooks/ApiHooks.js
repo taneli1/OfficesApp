@@ -1,6 +1,7 @@
 import {useEffect, useState, useContext} from 'react';
 import {appTag, tagURL, mediaURL, loginURL, userURL} from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TAG = 'ApiHooks: ';
 
@@ -14,7 +15,7 @@ const doFetch = async (url, options = {}) => {
 
 // Throwing errors with the tag
 const throwErr = (string) => {
-  throw new Error(TAG, string);
+  throw new Error(TAG + ' ' + string);
 };
 
 const useLoadMedia = () => {
@@ -24,15 +25,14 @@ const useLoadMedia = () => {
   // Fetches a list of posts, then fetch the media for those posts
   const loadMedia = async () => {
     try {
-      const postsData = await doFetch(mediaURL + '?limit=10'); // TODO Change to fetch with the appTag
-
+      const postsData = await doFetch(tagURL + appTag);
       const media = await Promise.all(
         postsData.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
           return postFile;
         })
       );
-      setMediaArray(media);
+      setMediaArray(media.reverse());
     } catch (e) {
       throwErr('loadMedia err: ', e.message);
     }
@@ -54,7 +54,7 @@ const useLogin = () => {
       const userData = await doFetch(loginURL, options);
       return userData;
     } catch (error) {
-      throw new Error('postLogin error: ' + error.message);
+      throwErr('postLogin error: ' + error.message);
     }
   };
 
@@ -76,7 +76,7 @@ const useUser = () => {
       console.log('register resp', json);
       return json;
     } catch (e) {
-      throw new Error(e.message);
+      throwErr(e.message);
     }
   };
 
@@ -89,7 +89,7 @@ const useUser = () => {
       const userData = await doFetch(userURL + '/user', options);
       return userData;
     } catch (error) {
-      throw new Error(error.message);
+      throwErr(error.message);
     }
   };
 
@@ -102,7 +102,7 @@ const useUser = () => {
       const userData = await doFetch(userURL + id, options);
       return userData;
     } catch (error) {
-      throw new Error(error.message);
+      throwErr(error.message);
     }
   };
 
@@ -111,11 +111,92 @@ const useUser = () => {
       const result = await doFetch(userURL + 'username/' + username);
       return result.available;
     } catch (error) {
-      throw new Error('apihooks checkIsUserAvailable', error.message);
+      throwErr('apihooks checkIsUserAvailable', error.message);
     }
   };
 
   return {postRegister, checkToken, checkIsUserAvailable, getUser};
 };
 
-export {useLoadMedia, useLogin, useUser};
+const useTag = () => {
+  const getByTag = async (tag) => {
+    try {
+      const fileList = await doFetch(tagURL + tag);
+      return fileList;
+    } catch (e) {
+      throwErr(e.message);
+    }
+  };
+
+  const uploadPost = async (image, inputs) => {
+    const axios = require('axios').default;
+    const userToken = await AsyncStorage.getItem('userToken');
+    const filename = image.split('/').pop();
+
+    // Infer the type of the image
+    const match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    if (type === 'image/jpg') type = 'image/jpeg';
+
+    const formData = new FormData();
+    formData.append('file', {uri: image, name: filename, type});
+    formData.append('title', inputs.title);
+    formData.append('description', inputs.description);
+
+    const options = {
+      url: mediaURL,
+      method: 'POST',
+      headers: {
+        'content-type': 'multipart/form-data',
+        'x-access-token': userToken,
+      },
+      data: formData,
+    };
+    let ok = false;
+    try {
+      await axios(options).then((res) => {
+        if (res.status == 201) {
+          console.log('Upload res ok: ', res.data.file_id);
+          addTag(res.data.file_id);
+          ok = true;
+        } else {
+          console.log('err Upload: ', res.status, res.message);
+        }
+      });
+    } catch (error) {
+      console.log('uploaderror: ', error);
+    }
+    return ok;
+  };
+
+  const addTag = async (fileId) => {
+    console.log('AddTag Called, fileId: ', fileId);
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: tagURL,
+      method: 'POST',
+      headers: {
+        'x-access-token': userToken,
+      },
+      data: {
+        file_id: fileId,
+        tag: appTag,
+      },
+    };
+
+    try {
+      await axios(options).then((res) => {
+        if (res.status == 201) console.log('Tag added to post');
+        else console.log(res);
+      });
+    } catch (error) {
+      throwErr('addTag error:', error);
+    }
+  };
+
+  return {getByTag, uploadPost};
+};
+
+export {useLoadMedia, useLogin, useUser, useTag};
