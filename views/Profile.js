@@ -8,20 +8,20 @@ import {uploadsUrl} from '../utils/Variables';
 import {View} from 'react-native';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
-import List from '../components/List';
+import List from '../components/lists/List';
 import {useLoadMedia} from '../hooks/ApiHooks';
 
 const Profile = ({navigation}) => {
   const {user} = useContext(MainContext);
   const [avatar, setAvatar] = useState('http://placekitten.com/640');
-  const {getFilesByTag} = useTag();
+  const {getByTag} = useTag();
   const usersPostsOnly = true;
   const data = useLoadMedia(usersPostsOnly, user.user_id);
 
   useEffect(() => {
     const fetchAvatar = async () => {
       try {
-        const avatarList = await getFilesByTag('avatar_' + user.user_id);
+        const avatarList = await getByTag('avatar_' + user.user_id);
         if (avatarList.length > 0) {
           setAvatar(uploadsUrl + avatarList.pop().filename);
         }

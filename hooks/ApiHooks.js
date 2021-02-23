@@ -26,7 +26,7 @@ const useLoadMedia = (usersPostsOnly, userId) => {
   const loadMedia = async () => {
     try {
       const postsData = await doFetch(tagURL + appTag);
-      const media = await Promise.all(
+      let media = await Promise.all(
         postsData.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
           return postFile;
