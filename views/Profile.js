@@ -58,7 +58,7 @@ const Profile = ({navigation}) => {
 const styles = StyleSheet.create({
   userInfoContainer: {
     flexDirection: 'row',
-    height: 250,
+    height: 240,
   },
   profileImage: {
     flex: 1,
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
     height: 150,
     aspectRatio: 1,
     borderRadius: 150 / 2,
-    marginTop: 50,
-    marginBottom: 50,
+    marginTop: 40,
+    marginBottom: 40,
     marginLeft: 50,
   },
   userTextContainer: {

@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
   containerHeart: {
     flexDirection: 'row',
     padding: 4,
-    marginTop: 8,
   },
 });
 
