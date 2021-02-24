@@ -27,7 +27,9 @@ const PostDataCard = ({navigation, postData}) => {
       <Card containerStyle={[cardLayout, {borderColor: Colors.primary}]}>
         <View style={styles.topContainer}>
           <ProfileContainer userData={null}></ProfileContainer>
-          <Favorite postData={null}></Favorite>
+          <View style={styles.favoriteContainer}>
+            <Favorite postData={null}></Favorite>
+          </View>
         </View>
 
         <Text style={styles.description}>
@@ -76,6 +78,9 @@ const styles = StyleSheet.create({
   topContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  favoriteContainer: {
+    paddingTop: 8,
   },
   tagContainer: {
     alignItems: 'center',
