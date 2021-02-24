@@ -13,32 +13,41 @@ import {Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {Button} from 'react-native-elements';
 import Tag from '../listitems/Tag';
-
+import {useTag} from '../../hooks/ApiHooks';
 /*
     Fetch all tags from database first -> Make them to objects. Give all of them: checked = false.
     When an user creates a new tag, add it to TAGS, upload it with the post if it is in
     selected state.
   */
-const TAGS = [
-  {title: 'minimalistic', checked: false},
-  {title: 'ergonomic', checked: false},
-  {title: 'colorful', checked: false},
-  {title: 'dark', checked: false},
-  {title: 'wood', checked: false},
-  {title: 'other', checked: false},
-];
+let TAGS = [];
+
+// Fetches tags from DB, fills the TAGS array with them
+const arrayMaker = async () => {
+  const {getAllTags} = useTag();
+  const tags = await getAllTags();
+  const temp = [];
+
+  for (const i in tags) {
+    temp.push({
+      title: tags[i],
+      checked: false,
+    });
+  }
+
+  TAGS = temp;
+};
 
 const TagSelector = () => {
+  if (TAGS.length == 0) arrayMaker();
   const [filteredTags, setFilteredTags] = useState(TAGS);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [tagsVisible, setTagsVisible] = React.useState(false);
-  const [selectedTags, setSelectedTags] = React.useState([]);
-  const tagNames = [];
+  const [selectedTags, setSelectedTags] = React.useState([]); // User selected tags to be rendered
+  const tagNames = []; // Array of tags as strings only
 
+  // Updates the tagnames array
   if (tagNames.length == 0) {
-    for (let i in TAGS) {
-      tagNames.push(TAGS[i].title);
-    }
+    TAGS.forEach((it) => tagNames.push(it.title));
   }
 
   const onChangeSearch = (query) => {
@@ -50,7 +59,7 @@ const TagSelector = () => {
 
     /*
       Display the option to add a new tag if the user input does not match
-      any current tags available
+      any current existing tags
     */
     if (query != '' && !tagNames.includes(query.toLowerCase())) {
       filtered.push({
@@ -71,12 +80,17 @@ const TagSelector = () => {
     setTagsVisible(false);
   };
 
+  function update() {
+    setTagsVisible(true);
+    onChangeSearch('');
+  }
+
   return (
     <View>
       <SearchBar
         lightTheme={true}
         placeholder="Create new or use existing"
-        onFocus={() => setTagsVisible(true)}
+        onFocus={() => update()}
         containerStyle={s.container}
         style={{color: Colors.darkGreen}}
         onChangeText={onChangeSearch}
@@ -167,6 +181,7 @@ const Option = ({tag}) => {
 
 Option.propTypes = {
   tag: PropTypes.object,
+  tagArr: PropTypes.array,
 };
 
 const s = StyleSheet.create({
@@ -205,4 +220,17 @@ const s = StyleSheet.create({
   },
 });
 
-export default TagSelector;
+// Get selected tags as array of strings
+const getSelectedTags = () => {
+  const sTags = [];
+
+  for (const i in TAGS) {
+    if (TAGS[i].checked) {
+      sTags.push(TAGS[i].title);
+    }
+  }
+
+  return sTags;
+};
+
+export {TagSelector, getSelectedTags};

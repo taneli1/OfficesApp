@@ -15,7 +15,7 @@ import {Text} from 'react-native';
 import {Dimens} from '../styles/Dimens';
 import {Icon} from 'react-native-elements';
 import {smallHeader, headerContainer} from '../styles/BasicComponents';
-import TagSelector from './tag/TagSelector';
+import {TagSelector, getSelectedTags} from './tag/TagSelector';
 
 const UploadForm = ({navigation}) => {
   const {
@@ -52,13 +52,14 @@ const UploadForm = ({navigation}) => {
   };
 
   const doUpload = async () => {
+    console.log('Selected tags: ', getSelectedTags());
     if (!validateOnSend()) {
       return;
     }
 
     try {
-      const isUploaded = await uploadPost(image, inputs);
-      console.log(isUploaded);
+      const isUploaded = await uploadPost(image, inputs, getSelectedTags());
+      console.log('Upload returned: ', isUploaded);
       if (isUploaded) {
         setUpdate(update + 1); // Refresh home data
         doReset();
