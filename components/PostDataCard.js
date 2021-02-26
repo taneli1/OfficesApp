@@ -26,7 +26,10 @@ const PostDataCard = ({navigation, postData}) => {
 
       <Card containerStyle={[cardLayout, {borderColor: Colors.primary}]}>
         <View style={styles.topContainer}>
-          <ProfileContainer userData={null}></ProfileContainer>
+          <ProfileContainer
+            navigation={navigation}
+            data={postData}
+          ></ProfileContainer>
           <View style={styles.favoriteContainer}>
             <Favorite postData={null}></Favorite>
           </View>

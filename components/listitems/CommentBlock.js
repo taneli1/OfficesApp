@@ -5,15 +5,11 @@ import PropTypes from 'prop-types';
 import {StyleSheet} from 'react-native';
 import {Dimens} from '../../styles/Dimens';
 
-// 
+//
 const CommentBlock = ({navigation, data}) => {
   return (
     <View style={s.container}>
-      <ProfileContainer
-        style={s.profile}
-        navigation={navigation}
-        userData={null}
-      />
+      <ProfileContainer style={s.profile} navigation={navigation} data={data} />
       <Text style={s.text}>A nice looking office!</Text>
     </View>
   );

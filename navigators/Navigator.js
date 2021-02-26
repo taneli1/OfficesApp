@@ -71,6 +71,7 @@ const StackScreen = () => {
             component={Single}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="Profile" component={Profile} />
         </>
       ) : (
         <>
