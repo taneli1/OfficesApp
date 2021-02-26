@@ -9,7 +9,6 @@ const favoriteManager = () => {
   const {
     favoriteInteraction,
     getUserFavorites,
-    getUserFavorites,
     getPostFavoriteCount,
   } = useFavorites();
 
