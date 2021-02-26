@@ -2,12 +2,13 @@
 import {useState} from 'react';
 import {useFavorites} from '../hooks/ApiHooks';
 
-let userFavorites = [];
+let userFavorites = []; // TODO Needs to be static
 
 const favoriteManager = () => {
   const [isDataSynced, setIsDataSynced] = useState(false);
   const {
     favoriteInteraction,
+    getUserFavorites,
     getUserFavorites,
     getPostFavoriteCount,
   } = useFavorites();
@@ -39,6 +40,10 @@ const favoriteManager = () => {
     return await getPostFavoriteCount(postId);
   };
 
+  // Update the array for the first time
+  if (userFavorites.length == 0) {
+    updateUserFavorites();
+  }
   return {interactWithPost, getPostFavoriteStatus, getPostFavCount};
 };
 
