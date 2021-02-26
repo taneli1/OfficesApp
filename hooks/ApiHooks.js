@@ -1,5 +1,13 @@
+/* eslint-disable guard-for-in */
 import {useEffect, useState, useContext} from 'react';
-import {appTag, tagURL, mediaURL, loginURL, userURL} from '../utils/Variables';
+import {
+  appTag,
+  tagURL,
+  mediaURL,
+  loginURL,
+  userURL,
+  allTagsId,
+} from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -131,10 +139,17 @@ const useTag = () => {
     }
   };
 
-  const uploadPost = async (image, inputs) => {
+  /*
+   Uploads the post itself, and calls the required functions for the tag posting.
+   All posts get the default appTag, and all the strings in tagArray gets added
+   to the post as tags. Also handles the stuff for new tag posting
+   */
+  const uploadPost = async (image, inputs, tagArray) => {
     const axios = require('axios').default;
     const userToken = await AsyncStorage.getItem('userToken');
     const filename = image.split('/').pop();
+    const oldTags = await getAllTags();
+    let ok = false;
 
     // Infer the type of the image
     const match = /\.(\w+)$/.exec(filename);
@@ -155,25 +170,34 @@ const useTag = () => {
       },
       data: formData,
     };
-    let ok = false;
+
     try {
       await axios(options).then((res) => {
         if (res.status == 201) {
           console.log('Upload res ok: ', res.data.file_id);
-          addTag(res.data.file_id);
+          // Add the main tag for app
+          addTag(res.data.file_id, '');
+          // Add extra tags
+          for (const i in tagArray) {
+            const thisTag = tagArray[i];
+            addTag(res.data.file_id, thisTag);
+            if (!oldTags.includes(thisTag)) {
+              saveNewTag(thisTag);
+            }
+          }
           ok = true;
         } else {
           console.log('err Upload: ', res.status, res.message);
         }
       });
     } catch (error) {
-      console.log('uploaderror: ', error);
+      console.log('uploaderror: ', error.message);
     }
     return ok;
   };
 
-  const addTag = async (fileId) => {
-    console.log('AddTag Called, fileId: ', fileId);
+  const addTag = async (fileId, tagValue) => {
+    console.log('AddTag Called, fileId: ', fileId + 'tagValue:', tagValue);
     const userToken = await AsyncStorage.getItem('userToken');
     const axios = require('axios').default;
 
@@ -185,7 +209,7 @@ const useTag = () => {
       },
       data: {
         file_id: fileId,
-        tag: appTag,
+        tag: appTag + tagValue,
       },
     };
 
@@ -195,11 +219,48 @@ const useTag = () => {
         else console.log(res);
       });
     } catch (error) {
-      throwErr('addTag error:', error);
+      throwErr('addTag error:', error.message);
     }
   };
 
-  return {getByTag, uploadPost};
+  /*
+    Fetches all the tags under allTagsId post, and returns the tags from it
+    These are the user created tags in the application
+   */
+  const getAllTags = async () => {
+    console.log('getAllTags Called');
+    const userToken = await AsyncStorage.getItem('userToken');
+    const options = {
+      method: 'GET',
+      headers: {'x-access-token': userToken},
+    };
+    try {
+      const res = await doFetch(tagURL + 'file/' + allTagsId, options);
+      const tagList = res.filter((it) => it.tag !== appTag + '_all_tag_values'); // TODO Remove this tag
+      const tagArray = [];
+
+      for (const i in tagList) {
+        const thisTag = tagList[i].tag.split('_').pop();
+        tagArray.push(thisTag);
+      }
+      console.log('Existing TagArray: ', tagArray);
+      return tagArray;
+    } catch (e) {
+      throwErr(e.message);
+    }
+  };
+
+  // Saves a new tag to the allTagsId
+  const saveNewTag = async (tag) => {
+    try {
+      addTag(allTagsId, tag);
+      console.log('NewTag added: ', tag);
+    } catch (error) {
+      console.log('saveNewTag Error: ', error.message);
+    }
+  };
+
+  return {getByTag, uploadPost, getAllTags};
 };
 
 export {useLoadMedia, useLogin, useUser, useTag};
