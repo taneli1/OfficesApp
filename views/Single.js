@@ -27,6 +27,7 @@ const Single = ({navigation, route}) => {
       >
         <PostDataCard
           style={singlePostStyles.postData}
+          navigation={navigation}
           postData={data}
         ></PostDataCard>
         {/* This makes the component scrollable all the way to the bottom*/}

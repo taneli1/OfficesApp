@@ -44,7 +44,7 @@ const List = ({navigation, mediaArray, layout}) => {
 
 const styles = StyleSheet.create({
   usersPostsList: {
-    height: 360,
+    height: 415,
   },
 });
 

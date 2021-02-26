@@ -4,31 +4,61 @@ import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
 import {Text, Image} from 'react-native-elements';
 import {useTag} from '../hooks/ApiHooks';
-import {uploadsUrl} from '../utils/Variables';
+import {uploadsURL} from '../utils/Variables';
 import {View} from 'react-native';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
 import List from '../components/lists/List';
 import {useLoadMedia} from '../hooks/ApiHooks';
+import {Dimens} from '../styles/Dimens';
+import {useUser} from '../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Profile = ({navigation}) => {
-  const {user} = useContext(MainContext);
+const Profile = ({navigation, route}) => {
+  let displayedUserId;
+  let userToDisplay;
+
+  if (route.params !== undefined) {
+    const {userId} = route.params;
+    displayedUserId = userId;
+    userToDisplay = {username: 'loading', full_name: 'loading'};
+  } else {
+    const {user} = useContext(MainContext);
+    displayedUserId = user.user_id;
+    userToDisplay = user;
+  }
+
+  const [displayedUser, setDisplayedUser] = useState(userToDisplay);
   const [avatar, setAvatar] = useState('http://placekitten.com/640');
-  const {getByTag} = useTag();
   const usersPostsOnly = true;
-  const data = useLoadMedia(usersPostsOnly, user.user_id);
+  const data = useLoadMedia(usersPostsOnly, displayedUserId);
+  const {getUser} = useUser();
+  const {getByTag} = useTag();
 
   useEffect(() => {
+    const getAnotherUsersData = async () => {
+      const userToken = await AsyncStorage.getItem('userToken');
+      try {
+        const user = await getUser(displayedUserId, userToken);
+        setDisplayedUser(user);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
     const fetchAvatar = async () => {
       try {
-        const avatarList = await getByTag('avatar_' + user.user_id);
+        const avatarList = await getByTag('avatar_' + displayedUserId);
         if (avatarList.length > 0) {
-          setAvatar(uploadsUrl + avatarList.pop().filename);
+          setAvatar(uploadsURL + avatarList.pop().filename);
         }
       } catch (error) {
         console.error(error.message);
       }
     };
+    if (route.params !== undefined) {
+      getAnotherUsersData();
+    }
     fetchAvatar();
   }, []);
 
@@ -41,12 +71,10 @@ const Profile = ({navigation}) => {
           PlaceholderContent={<ActivityIndicator />}
         />
         <View style={styles.userTextContainer}>
-          <View style={headerContainer}>
-            <Text style={[bigHeader, {marginTop: 70, marginBottom: 20}]}>
-              {user.username}
-            </Text>
+          <View style={[headerContainer, styles.headerContainer]}>
+            <Text style={bigHeader}>{displayedUser.username}</Text>
           </View>
-          <Text style={styles.fullName}>{user.full_name}</Text>
+          <Text style={styles.fullName}>{displayedUser.full_name}</Text>
         </View>
       </View>
       <Text style={styles.postsHeader}>Posts</Text>
@@ -73,13 +101,19 @@ const styles = StyleSheet.create({
   userTextContainer: {
     flex: 1,
   },
+  headerContainer: {
+    marginLeft: 0,
+    marginRight: 10,
+    marginTop: 70,
+    marginBottom: 20,
+  },
   fullName: {
-    fontSize: 20,
+    fontSize: Dimens.fontSizes.textMedium,
     margin: 10,
-    marginLeft: 25,
+    marginLeft: 0,
   },
   postsHeader: {
-    fontSize: 20,
+    fontSize: Dimens.fontSizes.textMedium,
     color: 'white',
     backgroundColor: Colors.primary,
     borderTopRightRadius: 10,
@@ -95,6 +129,7 @@ const styles = StyleSheet.create({
 
 Profile.propTypes = {
   navigation: PropTypes.object,
+  route: PropTypes.object,
 };
 
 export default Profile;
