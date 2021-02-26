@@ -1,5 +1,5 @@
 /* eslint-disable guard-for-in */
-import React, {useContext, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -7,55 +7,37 @@ import {Colors} from '../../styles/Colors';
 import {Icon} from 'react-native-elements';
 import {Dimens} from '../../styles/Dimens';
 import {StyleSheet} from 'react-native';
-import {MainContext} from '../../contexts/MainContext';
-import {useFavorites} from '../../hooks/ApiHooks';
+import favoriteManager from '../../utils/FavoriteManager';
 
 // Parameter object postData, get favorites count with that
 const Favorite = ({postData}) => {
-  const {userFavorites, setUserFavorites} = useContext(MainContext);
   const {
-    favoriteInteraction,
-    getUserFavorites,
-    getPostFavoriteCount,
-  } = useFavorites();
-  const [favoriteStatus, setFavoriteStatus] = useState(false);
+    interactWithPost,
+    getPostFavCount,
+    getPostFavoriteStatus,
+  } = favoriteManager();
   const [favCount, setFavCount] = useState(0);
 
-  // Call when favorite functionality is clicked
-  const favInteraction = async (postId) => {
-    await favoriteInteraction(postId);
-    await updateUserFavorites();
-    await updatePostStatus(postId);
+  const interact = async () => {
+    await interactWithPost(postData.file_id);
+    await getFavCount();
   };
 
-  const updatePostStatus = async (postId) => {
-    console.log('updatePostStatus called');
-    if (userFavorites.includes(postId)) setFavoriteStatus(true);
-    else setFavoriteStatus(false);
-    setFavCount(await getPostFavoriteCount(postData.file_id));
+  const getFavCount = async () => {
+    setFavCount(await getPostFavCount(postData.file_id));
   };
 
-  const updateUserFavorites = async () => {
-    const favorites = await getUserFavorites();
-    for (const i in favorites) {
-      const temp = [];
-      temp.push(favorites[i].file_id);
-      setUserFavorites(temp);
-    }
-    console.log('userFavorites array set to: ', userFavorites);
-  };
-
-  // Update post status on first render
+  // Need to load the favorites count when rendering the item for the first time
   const willMount = useRef(true);
   if (willMount.current) {
-    updatePostStatus(postData.file_id);
+    getFavCount();
     willMount.current = false;
   }
 
   return (
-    <TouchableOpacity onPress={() => favInteraction(postData.file_id)}>
+    <TouchableOpacity onPress={() => interact()}>
       <View style={styles.containerHeart}>
-        {favoriteStatus == true ? (
+        {getPostFavoriteStatus(postData.file_id) ? (
           <Icon color={Colors.red} name="favorite"></Icon>
         ) : (
           <Icon color={Colors.red} name="favorite-border"></Icon>

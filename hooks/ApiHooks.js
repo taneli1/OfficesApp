@@ -275,7 +275,6 @@ const useFavorites = () => {
 
     try {
       const res = await doFetch(favoriteURL, options);
-      console.log('UserFavorites response : ', res);
       return res;
     } catch (error) {
       console.log('getUserFavorites err: ', error);
@@ -319,7 +318,7 @@ const useFavorites = () => {
 
     try {
       await axios(options).then(
-        (res) => {
+        async (res) => {
           if (res.status == 201) console.log('Favorited post');
           else console.log('favoritePost: response not 201: ', res);
         },
@@ -330,6 +329,7 @@ const useFavorites = () => {
            user. => UserInteraction also unfavorites posts, so call unFavorite() here
           */
           if (error == 'Error: Request failed with status code 400') {
+            console.log('Unfavoriting post...');
             await unFavoritePost(postId);
           } else console.log('axios postFav err: ', error);
         }
