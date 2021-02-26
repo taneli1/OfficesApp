@@ -7,6 +7,7 @@ import {
   loginURL,
   userURL,
   allTagsId,
+  favoriteURL,
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -263,4 +264,109 @@ const useTag = () => {
   return {getByTag, uploadPost, getAllTags};
 };
 
-export {useLoadMedia, useLogin, useUser, useTag};
+// Methods for favorites
+const useFavorites = () => {
+  const getUserFavorites = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const options = {
+      method: 'GET',
+      headers: {'x-access-token': userToken},
+    };
+
+    try {
+      const res = await doFetch(favoriteURL, options);
+      console.log('UserFavorites response : ', res);
+      return res;
+    } catch (error) {
+      console.log('getUserFavorites err: ', error);
+    }
+  };
+
+  const getPostFavoriteCount = async (postId) => {
+    const options = {
+      method: 'GET',
+      data: {
+        id: postId,
+      },
+    };
+    try {
+      const postFavorites = await doFetch(
+        favoriteURL + 'file/' + postId,
+        options
+      );
+      console.log('FavCountRes: ', postFavorites.length);
+      return postFavorites.length;
+    } catch (error) {
+      console.log('GetPostFavCount err: ', error);
+    }
+  };
+
+  // Favorites a post, or unfavorites it if it's favorited by the user already
+  const favoriteInteraction = async (postId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: favoriteURL,
+      method: 'POST',
+      headers: {
+        'x-access-token': userToken,
+      },
+      data: {
+        file_id: postId,
+      },
+    };
+
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status == 201) console.log('Favorited post');
+          else console.log('favoritePost: response not 201: ', res);
+        },
+        async (error) => {
+          /*
+           Error 400 here (bad request). Request itself should always be fine, so we can expect
+           that the failure was due to the post having a favorite already with the current
+           user. => UserInteraction also unfavorites posts, so call unFavorite() here
+          */
+          if (error == 'Error: Request failed with status code 400') {
+            await unFavoritePost(postId);
+          } else console.log('axios postFav err: ', error);
+        }
+      );
+    } catch (error) {
+      throwErr('favoriteInteraction error:', error.message);
+    }
+  };
+
+  const unFavoritePost = async (postId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: favoriteURL + 'file/' + postId,
+      method: 'DELETE',
+      headers: {
+        'x-access-token': userToken,
+      },
+    };
+
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status == 200) console.log('Unfavorited post');
+          else console.log('Could not unfavorite post');
+        },
+        (error) => {
+          console.log('axios unFavorite error: ', error);
+        }
+      );
+    } catch (error) {
+      throwErr('unFavorite error: ', error);
+    }
+  };
+
+  return {favoriteInteraction, getUserFavorites, getPostFavoriteCount};
+};
+
+export {useLoadMedia, useLogin, useUser, useTag, useFavorites};

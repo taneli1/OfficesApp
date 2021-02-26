@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {StyleSheet} from 'react-native';
 import {Dimens} from '../../styles/Dimens';
 
-// 
+//
 const CommentBlock = ({navigation, data}) => {
   return (
     <View style={s.container}>

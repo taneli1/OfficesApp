@@ -18,6 +18,7 @@ import {Icon} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const PostDataCard = ({navigation, postData}) => {
+  console.log('postData: ', postData);
   return (
     <View removeClippedSubviews={false}>
       <View style={headerContainer}>
@@ -28,15 +29,14 @@ const PostDataCard = ({navigation, postData}) => {
         <View style={styles.topContainer}>
           <ProfileContainer userData={null}></ProfileContainer>
           <View style={styles.favoriteContainer}>
-            <Favorite postData={null}></Favorite>
+            <Favorite
+              containerStyle={{padding: 30}}
+              postData={postData}
+            ></Favorite>
           </View>
         </View>
 
-        <Text style={styles.description}>
-          Post description goes here. Post description goes here. Post
-          description goes here. Post description goes here. Post description
-          goes here. Post description goes here. Post description goes here.
-        </Text>
+        <Text style={styles.description}>{postData.description}</Text>
 
         <View>
           <CommentList
