@@ -24,10 +24,25 @@ const List = ({navigation, mediaArray, layout}) => {
         )}
       />
     );
-  } else if (layout === 'profile') {
+  } else if (layout === 'ownProfile') {
     return (
       <FlatList
         style={styles.usersPostsList}
+        data={mediaArray}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <ProfilePost
+            navigation={navigation}
+            data={item}
+            isUsersPost={item.user_id === user.user_id}
+          />
+        )}
+      />
+    );
+  } else if (layout === 'otherUsersProfile') {
+    return (
+      <FlatList
+        style={styles.otherUsersPostsList}
         data={mediaArray}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
@@ -44,7 +59,10 @@ const List = ({navigation, mediaArray, layout}) => {
 
 const styles = StyleSheet.create({
   usersPostsList: {
-    height: 415,
+    height: 345,
+  },
+  otherUsersPostsList: {
+    height: 395,
   },
 });
 
