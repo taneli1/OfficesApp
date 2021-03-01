@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
-import {Text, Image} from 'react-native-elements';
+import {Text, Image, Button} from 'react-native-elements';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsURL} from '../utils/Variables';
 import {View} from 'react-native';
@@ -17,23 +17,33 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Profile = ({navigation, route}) => {
   let displayedUserId;
   let userToDisplay;
+  let isOwnProfile;
 
   if (route.params !== undefined) {
     const {userId} = route.params;
     displayedUserId = userId;
     userToDisplay = {username: 'loading', full_name: 'loading'};
+    isOwnProfile = false;
   } else {
     const {user} = useContext(MainContext);
     displayedUserId = user.user_id;
     userToDisplay = user;
+    isOwnProfile = true;
   }
 
+  const {setIsLoggedIn} = useContext(MainContext);
   const [displayedUser, setDisplayedUser] = useState(userToDisplay);
-  const [avatar, setAvatar] = useState('http://placekitten.com/640');
+  const [avatar, setAvatar] = useState(require('../assets/placeholder.png'));
   const usersPostsOnly = true;
   const data = useLoadMedia(usersPostsOnly, displayedUserId);
   const {getUser} = useUser();
   const {getByTag} = useTag();
+
+  const logout = async () => {
+    setIsLoggedIn(false);
+    await AsyncStorage.clear();
+    navigation.navigate('Login');
+  };
 
   useEffect(() => {
     const getAnotherUsersData = async () => {
@@ -50,7 +60,7 @@ const Profile = ({navigation, route}) => {
       try {
         const avatarList = await getByTag('avatar_' + displayedUserId);
         if (avatarList.length > 0) {
-          setAvatar(uploadsURL + avatarList.pop().filename);
+          setAvatar({uri: uploadsURL + avatarList.pop().filename});
         }
       } catch (error) {
         console.error(error.message);
@@ -64,9 +74,18 @@ const Profile = ({navigation, route}) => {
 
   return (
     <View>
+      <View style={styles.logoutButtonContainer}>
+        {isOwnProfile && (
+          <Button
+            title="Logout"
+            buttonStyle={styles.logoutButton}
+            onPress={logout}
+          ></Button>
+        )}
+      </View>
       <View style={styles.userInfoContainer}>
         <Image
-          source={{uri: avatar}}
+          source={avatar}
           style={styles.profileImage}
           PlaceholderContent={<ActivityIndicator />}
         />
@@ -78,15 +97,36 @@ const Profile = ({navigation, route}) => {
         </View>
       </View>
       <Text style={styles.postsHeader}>Posts</Text>
-      <List navigation={navigation} mediaArray={data} layout="profile" />
+      {isOwnProfile ? (
+        <>
+          <List navigation={navigation} mediaArray={data} layout="ownProfile" />
+        </>
+      ) : (
+        <>
+          <List
+            navigation={navigation}
+            mediaArray={data}
+            layout="otherUsersProfile"
+          />
+        </>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  logoutButtonContainer: {
+    width: '100%',
+    height: 60,
+  },
+  logoutButton: {
+    backgroundColor: Colors.primary,
+    alignSelf: 'flex-end',
+    margin: 10,
+  },
   userInfoContainer: {
     flexDirection: 'row',
-    height: 240,
+    height: 200,
   },
   profileImage: {
     flex: 1,
@@ -94,8 +134,8 @@ const styles = StyleSheet.create({
     height: 150,
     aspectRatio: 1,
     borderRadius: 150 / 2,
-    marginTop: 40,
-    marginBottom: 40,
+    marginTop: 10,
+    marginBottom: 10,
     marginLeft: 50,
   },
   userTextContainer: {
@@ -104,7 +144,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginLeft: 0,
     marginRight: 10,
-    marginTop: 70,
+    marginTop: 30,
     marginBottom: 20,
   },
   fullName: {

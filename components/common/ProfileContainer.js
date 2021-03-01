@@ -12,7 +12,7 @@ import {uploadsURL} from '../../utils/Variables';
 
 const ProfileContainer = ({navigation, data}) => {
   const [user, setUser] = useState({username: 'loading'});
-  const [avatar, setAvatar] = useState('http://placekitten.com/640');
+  const [avatar, setAvatar] = useState(require('../../assets/placeholder.png'));
   const {getUser} = useUser();
   const {getByTag} = useTag();
 
@@ -31,7 +31,7 @@ const ProfileContainer = ({navigation, data}) => {
       try {
         const avatarList = await getByTag('avatar_' + data.user_id);
         if (avatarList.length > 0) {
-          setAvatar(uploadsURL + avatarList.pop().filename);
+          setAvatar({uri: uploadsURL + avatarList.pop().filename});
         }
       } catch (error) {
         console.error(error.message);
@@ -47,7 +47,7 @@ const ProfileContainer = ({navigation, data}) => {
     >
       <View style={styles.profileContainer}>
         <View style={styles.container}>
-          <Image style={styles.image} source={{uri: avatar}}></Image>
+          <Image style={styles.image} source={avatar}></Image>
           <Text style={styles.profileText}>{user.username}</Text>
         </View>
       </View>
