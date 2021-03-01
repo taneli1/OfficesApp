@@ -3,21 +3,24 @@ import {FlatList} from 'react-native';
 import CommentBlock from '../listitems/CommentBlock';
 import PropTypes from 'prop-types';
 
-const CommentList = ({navigation, comments}) => {
+// Pass all the comment data fetched
+const CommentList = ({navigation, commentData}) => {
   return (
     <FlatList
       style={{marginTop: 20}}
       scrollEnabled={true}
-      data={comments}
+      data={commentData}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item}) => <CommentBlock data={item} />}
+      renderItem={({item}) => (
+        <CommentBlock navigation={navigation} data={item} />
+      )}
     />
   );
 };
 
 CommentList.propTypes = {
   navigation: PropTypes.object,
-  comments: PropTypes.array,
+  commentData: PropTypes.array,
 };
 
 export default CommentList;

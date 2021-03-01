@@ -8,6 +8,7 @@ import {
   userURL,
   allTagsId,
   favoriteURL,
+  commentURL,
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,7 +19,7 @@ const doFetch = async (url, options = {}) => {
   const res = await fetch(url, options);
   const json = await res.json();
   if (json.errors) throwErr('doFetch err: ' + json.message + '|' + json.error);
-  else if (!res.ok) throwErr('doFetch failed: res not ok');
+  else if (!res.ok) throwErr('doFetch failed: res not ok: ', res);
   else return json;
 };
 
@@ -224,6 +225,25 @@ const useTag = () => {
     }
   };
 
+  const getTagsForPost = async (postId) => {
+    const options = {
+      method: 'GET',
+    };
+    try {
+      const res = await doFetch(tagURL + 'file/' + postId, options);
+      const tagList = res.filter((it) => it.tag !== appTag); // Drop the main app tag
+      const tagArray = [];
+      for (const i in tagList) {
+        const thisTag = tagList[i].tag.split('_').pop();
+        tagArray.push(thisTag);
+      }
+
+      return tagArray;
+    } catch (e) {
+      throwErr(e.message);
+    }
+  };
+
   /*
     Fetches all the tags under allTagsId post, and returns the tags from it
     These are the user created tags in the application
@@ -261,7 +281,7 @@ const useTag = () => {
     }
   };
 
-  return {getByTag, uploadPost, getAllTags};
+  return {getByTag, uploadPost, getAllTags, getTagsForPost};
 };
 
 // Methods for favorites
@@ -369,4 +389,51 @@ const useFavorites = () => {
   return {favoriteInteraction, getUserFavorites, getPostFavoriteCount};
 };
 
-export {useLoadMedia, useLogin, useUser, useTag, useFavorites};
+const useComments = () => {
+  const getPostComments = async (postId) => {
+    const options = {
+      method: 'GET',
+    };
+    try {
+      const res = await doFetch(commentURL + 'file/' + postId, options);
+      console.log('Comment response: ', res);
+      return res;
+    } catch (e) {
+      throwErr(e.message);
+    }
+  };
+
+  const postComment = async (string, postId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: commentURL,
+      method: 'POST',
+      headers: {
+        'x-access-token': userToken,
+      },
+      data: {
+        file_id: postId,
+        comment: string,
+      },
+    };
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status == 201) console.log('Comment ok');
+          else console.log('Comment res not ok');
+        },
+        (error) => {
+          console.log('Axios comment post failure : ', error);
+        }
+      );
+    } catch (error) {
+      throwErr('unFavorite error: ', error);
+    }
+  };
+
+  return {getPostComments, postComment};
+};
+
+export {useLoadMedia, useLogin, useUser, useTag, useFavorites, useComments};
