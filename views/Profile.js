@@ -1,18 +1,22 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  StyleSheet,
+  ActivityIndicator,
+  View,
+  Alert,
+  Platform,
+} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
 import {Text, Image, Button, Avatar} from 'react-native-elements';
-import {useTag} from '../hooks/ApiHooks';
+import {useTag, useLoadMedia, useUser} from '../hooks/ApiHooks';
 import {uploadsURL} from '../utils/Variables';
-import {View} from 'react-native';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
 import List from '../components/lists/List';
-import {useLoadMedia} from '../hooks/ApiHooks';
 import {Dimens} from '../styles/Dimens';
-import {useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 
 const Profile = ({navigation, route}) => {
   let displayedUserId;
@@ -34,15 +38,61 @@ const Profile = ({navigation, route}) => {
   const {setIsLoggedIn} = useContext(MainContext);
   const [displayedUser, setDisplayedUser] = useState(userToDisplay);
   const [avatar, setAvatar] = useState(require('../assets/placeholder.png'));
+  const [image, setImage] = useState(null);
   const usersPostsOnly = true;
   const data = useLoadMedia(usersPostsOnly, displayedUserId);
   const {getUser} = useUser();
-  const {getByTag} = useTag();
+  const {getByTag, uploadAvatarPicture} = useTag();
 
   const logout = async () => {
     setIsLoggedIn(false);
     await AsyncStorage.clear();
     navigation.navigate('Login');
+  };
+
+  const pickImage = async () => {
+    if (Platform.OS !== 'web') {
+      const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+
+    const options = {
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    };
+    const result = await ImagePicker.launchImageLibraryAsync(options);
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+      doUpload();
+    }
+  };
+
+  const doUpload = async () => {
+    try {
+      const isUploaded = await uploadAvatarPicture(image, displayedUserId);
+      console.log('Upload returned: ', isUploaded);
+      if (isUploaded) {
+        try {
+          const avatarList = await getByTag('avatar_' + displayedUserId);
+          if (avatarList.length > 0) {
+            setAvatar({uri: uploadsURL + avatarList.pop().filename});
+          }
+        } catch (error) {
+          console.error(error.message);
+        }
+      } else {
+        Alert.alert('Something went wrong, try again');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -66,7 +116,7 @@ const Profile = ({navigation, route}) => {
         console.error(error.message);
       }
     };
-    if (route.params !== undefined) {
+    if (!isOwnProfile) {
       getAnotherUsersData();
     }
     fetchAvatar();
@@ -90,6 +140,14 @@ const Profile = ({navigation, route}) => {
             style={styles.profileImage}
             PlaceholderContent={<ActivityIndicator />}
           />
+          {isOwnProfile && (
+            <Button
+              title="Change profile picture"
+              buttonStyle={styles.changeProfileImageButton}
+              titleStyle={styles.changeProfileImageButtonTitle}
+              onPress={pickImage}
+            ></Button>
+          )}
         </View>
         <View style={styles.userTextContainer}>
           <View style={[headerContainer, styles.headerContainer]}>
@@ -139,7 +197,18 @@ const styles = StyleSheet.create({
     height: 120,
     aspectRatio: 1,
     borderRadius: 120 / 2,
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  changeProfileImageButton: {
+    backgroundColor: Colors.primary,
     margin: 10,
+    marginTop: 5,
+    padding: 2,
+  },
+  changeProfileImageButtonTitle: {
+    fontSize: Dimens.fontSizes.textSmall,
   },
   userTextContainer: {
     flex: 1,

@@ -198,22 +198,37 @@ const useTag = () => {
     return ok;
   };
 
-  const addTag = async (fileId, tagValue) => {
+  const addTag = async (fileId, tagValue, avatarTag) => {
     console.log('AddTag Called, fileId: ', fileId + 'tagValue:', tagValue);
     const userToken = await AsyncStorage.getItem('userToken');
     const axios = require('axios').default;
 
-    const options = {
-      url: tagURL,
-      method: 'POST',
-      headers: {
-        'x-access-token': userToken,
-      },
-      data: {
-        file_id: fileId,
-        tag: appTag + tagValue,
-      },
-    };
+    let options;
+    if (avatarTag) {
+      options = {
+        url: tagURL,
+        method: 'POST',
+        headers: {
+          'x-access-token': userToken,
+        },
+        data: {
+          file_id: fileId,
+          tag: tagValue,
+        },
+      };
+    } else {
+      options = {
+        url: tagURL,
+        method: 'POST',
+        headers: {
+          'x-access-token': userToken,
+        },
+        data: {
+          file_id: fileId,
+          tag: appTag + tagValue,
+        },
+      };
+    }
 
     try {
       await axios(options).then((res) => {
@@ -281,7 +296,64 @@ const useTag = () => {
     }
   };
 
-  return {getByTag, uploadPost, getAllTags, getTagsForPost};
+  const uploadAvatarPicture = async (image, userId) => {
+    const axios = require('axios').default;
+    const userToken = await AsyncStorage.getItem('userToken');
+    const filename = image.split('/').pop();
+    let ok = false;
+
+    const formData = new FormData();
+    // add title to formData
+    formData.append('title', 'Profile picture');
+
+    // Infer the type of the image
+    const match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    if (type === 'image/jpg') type = 'image/jpeg';
+
+    // add image to formData
+    formData.append('file', {
+      uri: image,
+      name: filename,
+      type: type,
+    });
+
+    const options = {
+      url: mediaURL,
+      method: 'POST',
+      headers: {
+        'content-type': 'multipart/form-data',
+        'x-access-token': userToken,
+      },
+      data: formData,
+    };
+
+    let fileId;
+    try {
+      await axios(options).then((res) => {
+        if (res.status == 201) {
+          fileId = res.data.file_id;
+          console.log('Upload res ok: ', fileId);
+          ok = true;
+        } else {
+          console.log('err Upload: ', res.status, res.message);
+        }
+      });
+    } catch (error) {
+      console.log('uploaderror: ', error.message);
+    }
+    // Add the avatar tag
+    await addTag(fileId, 'avatar_' + userId, true);
+    return ok;
+  };
+
+  return {
+    getByTag,
+    uploadPost,
+    getAllTags,
+    getTagsForPost,
+    uploadAvatarPicture,
+  };
 };
 
 // Methods for favorites
