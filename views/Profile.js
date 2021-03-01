@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
-import {Text, Image, Button} from 'react-native-elements';
+import {Text, Image, Button, Avatar} from 'react-native-elements';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsURL} from '../utils/Variables';
 import {View} from 'react-native';
@@ -84,40 +84,42 @@ const Profile = ({navigation, route}) => {
         )}
       </View>
       <View style={styles.userInfoContainer}>
-        <Image
-          source={avatar}
-          style={styles.profileImage}
-          PlaceholderContent={<ActivityIndicator />}
-        />
+        <View style={styles.profileImageContainer}>
+          <Image
+            source={avatar}
+            style={styles.profileImage}
+            PlaceholderContent={<ActivityIndicator />}
+          />
+        </View>
         <View style={styles.userTextContainer}>
           <View style={[headerContainer, styles.headerContainer]}>
             <Text style={bigHeader}>{displayedUser.username}</Text>
           </View>
-          <Text style={styles.fullName}>{displayedUser.full_name}</Text>
+          <View style={styles.fullNameContainer}>
+            <Avatar
+              icon={{
+                name: 'user',
+                type: 'font-awesome',
+                color: 'black',
+                size: 25,
+                marginTop: 30,
+              }}
+            />
+            <Text style={styles.fullName}>{displayedUser.full_name}</Text>
+          </View>
         </View>
       </View>
       <Text style={styles.postsHeader}>Posts</Text>
-      {isOwnProfile ? (
-        <>
-          <List navigation={navigation} mediaArray={data} layout="ownProfile" />
-        </>
-      ) : (
-        <>
-          <List
-            navigation={navigation}
-            mediaArray={data}
-            layout="otherUsersProfile"
-          />
-        </>
-      )}
+      <View style={styles.listContainer}>
+        <List navigation={navigation} mediaArray={data} layout="profile" />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   logoutButtonContainer: {
-    width: '100%',
-    height: 60,
+    height: '10%',
   },
   logoutButton: {
     backgroundColor: Colors.primary,
@@ -126,17 +128,18 @@ const styles = StyleSheet.create({
   },
   userInfoContainer: {
     flexDirection: 'row',
-    height: 200,
+    height: '30%',
+  },
+  profileImageContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
   },
   profileImage: {
-    flex: 1,
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     aspectRatio: 1,
-    borderRadius: 150 / 2,
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 50,
+    borderRadius: 120 / 2,
+    margin: 10,
   },
   userTextContainer: {
     flex: 1,
@@ -147,10 +150,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 20,
   },
+  fullNameContainer: {
+    flexDirection: 'row',
+  },
   fullName: {
     fontSize: Dimens.fontSizes.textMedium,
-    margin: 10,
-    marginLeft: 0,
+    margin: 5,
   },
   postsHeader: {
     fontSize: Dimens.fontSizes.textMedium,
@@ -164,6 +169,9 @@ const styles = StyleSheet.create({
     margin: 15,
     marginLeft: 30,
     alignSelf: 'flex-start',
+  },
+  listContainer: {
+    height: '50%',
   },
 });
 
