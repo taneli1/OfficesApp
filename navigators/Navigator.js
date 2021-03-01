@@ -14,6 +14,7 @@ import Home from '../views/Home';
 import Single from '../views/Single';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
+import {Colors} from '../styles/Colors';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
