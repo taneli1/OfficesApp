@@ -2,7 +2,8 @@
 import {useState} from 'react';
 import {useFavorites} from '../hooks/ApiHooks';
 
-let userFavorites = []; // TODO Needs to be static
+// TODO Needs to be static
+let userFavorites = [];
 
 const favoriteManager = () => {
   const [isDataSynced, setIsDataSynced] = useState(false);
@@ -21,6 +22,7 @@ const favoriteManager = () => {
   };
 
   const getPostFavoriteStatus = (postId) => {
+    console.log('PostFavStatus');
     return userFavorites.includes(postId);
   };
 
@@ -39,10 +41,11 @@ const favoriteManager = () => {
     return await getPostFavoriteCount(postId);
   };
 
-  // Update the array for the first time
+  // Update the array for the first time,
   if (userFavorites.length == 0) {
     updateUserFavorites();
   }
+
   return {interactWithPost, getPostFavoriteStatus, getPostFavCount};
 };
 
