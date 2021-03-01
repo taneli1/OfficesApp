@@ -1,7 +1,7 @@
 const baseURL = 'https://media-new.mw.metropolia.fi/wbma/';
 const mediaURL = baseURL + 'media/';
 const commentURL = baseURL + 'comments/';
-const ratingURL = baseURL + 'ratings/';
+const favoriteURL = baseURL + 'favourites/';
 const tagURL = baseURL + 'tags/';
 const userURL = baseURL + 'users/';
 const uploadsURL = baseURL + 'uploads/';
@@ -16,7 +16,7 @@ const allTagsId = '402';
 export {
   mediaURL,
   commentURL,
-  ratingURL,
+  favoriteURL,
   tagURL,
   userURL,
   appTag,
