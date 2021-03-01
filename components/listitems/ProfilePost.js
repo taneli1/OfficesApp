@@ -24,7 +24,7 @@ const ProfilePost = ({navigation, data}) => {
           <Text style={styles.postTitle}>{data.title}</Text>
           <Text style={styles.postDescription}>{data.description}</Text>
           <View style={styles.favoriteContainer}>
-            <Favorite postData={null}></Favorite>
+            <Favorite postData={data}></Favorite>
           </View>
         </View>
       </View>

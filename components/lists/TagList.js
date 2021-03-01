@@ -13,7 +13,7 @@ const TagList = ({navigation, tags}) => {
       data={tags}
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item}) => <Tag navigation={navigation} string={item} />}
+      renderItem={({item}) => <Tag navigation={navigation} tag={item} />}
     />
   );
 };
