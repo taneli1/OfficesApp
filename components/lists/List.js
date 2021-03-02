@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import PostDefault from '../listitems/PostDefault';
 import ProfilePost from '../listitems/ProfilePost';
 import {MainContext} from '../../contexts/MainContext';
+import DiscoverDefault from '../listitems/DiscoverDefault';
+import {Button, Card, SearchBar} from 'react-native-elements';
+import {ScrollView} from 'react-native-gesture-handler';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -38,6 +41,50 @@ const List = ({navigation, mediaArray, layout}) => {
           />
         )}
       />
+    );
+  } else if (layout === 'discover') {
+    return (
+      <ScrollView>
+        <SearchBar placeholder="Type Here..." />
+        <Card>
+          <Card.Title>Tag 1</Card.Title>
+          <Button tittle="See more" containerViewStyle={{height: '10%'}}>
+            See more
+          </Button>
+          <FlatList
+            horizontal={true}
+            data={mediaArray}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <DiscoverDefault navigation={navigation} data={item} />
+            )}
+          />
+        </Card>
+        <Card>
+          <Card.Title>Tag 2</Card.Title>
+          <Button tittle="See more">See more</Button>
+          <FlatList
+            horizontal={true}
+            data={mediaArray}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <DiscoverDefault navigation={navigation} data={item} />
+            )}
+          />
+        </Card>
+        <Card>
+          <Card.Title>Tag 3</Card.Title>
+          <Button tittle="See more">See more</Button>
+          <FlatList
+            horizontal={true}
+            data={mediaArray}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <DiscoverDefault navigation={navigation} data={item} />
+            )}
+          />
+        </Card>
+      </ScrollView>
     );
   }
 };

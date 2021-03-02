@@ -8,12 +8,12 @@ import {
 } from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {Icon} from 'react-native-elements';
-import PlaceHolder from '../views/PlaceHolder';
 import Login from '../views/Login';
 import Home from '../views/Home';
 import Single from '../views/Single';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
+import Discover from '../views/Discover';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -46,7 +46,7 @@ const TabScreen = () => {
       })}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Discover" component={PlaceHolder} />
+      <Tab.Screen name="Discover" component={Discover} />
       <Tab.Screen name="Upload" component={Upload} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
