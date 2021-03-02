@@ -23,6 +23,9 @@ const Profile = ({navigation, route}) => {
   let userToDisplay;
   let isOwnProfile;
 
+  // If route params are passed, i.e. the profile screen is accessed through the ProfileContainer rather than app navigation, the user is
+  // set based on the user_id which is passed as a parameter. An initial user data shows 'loading' before it's fetched. Else the user is the
+  // app's user.
   if (route.params !== undefined) {
     const {userId} = route.params;
     displayedUserId = userId;
@@ -46,12 +49,14 @@ const Profile = ({navigation, route}) => {
   const {getUser} = useUser();
   const {getByTag, uploadAvatarPicture} = useTag();
 
+  // Function for logging out
   const logout = async () => {
     setIsLoggedIn(false);
     await AsyncStorage.clear();
     navigation.navigate('Login');
   };
 
+  // Function for picking a new profile picture
   const pickImage = async () => {
     if (Platform.OS !== 'web') {
       const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -78,6 +83,7 @@ const Profile = ({navigation, route}) => {
     }
   };
 
+  // Function for uploading the picked profile picture
   const doUpload = async () => {
     try {
       const isUploaded = await uploadAvatarPicture(image, displayedUserId);
@@ -85,7 +91,7 @@ const Profile = ({navigation, route}) => {
       if (isUploaded) {
         try {
           Alert.alert('Profile picture changed!');
-          // Refresh the profile picture data with useEffect
+          // Refreshes the profile picture component with useEffect and a state variable
           setProfilePictureUpdated(profilePictureUpdated + 1);
           setProfilePicturePicked(false);
         } catch (error) {
@@ -99,6 +105,8 @@ const Profile = ({navigation, route}) => {
     }
   };
 
+  // useEffect fetches the user data if the profile is not the user's own profile. The newest avatar picture of a user is also fetched always
+  // when it's changed.
   useEffect(() => {
     const getAnotherUsersData = async () => {
       const userToken = await AsyncStorage.getItem('userToken');
@@ -129,6 +137,7 @@ const Profile = ({navigation, route}) => {
   return (
     <View>
       <View style={styles.logoutButtonContainer}>
+        {/* Logout button is rendered only if the profile is the user's own profile. */}
         {isOwnProfile && (
           <Button
             title="Logout"
@@ -144,8 +153,11 @@ const Profile = ({navigation, route}) => {
             style={styles.profileImage}
             PlaceholderContent={<ActivityIndicator />}
           />
+          {/* Buttons related to changing the profile picture are only rendered if the profile is the user's own profile. */}
           {isOwnProfile && (
             <View style={styles.profileImageButtonContainer}>
+              {/* Confirm and cancel buttons are only rendered when a new profile picture has been picked. Otherwise the change profile
+              picture button is rendered. */}
               {!profilePicturePicked ? (
                 <>
                   <Button
@@ -163,6 +175,8 @@ const Profile = ({navigation, route}) => {
                     titleStyle={styles.smallButtonTitle}
                     onPress={doUpload}
                   ></Button>
+                  {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
+                  state variable is updated to make the useEffect fetch the original profile picture back. */}
                   <Button
                     title="Cancel"
                     buttonStyle={styles.cancelButton}

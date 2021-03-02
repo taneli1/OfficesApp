@@ -281,6 +281,7 @@ const useTag = () => {
     }
   };
 
+  // Uploads a new avatar picture and adds a avatar tag to it.
   const uploadAvatarPicture = async (image, userId) => {
     const axios = require('axios').default;
     const userToken = await AsyncStorage.getItem('userToken');
@@ -288,7 +289,7 @@ const useTag = () => {
     let ok = false;
 
     const formData = new FormData();
-    // add title to formData
+    // Add a title to formData
     formData.append('title', 'Profile picture');
 
     // Infer the type of the image
@@ -296,7 +297,7 @@ const useTag = () => {
     let type = match ? `image/${match[1]}` : `image`;
     if (type === 'image/jpg') type = 'image/jpeg';
 
-    // add image to formData
+    // Add the image to formData
     formData.append('file', {uri: image, name: filename, type});
 
     const options = {
