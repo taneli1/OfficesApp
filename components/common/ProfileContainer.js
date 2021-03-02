@@ -8,9 +8,9 @@ import {Colors} from '../../styles/Colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTag, useUser} from '../../hooks/ApiHooks';
-import {uploadsURL} from '../../utils/Variables';
+import {appTag, uploadsURL} from '../../utils/Variables';
 
-const ProfileContainer = ({navigation, data}) => {
+const ProfileContainer = ({navigation, userId}) => {
   const [user, setUser] = useState({username: 'loading'});
   const [avatar, setAvatar] = useState(require('../../assets/placeholder.png'));
   const {getUser} = useUser();
@@ -20,7 +20,7 @@ const ProfileContainer = ({navigation, data}) => {
     const getUsersData = async () => {
       const userToken = await AsyncStorage.getItem('userToken');
       try {
-        const user = await getUser(data.user_id, userToken);
+        const user = await getUser(userId, userToken);
         setUser(user);
       } catch (error) {
         console.error(error.message);
@@ -29,7 +29,7 @@ const ProfileContainer = ({navigation, data}) => {
 
     const fetchAvatar = async () => {
       try {
-        const avatarList = await getByTag('avatar_' + data.user_id);
+        const avatarList = await getByTag(appTag + 'avatar_' + userId);
         if (avatarList.length > 0) {
           setAvatar({uri: uploadsURL + avatarList.pop().filename});
         }
@@ -43,7 +43,7 @@ const ProfileContainer = ({navigation, data}) => {
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.push('Profile', {userId: data.user_id})}
+      onPress={() => navigation.push('Profile', {userId: userId})}
     >
       <View style={styles.profileContainer}>
         <View style={styles.container}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
 
 ProfileContainer.propTypes = {
   navigation: PropTypes.object,
-  data: PropTypes.object,
+  userId: PropTypes.number,
 };
 
 export default ProfileContainer;
