@@ -198,37 +198,22 @@ const useTag = () => {
     return ok;
   };
 
-  const addTag = async (fileId, tagValue, avatarTag) => {
+  const addTag = async (fileId, tagValue) => {
     console.log('AddTag Called, fileId: ', fileId + 'tagValue:', tagValue);
     const userToken = await AsyncStorage.getItem('userToken');
     const axios = require('axios').default;
 
-    let options;
-    if (avatarTag) {
-      options = {
-        url: tagURL,
-        method: 'POST',
-        headers: {
-          'x-access-token': userToken,
-        },
-        data: {
-          file_id: fileId,
-          tag: tagValue,
-        },
-      };
-    } else {
-      options = {
-        url: tagURL,
-        method: 'POST',
-        headers: {
-          'x-access-token': userToken,
-        },
-        data: {
-          file_id: fileId,
-          tag: appTag + tagValue,
-        },
-      };
-    }
+    const options = {
+      url: tagURL,
+      method: 'POST',
+      headers: {
+        'x-access-token': userToken,
+      },
+      data: {
+        file_id: fileId,
+        tag: appTag + tagValue,
+      },
+    };
 
     try {
       await axios(options).then((res) => {
@@ -312,11 +297,7 @@ const useTag = () => {
     if (type === 'image/jpg') type = 'image/jpeg';
 
     // add image to formData
-    formData.append('file', {
-      uri: image,
-      name: filename,
-      type: type,
-    });
+    formData.append('file', {uri: image, name: filename, type});
 
     const options = {
       url: mediaURL,
@@ -343,7 +324,7 @@ const useTag = () => {
       console.log('uploaderror: ', error.message);
     }
     // Add the avatar tag
-    await addTag(fileId, 'avatar_' + userId, true);
+    await addTag(fileId, 'avatar_' + userId);
     return ok;
   };
 

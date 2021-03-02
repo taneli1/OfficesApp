@@ -10,7 +10,7 @@ import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
 import {Text, Image, Button, Avatar} from 'react-native-elements';
 import {useTag, useLoadMedia, useUser} from '../hooks/ApiHooks';
-import {uploadsURL} from '../utils/Variables';
+import {appTag, uploadsURL} from '../utils/Variables';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
 import List from '../components/lists/List';
@@ -39,6 +39,8 @@ const Profile = ({navigation, route}) => {
   const [displayedUser, setDisplayedUser] = useState(userToDisplay);
   const [avatar, setAvatar] = useState(require('../assets/placeholder.png'));
   const [image, setImage] = useState(null);
+  const [profilePictureUpdated, setProfilePictureUpdated] = useState(0);
+  const [profilePicturePicked, setProfilePicturePicked] = useState(false);
   const usersPostsOnly = true;
   const data = useLoadMedia(usersPostsOnly, displayedUserId);
   const {getUser} = useUser();
@@ -70,7 +72,9 @@ const Profile = ({navigation, route}) => {
 
     if (!result.cancelled) {
       setImage(result.uri);
-      doUpload();
+      console.log(result.uri);
+      setProfilePicturePicked(true);
+      setAvatar({uri: result.uri});
     }
   };
 
@@ -80,10 +84,10 @@ const Profile = ({navigation, route}) => {
       console.log('Upload returned: ', isUploaded);
       if (isUploaded) {
         try {
-          const avatarList = await getByTag('avatar_' + displayedUserId);
-          if (avatarList.length > 0) {
-            setAvatar({uri: uploadsURL + avatarList.pop().filename});
-          }
+          Alert.alert('Profile picture changed!');
+          // Refresh the profile picture data with useEffect
+          setProfilePictureUpdated(profilePictureUpdated + 1);
+          setProfilePicturePicked(false);
         } catch (error) {
           console.error(error.message);
         }
@@ -108,7 +112,7 @@ const Profile = ({navigation, route}) => {
 
     const fetchAvatar = async () => {
       try {
-        const avatarList = await getByTag('avatar_' + displayedUserId);
+        const avatarList = await getByTag(appTag + 'avatar_' + displayedUserId);
         if (avatarList.length > 0) {
           setAvatar({uri: uploadsURL + avatarList.pop().filename});
         }
@@ -120,7 +124,7 @@ const Profile = ({navigation, route}) => {
       getAnotherUsersData();
     }
     fetchAvatar();
-  }, []);
+  }, [profilePictureUpdated]);
 
   return (
     <View>
@@ -141,12 +145,36 @@ const Profile = ({navigation, route}) => {
             PlaceholderContent={<ActivityIndicator />}
           />
           {isOwnProfile && (
-            <Button
-              title="Change profile picture"
-              buttonStyle={styles.changeProfileImageButton}
-              titleStyle={styles.changeProfileImageButtonTitle}
-              onPress={pickImage}
-            ></Button>
+            <View style={styles.profileImageButtonContainer}>
+              {!profilePicturePicked ? (
+                <>
+                  <Button
+                    title="Change profile picture"
+                    buttonStyle={styles.smallButton}
+                    titleStyle={styles.smallButtonTitle}
+                    onPress={pickImage}
+                  ></Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    title="Confirm"
+                    buttonStyle={styles.confirmButton}
+                    titleStyle={styles.smallButtonTitle}
+                    onPress={doUpload}
+                  ></Button>
+                  <Button
+                    title="Cancel"
+                    buttonStyle={styles.cancelButton}
+                    titleStyle={styles.smallButtonTitle}
+                    onPress={() => {
+                      setProfilePicturePicked(false);
+                      setProfilePictureUpdated(profilePictureUpdated + 1);
+                    }}
+                  ></Button>
+                </>
+              )}
+            </View>
           )}
         </View>
         <View style={styles.userTextContainer}>
@@ -201,13 +229,28 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
-  changeProfileImageButton: {
+  profileImageButtonContainer: {
+    flexDirection: 'row',
+  },
+  smallButton: {
     backgroundColor: Colors.primary,
     margin: 10,
     marginTop: 5,
     padding: 2,
   },
-  changeProfileImageButtonTitle: {
+  confirmButton: {
+    backgroundColor: '#25de14',
+    margin: 10,
+    marginTop: 5,
+    padding: 2,
+  },
+  cancelButton: {
+    backgroundColor: Colors.red,
+    margin: 10,
+    marginTop: 5,
+    padding: 2,
+  },
+  smallButtonTitle: {
     fontSize: Dimens.fontSizes.textSmall,
   },
   userTextContainer: {

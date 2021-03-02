@@ -64,7 +64,7 @@ const PostDataCard = ({navigation, postData}) => {
         <View style={styles.topContainer}>
           <ProfileContainer
             navigation={navigation}
-            data={postData}
+            userId={postData.user_id}
           ></ProfileContainer>
           <View style={styles.favoriteContainer}>
             <Favorite
