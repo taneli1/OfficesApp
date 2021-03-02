@@ -7,6 +7,9 @@ import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
 import {Button, Card, SearchBar} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
+import Tag from '../listitems/Tag';
+import {arrayMaker, randomTag, TagSelector} from '../tag/TagSelector';
+import TAGS from '../tag/TagSelector';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -14,7 +17,7 @@ import {ScrollView} from 'react-native-gesture-handler';
   Builds the layout with the required layout for the posts.
   Takes in layout prop which defines which post layout is used depending on the screen's name
  */
-const List = ({navigation, mediaArray, layout}) => {
+const List = ({navigation, mediaArray, layout, tags}) => {
   const {user} = useContext(MainContext);
 
   if (layout === 'home') {
@@ -42,11 +45,15 @@ const List = ({navigation, mediaArray, layout}) => {
       />
     );
   } else if (layout === 'discover') {
+    const tag1 = randomTag();
+    console.log('discover test random tag', tag1);
+    const tag2 = randomTag();
+    const tag3 = randomTag();
     return (
       <ScrollView>
         <SearchBar placeholder="Type Here..." />
         <Card>
-          <Card.Title>Tag 1</Card.Title>
+          <Card.Title>{tag1.title}</Card.Title>
           <Button tittle="See more" containerViewStyle={{height: '10%'}}>
             See more
           </Button>
@@ -60,7 +67,7 @@ const List = ({navigation, mediaArray, layout}) => {
           />
         </Card>
         <Card>
-          <Card.Title>Tag 2</Card.Title>
+          <Card.Title>{tag2.title}</Card.Title>
           <Button tittle="See more">See more</Button>
           <FlatList
             horizontal={true}
@@ -72,7 +79,7 @@ const List = ({navigation, mediaArray, layout}) => {
           />
         </Card>
         <Card>
-          <Card.Title>Tag 3</Card.Title>
+          <Card.Title>{tag3.title}</Card.Title>
           <Button tittle="See more">See more</Button>
           <FlatList
             horizontal={true}
@@ -92,6 +99,7 @@ List.propTypes = {
   navigation: PropTypes.object,
   mediaArray: PropTypes.array,
   layout: PropTypes.string,
+  tags: PropTypes.array,
 };
 
 export default List;

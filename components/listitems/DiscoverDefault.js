@@ -4,7 +4,7 @@ import {Card} from 'react-native-elements';
 import {uploadsURL} from '../../utils/Variables';
 import {TouchableOpacity} from 'react-native';
 
-// Layout for posts in the home page
+// Layout for posts in the discover page
 const DiscoverDefault = ({navigation, data}) => {
   return (
     <TouchableOpacity

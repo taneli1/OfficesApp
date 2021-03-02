@@ -37,6 +37,12 @@ const arrayMaker = async () => {
   TAGS = temp;
 };
 
+const randomTag = () => {
+  if (TAGS.length == 0) arrayMaker();
+  const randomTag = TAGS[Math.floor(Math.random() * TAGS.length)];
+  return randomTag;
+};
+
 const TagSelector = () => {
   if (TAGS.length == 0) arrayMaker();
   const [filteredTags, setFilteredTags] = useState(TAGS);
@@ -233,4 +239,4 @@ const getSelectedTags = () => {
   return sTags;
 };
 
-export {TagSelector, getSelectedTags};
+export {TagSelector, getSelectedTags, randomTag};
