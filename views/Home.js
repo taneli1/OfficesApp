@@ -5,6 +5,7 @@ import GlobalStyles from '../styles/GlobalStyles';
 import PropTypes from 'prop-types';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
+import {Colors} from '../styles/Colors';
 
 const Home = ({navigation}) => {
   const usersPostsOnly = false;
@@ -14,7 +15,7 @@ const Home = ({navigation}) => {
   return (
     <SafeAreaView style={GlobalStyles.droidSafeArea}>
       <List navigation={navigation} mediaArray={data} layout="home" />
-      <StatusBar style="auto" />
+      <StatusBar style="auto" backgroundColor={Colors.darkGreen} />
     </SafeAreaView>
   );
 };
