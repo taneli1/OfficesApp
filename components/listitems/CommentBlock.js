@@ -1,20 +1,21 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
 import ProfileContainer from '../common/ProfileContainer';
 import PropTypes from 'prop-types';
 import {StyleSheet} from 'react-native';
-import {Dimens} from '../../styles/Dimens';
+import {useUser} from '../../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// 
+// CommentData passed here
 const CommentBlock = ({navigation, data}) => {
   return (
     <View style={s.container}>
       <ProfileContainer
         style={s.profile}
         navigation={navigation}
-        userData={null}
+        data={{user_id: data.user_id}}
       />
-      <Text style={s.text}>A nice looking office!</Text>
+      <Text style={s.text}>{data.comment}</Text>
     </View>
   );
 };

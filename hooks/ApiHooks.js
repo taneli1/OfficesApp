@@ -7,6 +7,8 @@ import {
   loginURL,
   userURL,
   allTagsId,
+  favoriteURL,
+  commentURL,
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,7 +19,7 @@ const doFetch = async (url, options = {}) => {
   const res = await fetch(url, options);
   const json = await res.json();
   if (json.errors) throwErr('doFetch err: ' + json.message + '|' + json.error);
-  else if (!res.ok) throwErr('doFetch failed: res not ok');
+  else if (!res.ok) throwErr('doFetch failed: res not ok: ', res);
   else return json;
 };
 
@@ -223,6 +225,25 @@ const useTag = () => {
     }
   };
 
+  const getTagsForPost = async (postId) => {
+    const options = {
+      method: 'GET',
+    };
+    try {
+      const res = await doFetch(tagURL + 'file/' + postId, options);
+      const tagList = res.filter((it) => it.tag !== appTag); // Drop the main app tag
+      const tagArray = [];
+      for (const i in tagList) {
+        const thisTag = tagList[i].tag.split('_').pop();
+        tagArray.push(thisTag);
+      }
+
+      return tagArray;
+    } catch (e) {
+      throwErr(e.message);
+    }
+  };
+
   /*
     Fetches all the tags under allTagsId post, and returns the tags from it
     These are the user created tags in the application
@@ -260,7 +281,159 @@ const useTag = () => {
     }
   };
 
-  return {getByTag, uploadPost, getAllTags};
+  return {getByTag, uploadPost, getAllTags, getTagsForPost};
 };
 
-export {useLoadMedia, useLogin, useUser, useTag};
+// Methods for favorites
+const useFavorites = () => {
+  const getUserFavorites = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const options = {
+      method: 'GET',
+      headers: {'x-access-token': userToken},
+    };
+
+    try {
+      const res = await doFetch(favoriteURL, options);
+      return res;
+    } catch (error) {
+      console.log('getUserFavorites err: ', error);
+    }
+  };
+
+  const getPostFavoriteCount = async (postId) => {
+    const options = {
+      method: 'GET',
+      data: {
+        id: postId,
+      },
+    };
+    try {
+      const postFavorites = await doFetch(
+        favoriteURL + 'file/' + postId,
+        options
+      );
+      console.log('FavCountRes: ', postFavorites.length);
+      return postFavorites.length;
+    } catch (error) {
+      console.log('GetPostFavCount err: ', error);
+    }
+  };
+
+  // Favorites a post, or unfavorites it if it's favorited by the user already
+  const favoriteInteraction = async (postId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: favoriteURL,
+      method: 'POST',
+      headers: {
+        'x-access-token': userToken,
+      },
+      data: {
+        file_id: postId,
+      },
+    };
+
+    try {
+      await axios(options).then(
+        async (res) => {
+          if (res.status == 201) console.log('Favorited post');
+          else console.log('favoritePost: response not 201: ', res);
+        },
+        async (error) => {
+          /*
+           Error 400 here (bad request). Request itself should always be fine, so we can expect
+           that the failure was due to the post having a favorite already with the current
+           user. => UserInteraction also unfavorites posts, so call unFavorite() here
+          */
+          if (error == 'Error: Request failed with status code 400') {
+            console.log('Unfavoriting post...');
+            await unFavoritePost(postId);
+          } else console.log('axios postFav err: ', error);
+        }
+      );
+    } catch (error) {
+      throwErr('favoriteInteraction error:', error.message);
+    }
+  };
+
+  const unFavoritePost = async (postId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: favoriteURL + 'file/' + postId,
+      method: 'DELETE',
+      headers: {
+        'x-access-token': userToken,
+      },
+    };
+
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status == 200) console.log('Unfavorited post');
+          else console.log('Could not unfavorite post');
+        },
+        (error) => {
+          console.log('axios unFavorite error: ', error);
+        }
+      );
+    } catch (error) {
+      throwErr('unFavorite error: ', error);
+    }
+  };
+
+  return {favoriteInteraction, getUserFavorites, getPostFavoriteCount};
+};
+
+const useComments = () => {
+  const getPostComments = async (postId) => {
+    const options = {
+      method: 'GET',
+    };
+    try {
+      const res = await doFetch(commentURL + 'file/' + postId, options);
+      console.log('Comment response: ', res);
+      return res;
+    } catch (e) {
+      throwErr(e.message);
+    }
+  };
+
+  const postComment = async (string, postId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: commentURL,
+      method: 'POST',
+      headers: {
+        'x-access-token': userToken,
+      },
+      data: {
+        file_id: postId,
+        comment: string,
+      },
+    };
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status == 201) console.log('Comment ok');
+          else console.log('Comment res not ok');
+        },
+        (error) => {
+          console.log('Axios comment post failure : ', error);
+        }
+      );
+    } catch (error) {
+      throwErr('unFavorite error: ', error);
+    }
+  };
+
+  return {getPostComments, postComment};
+};
+
+export {useLoadMedia, useLogin, useUser, useTag, useFavorites, useComments};

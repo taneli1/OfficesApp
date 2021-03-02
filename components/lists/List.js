@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
 import PostDefault from '../listitems/PostDefault';
 import ProfilePost from '../listitems/ProfilePost';
@@ -30,7 +30,6 @@ const List = ({navigation, mediaArray, layout}) => {
   } else if (layout === 'profile') {
     return (
       <FlatList
-        style={styles.usersPostsList}
         data={mediaArray}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
@@ -88,12 +87,6 @@ const List = ({navigation, mediaArray, layout}) => {
     );
   }
 };
-
-const styles = StyleSheet.create({
-  usersPostsList: {
-    height: 360,
-  },
-});
 
 List.propTypes = {
   navigation: PropTypes.object,

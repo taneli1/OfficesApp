@@ -14,6 +14,7 @@ import Single from '../views/Single';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Discover from '../views/Discover';
+import {Colors} from '../styles/Colors';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -71,6 +72,7 @@ const StackScreen = () => {
             component={Single}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="Profile" component={Profile} />
         </>
       ) : (
         <>

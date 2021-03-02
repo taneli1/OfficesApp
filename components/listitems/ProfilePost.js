@@ -15,16 +15,18 @@ const ProfilePost = ({navigation, data}) => {
       }}
     >
       <View style={styles.usersPostCard}>
-        <Image
-          source={{uri: uploadsURL + data.thumbnails.w160}}
-          style={styles.postImage}
-          PlaceholderContent={<ActivityIndicator />}
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            source={{uri: uploadsURL + data.thumbnails.w160}}
+            style={styles.postImage}
+            PlaceholderContent={<ActivityIndicator />}
+          />
+        </View>
         <View style={styles.postTextContainer}>
           <Text style={styles.postTitle}>{data.title}</Text>
           <Text style={styles.postDescription}>{data.description}</Text>
           <View style={styles.favoriteContainer}>
-            <Favorite postData={null}></Favorite>
+            <Favorite postData={data}></Favorite>
           </View>
         </View>
       </View>
@@ -41,9 +43,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     margin: 10,
   },
+  imageContainer: {
+    flex: 1,
+  },
   postImage: {
-    justifyContent: 'flex-start',
-    width: 190,
+    width: '100%',
     height: undefined,
     aspectRatio: 4 / 3,
   },
