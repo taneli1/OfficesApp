@@ -106,10 +106,7 @@ const PostDefault = ({navigation, data}) => {
       </TouchableWithoutFeedback>
       <View style={s.dataC}>
         <View style={s.profileContainer}>
-          <ProfileContainer
-            navigation={navigation}
-            data={{user_id: data.user_id}}
-          />
+          <ProfileContainer navigation={navigation} userId={data.user_id} />
         </View>
         <TagList tags={postTags} style={s.tags} />
       </View>
