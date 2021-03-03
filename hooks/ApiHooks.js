@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 /* eslint-disable guard-for-in */
 import {useEffect, useState, useContext} from 'react';
 import {
@@ -131,6 +132,9 @@ const useUser = () => {
   return {postRegister, checkToken, checkIsUserAvailable, getUser};
 };
 
+/**
+ * @see Variables for explanation
+ */
 const useTag = () => {
   const getByTag = async (tag) => {
     try {
@@ -141,10 +145,17 @@ const useTag = () => {
     }
   };
 
-  /*
+  /**
    Uploads the post itself, and calls the required functions for the tag posting.
+
+   The function takes in a tagArray, which contains the user created tags as strings.
+   these tags are created in @see TagSelector
+
    All posts get the default appTag, and all the strings in tagArray gets added
-   to the post as tags. Also handles the stuff for new tag posting
+   to the post as tags.
+
+   Any new tags in the tagArray are saved to a hidden post, which
+   contains all the user created tags in the app.
    */
   const uploadPost = async (image, inputs, tagArray) => {
     const axios = require('axios').default;
@@ -355,7 +366,13 @@ const useFavorites = () => {
     }
   };
 
-  const getPostFavoriteCount = async (postId) => {
+  /*
+    Return the amount of likes of the post and a boolean value whether
+    the passed in user has liked the post in question
+
+    returns { likeCount: number, userLiked: boolean }
+  */
+  const getPostFavoriteData = async (postId, userId) => {
     const options = {
       method: 'GET',
       data: {
@@ -367,8 +384,18 @@ const useFavorites = () => {
         favoriteURL + 'file/' + postId,
         options
       );
-      console.log('FavCountRes: ', postFavorites.length);
-      return postFavorites.length;
+
+      let userLikedPost = false;
+      // Loop the response and check if the logged in user has liked the post
+      if (userId != undefined && userId != null) {
+        for (const i in postFavorites) {
+          if (postFavorites[i].user_id == userId) {
+            userLikedPost = true;
+            break;
+          }
+        }
+      }
+      return {likeCount: postFavorites.length, userLiked: userLikedPost};
     } catch (error) {
       console.log('GetPostFavCount err: ', error);
     }
@@ -440,7 +467,7 @@ const useFavorites = () => {
     }
   };
 
-  return {favoriteInteraction, getUserFavorites, getPostFavoriteCount};
+  return {favoriteInteraction, getUserFavorites, getPostFavoriteData};
 };
 
 const useComments = () => {

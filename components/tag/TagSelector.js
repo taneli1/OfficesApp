@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 /* eslint-disable guard-for-in */
 import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
@@ -14,10 +15,14 @@ import PropTypes from 'prop-types';
 import {Button} from 'react-native-elements';
 import Tag from '../listitems/Tag';
 import {useTag} from '../../hooks/ApiHooks';
+
 /*
-    Fetch all tags from database first -> Make them to objects. Give all of them: checked = false.
-    When an user creates a new tag, add it to TAGS, upload it with the post if it is in
-    selected state.
+    Fetch all tags from database first -> Make them into objects with: state (checked = false).
+
+    When an user creates a new tag, add it to TAGS array as a string.
+
+    When app calls the upload functionality, these new tags are saved. The next time
+    any user uploads a post, they can see which tags already have something posted to them.
   */
 let TAGS = [];
 
@@ -37,6 +42,10 @@ const arrayMaker = async () => {
   TAGS = temp;
 };
 
+/**
+  Provides the component to selecting/creating new tags in the app.
+  @see Variables for explanation
+*/
 const TagSelector = () => {
   if (TAGS.length == 0) arrayMaker();
   const [filteredTags, setFilteredTags] = useState(TAGS);

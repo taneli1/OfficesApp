@@ -1,10 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text} from 'react-native';
 import ProfileContainer from '../common/ProfileContainer';
 import PropTypes from 'prop-types';
 import {StyleSheet} from 'react-native';
-import {useUser} from '../../hooks/ApiHooks';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // CommentData passed here
 const CommentBlock = ({navigation, data}) => {

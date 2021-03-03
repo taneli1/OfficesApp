@@ -7,10 +7,25 @@ const userURL = baseURL + 'users/';
 const uploadsURL = baseURL + 'uploads/';
 const loginURL = baseURL + 'login/';
 
-// Values for app identifiers used in DB communications
+// All the tags of the app use this as the base
 const appTag = 'ofcapp_';
 
-// File id which has all the tags created by the app users
+/*
+  The application has a tag system for the posts. Users of the application
+  can choose tags for their uploaded posts, which are meant to categorize the
+  posts and provide discover functionality.
+
+  There is a hidden post uploaded in the server, with id: allTagsId. This
+  post contains these categorizing tags of the application.
+
+  Whenever an user creates a post, they can choose existing category tags
+  to be used for the post. If the tag they wish to use does not exist already,
+  they can create a new one. The application uploads it to the users' post
+  and this hidden post.
+
+  Whenever we need to see the tags of the application, we use a method in ApiHooks
+  which returns all the tags in this hidden post.
+*/
 const allTagsId = '402';
 
 export {
