@@ -292,7 +292,61 @@ const useTag = () => {
     }
   };
 
-  return {getByTag, uploadPost, getAllTags, getTagsForPost};
+  // Uploads a new avatar picture and adds a avatar tag to it.
+  const uploadAvatarPicture = async (image, userId) => {
+    const axios = require('axios').default;
+    const userToken = await AsyncStorage.getItem('userToken');
+    const filename = image.split('/').pop();
+    let ok = false;
+
+    const formData = new FormData();
+    // Add a title to formData
+    formData.append('title', 'Profile picture');
+
+    // Infer the type of the image
+    const match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    if (type === 'image/jpg') type = 'image/jpeg';
+
+    // Add the image to formData
+    formData.append('file', {uri: image, name: filename, type});
+
+    const options = {
+      url: mediaURL,
+      method: 'POST',
+      headers: {
+        'content-type': 'multipart/form-data',
+        'x-access-token': userToken,
+      },
+      data: formData,
+    };
+
+    let fileId;
+    try {
+      await axios(options).then((res) => {
+        if (res.status == 201) {
+          fileId = res.data.file_id;
+          console.log('Upload res ok: ', fileId);
+          ok = true;
+        } else {
+          console.log('err Upload: ', res.status, res.message);
+        }
+      });
+    } catch (error) {
+      console.log('uploaderror: ', error.message);
+    }
+    // Add the avatar tag
+    await addTag(fileId, 'avatar_' + userId);
+    return ok;
+  };
+
+  return {
+    getByTag,
+    uploadPost,
+    getAllTags,
+    getTagsForPost,
+    uploadAvatarPicture,
+  };
 };
 
 // Methods for favorites

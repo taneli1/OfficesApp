@@ -11,7 +11,7 @@ const CommentBlock = ({navigation, data}) => {
       <ProfileContainer
         style={s.profile}
         navigation={navigation}
-        data={{user_id: data.user_id}}
+        userId={data.user_id}
       />
       <Text style={s.text}>{data.comment}</Text>
     </View>
