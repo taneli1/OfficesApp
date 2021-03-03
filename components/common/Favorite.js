@@ -10,13 +10,14 @@ import {StyleSheet} from 'react-native';
 import {useFavorites} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 /*
-
+  Favorite component of the app.
 */
 const Favorite = ({postData}) => {
   const postId = postData.file_id;
   const [favCount, setFavCount] = useState(0);
   const [favStatus, setFavStatus] = useState(false);
   const {getPostFavoriteData, favoriteInteraction} = useFavorites();
+  // Check from context if there is neeed to rerender the favorite component.
   const {user, updtFavorites, setUpdtFavorites} = useContext(MainContext);
 
   // Gets the data for the post favorite status
@@ -36,7 +37,7 @@ const Favorite = ({postData}) => {
     setUpdtFavorites(updtFavorites + 1);
   };
 
-  // Need to load the favorites count when rendering the item for the first time
+  // Check if there is any updates to the favorites state
   useEffect(() => {
     getSetFavData();
   }, [updtFavorites]);

@@ -22,7 +22,7 @@ import {useTag} from '../../hooks/ApiHooks';
 const PostDefault = ({navigation, data}) => {
   const [postTags, setPostTags] = useState([]);
   const {getTagsForPost} = useTag();
-  const [refresh, setRefresh] = useState([]);
+  const [refresh] = useState([]);
 
   const fetchTags = async () => {
     const res = await getTagsForPost(data.file_id);

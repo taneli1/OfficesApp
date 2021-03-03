@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 /* eslint-disable guard-for-in */
 import {useEffect, useState, useContext} from 'react';
 import {
@@ -131,6 +132,9 @@ const useUser = () => {
   return {postRegister, checkToken, checkIsUserAvailable, getUser};
 };
 
+/**
+ * @see Variables for explanation
+ */
 const useTag = () => {
   const getByTag = async (tag) => {
     try {
@@ -141,10 +145,17 @@ const useTag = () => {
     }
   };
 
-  /*
+  /**
    Uploads the post itself, and calls the required functions for the tag posting.
+
+   The function takes in a tagArray, which contains the user created tags as strings.
+   these tags are created in @see TagSelector
+
    All posts get the default appTag, and all the strings in tagArray gets added
-   to the post as tags. Also handles the stuff for new tag posting
+   to the post as tags.
+
+   Any new tags in the tagArray are saved to a hidden post, which
+   contains all the user created tags in the app.
    */
   const uploadPost = async (image, inputs, tagArray) => {
     const axios = require('axios').default;
