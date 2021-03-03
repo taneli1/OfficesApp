@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   ActivityIndicator,
@@ -16,17 +16,36 @@ import {Dimens} from '../../styles/Dimens';
 import {Colors} from '../../styles/Colors';
 import ProfileContainer from '../common/ProfileContainer';
 import TagList from '../lists/TagList';
-import {useTag} from '../../hooks/ApiHooks';
+import {useFavorites, useTag} from '../../hooks/ApiHooks';
+import {MainContext} from '../../contexts/MainContext';
+import {Icon} from 'react-native-elements';
 
 // Layout for posts in the home page
 const PostDefault = ({navigation, data}) => {
+  // Variable to show favorite interaction feedback
+  const [runFeedback, setRunFeedback] = useState(false);
   const [postTags, setPostTags] = useState([]);
   const {getTagsForPost} = useTag();
-  const [refresh, setRefresh] = useState([]);
+  const [refresh] = useState([]);
+  const {favoriteInteraction} = useFavorites();
+  const {updtFavorites, setUpdtFavorites} = useContext(MainContext);
 
   const fetchTags = async () => {
     const res = await getTagsForPost(data.file_id);
     setPostTags(res);
+  };
+
+  // Call on longpress, to have alternative way to favorite post
+  const longPressInteraction = async () => {
+    setRunFeedback(true);
+    // Display the feedback at min 0.5sec
+    setTimeout(async () => {
+      await favoriteInteraction(data.file_id);
+      setUpdtFavorites(updtFavorites + 1);
+      setTimeout(() => {
+        setRunFeedback(false);
+      }, 300);
+    }, 200);
   };
 
   useEffect(() => {
@@ -35,36 +54,61 @@ const PostDefault = ({navigation, data}) => {
 
   return (
     <View style={s.container}>
-      <View
-        style={[
-          headerContainer,
-          {marginLeft: 8, position: 'absolute', top: -25},
-        ]}
-      >
-        <Text style={[bigHeader, s.hCont]}>{data.title}</Text>
-      </View>
-      <View style={s.fav}>
-        <Favorite postData={data} />
-      </View>
+      {runFeedback == false && (
+        <View style={s.box}>
+          <View
+            style={[
+              headerContainer,
+              {marginLeft: 8, position: 'absolute', top: -28},
+            ]}
+          >
+            <Text style={[bigHeader, s.hCont]}>{data.title}</Text>
+          </View>
+          <View style={s.fav}>
+            <Favorite postData={data} />
+          </View>
+        </View>
+      )}
 
       <TouchableWithoutFeedback
+        delayLongPress={300}
         onPress={() => {
           navigation.navigate('Single', {data: data});
         }}
+        onLongPress={() => {
+          longPressInteraction();
+        }}
       >
         {data.thumbnails != undefined && (
-          <Image
-            resizeMode="stretch"
-            style={s.image}
-            source={{uri: uploadsURL + data.thumbnails.w640}}
-            PlaceholderContent={
-              <ActivityIndicator size="large" color={Colors.primary} />
-            }
-          ></Image>
+          <View>
+            {runFeedback == true ? (
+              <View style={s.feedbackImage}>
+                <Icon
+                  name="favorite"
+                  size={50}
+                  color={Colors.primary}
+                  style={{alignSelf: 'center'}}
+                ></Icon>
+              </View>
+            ) : (
+              <View style={s.whiteC}>
+                <Image
+                  resizeMode="stretch"
+                  style={s.image}
+                  source={{uri: uploadsURL + data.thumbnails.w640}}
+                  PlaceholderContent={
+                    <ActivityIndicator size="large" color={Colors.primary} />
+                  }
+                ></Image>
+              </View>
+            )}
+          </View>
         )}
       </TouchableWithoutFeedback>
       <View style={s.dataC}>
-        <ProfileContainer navigation={navigation} userId={data.user_id} />
+        <View style={s.profileContainer}>
+          <ProfileContainer navigation={navigation} userId={data.user_id} />
+        </View>
         <TagList tags={postTags} style={s.tags} />
       </View>
     </View>
@@ -81,11 +125,9 @@ const s = StyleSheet.create({
     width: Dimensions.get('window').width * 0.9,
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: 50,
+    marginTop: 60,
     overflow: 'visible',
     borderRadius: 10,
-    borderColor: Colors.primary,
-    borderWidth: 0.5,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     elevation: 8,
@@ -96,32 +138,54 @@ const s = StyleSheet.create({
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
   },
+  feedbackImage: {
+    width: Dimensions.get('window').width * 0.9,
+    height: 200,
+    backgroundColor: Colors.white,
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   hCont: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     fontSize: Dimens.fontSizes.textMedium,
-    borderColor: Colors.primary,
-    borderWidth: 0.5,
+    color: Colors.grey,
+    elevation: 1,
+    borderColor: 'rgba(255, 255, 255, 0.0)',
+    borderWidth: 0.0,
+    borderTopLeftRadius: 10,
+    borderBottomRightRadius: 1,
   },
   fav: {
     position: 'absolute',
     right: 8,
-    top: -22,
-    backgroundColor: Colors.white,
+    top: -28,
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
     borderRadius: 10,
-    borderColor: Colors.grey,
-    borderWidth: 0.5,
-    elevation: Dimens.elevations.baseElevation,
+    elevation: 0,
   },
   dataC: {
-    width: '100%',
-    backgroundColor: Colors.white,
+    backgroundColor: 'rgba(250,250,250, 1)',
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     flexDirection: 'row',
-    padding: 8,
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   tags: {},
+  profileContainer: {
+    transform: [{scaleX: 0.85}, {scaleY: 0.85}, {translateX: -4}],
+    padding: 3,
+  },
+  box: {
+    width: Dimensions.get('window').width * 0.9,
+  },
+  whiteC: {
+    backgroundColor: Colors.white,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 15,
+  },
 });
 
 export default PostDefault;
