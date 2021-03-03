@@ -301,7 +301,13 @@ const useFavorites = () => {
     }
   };
 
-  const getPostFavoriteCount = async (postId) => {
+  /*
+    Return the amount of likes of the post and a boolean value whether
+    the passed in user has liked the post in question
+
+    returns { likeCount: number, userLiked: boolean }
+  */
+  const getPostFavoriteData = async (postId, userId) => {
     const options = {
       method: 'GET',
       data: {
@@ -313,8 +319,18 @@ const useFavorites = () => {
         favoriteURL + 'file/' + postId,
         options
       );
-      console.log('FavCountRes: ', postFavorites.length);
-      return postFavorites.length;
+
+      let userLikedPost = false;
+      // Loop the response and check if the logged in user has liked the post
+      if (userId != undefined && userId != null) {
+        for (const i in postFavorites) {
+          if (postFavorites[i].user_id == userId) {
+            userLikedPost = true;
+            break;
+          }
+        }
+      }
+      return {likeCount: postFavorites.length, userLiked: userLikedPost};
     } catch (error) {
       console.log('GetPostFavCount err: ', error);
     }
@@ -386,7 +402,7 @@ const useFavorites = () => {
     }
   };
 
-  return {favoriteInteraction, getUserFavorites, getPostFavoriteCount};
+  return {favoriteInteraction, getUserFavorites, getPostFavoriteData};
 };
 
 const useComments = () => {
