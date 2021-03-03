@@ -40,9 +40,10 @@ const Profile = ({navigation, route}) => {
 
   const {setIsLoggedIn} = useContext(MainContext);
   const [displayedUser, setDisplayedUser] = useState(userToDisplay);
-  const [avatar, setAvatar] = useState(require('../assets/placeholder.png'));
-  const [image, setImage] = useState(null);
+  const [avatar, setAvatar] = useState();
+  const [imageToUpload, setImageToUpload] = useState(null);
   const [profilePictureUpdated, setProfilePictureUpdated] = useState(0);
+  const [profilePicturePicking, setProfilePicturePicking] = useState(false);
   const [profilePicturePicked, setProfilePicturePicked] = useState(false);
   const usersPostsOnly = true;
   const data = useLoadMedia(usersPostsOnly, displayedUserId);
@@ -58,6 +59,10 @@ const Profile = ({navigation, route}) => {
 
   // Function for picking a new profile picture
   const pickImage = async () => {
+    setProfilePicturePicking(true);
+    // Current avatar is hidden while picking a new one
+    setAvatar();
+
     if (Platform.OS !== 'web') {
       const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
@@ -76,17 +81,25 @@ const Profile = ({navigation, route}) => {
     console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImageToUpload(result.uri);
       console.log(result.uri);
       setProfilePicturePicked(true);
       setAvatar({uri: result.uri});
+    } else {
+      setProfilePicturePicked(false);
+      // Refreshes the profile picture component with useEffect and a state variable
+      setProfilePictureUpdated(profilePictureUpdated + 1);
     }
+    setProfilePicturePicking(false);
   };
 
   // Function for uploading the picked profile picture
   const doUpload = async () => {
     try {
-      const isUploaded = await uploadAvatarPicture(image, displayedUserId);
+      const isUploaded = await uploadAvatarPicture(
+        imageToUpload,
+        displayedUserId
+      );
       console.log('Upload returned: ', isUploaded);
       if (isUploaded) {
         try {
@@ -123,6 +136,8 @@ const Profile = ({navigation, route}) => {
         const avatarList = await getByTag(appTag + 'avatar_' + displayedUserId);
         if (avatarList.length > 0) {
           setAvatar({uri: uploadsURL + avatarList.pop().filename});
+        } else {
+          setAvatar(require('../assets/placeholder.png'));
         }
       } catch (error) {
         console.error(error.message);
@@ -151,14 +166,16 @@ const Profile = ({navigation, route}) => {
           <Image
             source={avatar}
             style={styles.profileImage}
-            PlaceholderContent={<ActivityIndicator />}
+            PlaceholderContent={
+              <ActivityIndicator size="large" color={Colors.primary} />
+            }
           />
           {/* Buttons related to changing the profile picture are only rendered if the profile is the user's own profile. */}
           {isOwnProfile && (
             <View style={styles.profileImageButtonContainer}>
               {/* Confirm and cancel buttons are only rendered when a new profile picture has been picked. Otherwise the change profile
               picture button is rendered. */}
-              {!profilePicturePicked ? (
+              {!profilePicturePicking && !profilePicturePicked ? (
                 <>
                   <Button
                     title="Change profile picture"
@@ -169,23 +186,36 @@ const Profile = ({navigation, route}) => {
                 </>
               ) : (
                 <>
-                  <Button
-                    title="Confirm"
-                    buttonStyle={styles.confirmButton}
-                    titleStyle={styles.smallButtonTitle}
-                    onPress={doUpload}
-                  ></Button>
-                  {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
-                  state variable is updated to make the useEffect fetch the original profile picture back. */}
-                  <Button
-                    title="Cancel"
-                    buttonStyle={styles.cancelButton}
-                    titleStyle={styles.smallButtonTitle}
-                    onPress={() => {
-                      setProfilePicturePicked(false);
-                      setProfilePictureUpdated(profilePictureUpdated + 1);
-                    }}
-                  ></Button>
+                  {profilePicturePicked ? (
+                    <>
+                      <Button
+                        title="Confirm"
+                        buttonStyle={styles.confirmButton}
+                        titleStyle={styles.smallButtonTitle}
+                        onPress={doUpload}
+                      ></Button>
+                      {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
+                      state variable is updated to make the useEffect fetch the original profile picture back. */}
+                      <Button
+                        title="Cancel"
+                        buttonStyle={styles.cancelButton}
+                        titleStyle={styles.smallButtonTitle}
+                        onPress={() => {
+                          setProfilePicturePicked(false);
+                          setProfilePictureUpdated(profilePictureUpdated + 1);
+                        }}
+                      ></Button>
+                    </>
+                  ) : (
+                    <>
+                      <View style={styles.activityIndicatorContainer}>
+                        <ActivityIndicator
+                          size="small"
+                          color={Colors.primary}
+                        />
+                      </View>
+                    </>
+                  )}
                 </>
               )}
             </View>
@@ -266,6 +296,12 @@ const styles = StyleSheet.create({
   },
   smallButtonTitle: {
     fontSize: Dimens.fontSizes.textSmall,
+  },
+  activityIndicatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginLeft: 60,
+    marginRight: 60,
   },
   userTextContainer: {
     flex: 1,
