@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+/* eslint-disable no-undef */
+import React, {useContext, useEffect, useState} from 'react';
 import {ActivityIndicator, View, Text, StyleSheet} from 'react-native';
 import {Image} from 'react-native-elements';
 import PropTypes from 'prop-types';
@@ -8,12 +9,14 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTag, useUser} from '../../hooks/ApiHooks';
 import {appTag, uploadsURL} from '../../utils/Variables';
+import {MainContext} from '../../contexts/MainContext';
 
 const ProfileContainer = ({navigation, userId}) => {
-  const [user, setUser] = useState({username: 'loading'});
+  const [user, setUser] = useState({username: 'user'});
   const [avatar, setAvatar] = useState();
   const {getUser} = useUser();
   const {getByTag} = useTag();
+  const {isLoggedIn} = useContext(MainContext);
 
   useEffect(() => {
     const getUsersData = async () => {
@@ -38,7 +41,9 @@ const ProfileContainer = ({navigation, userId}) => {
         console.error(error.message);
       }
     };
-    getUsersData();
+    if (isLoggedIn) {
+      getUsersData();
+    }
     fetchAvatar();
   }, []);
 

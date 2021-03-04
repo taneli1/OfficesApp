@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
@@ -6,20 +6,38 @@ import {Colors} from '../styles/Colors';
 import {StyleSheet} from 'react-native';
 import UploadForm from '../components/UploadForm';
 import {ScrollView} from 'react-native-gesture-handler';
+import {MainContext} from '../contexts/MainContext';
+import LoginButton from '../components/LoginButton';
 
 const Upload = ({navigation}) => {
-  return (
-    <ScrollView>
-      <View style={{paddingBottom: 60}}>
-        <View style={[headerContainer, {alignSelf: 'center', marginLeft: 0}]}>
-          <Text style={[bigHeader, s.header]}>Create new post</Text>
-        </View>
+  const {isLoggedIn} = useContext(MainContext);
 
-        <View style={s.container}>
-          <UploadForm navigation={navigation} />
-        </View>
-      </View>
-    </ScrollView>
+  return (
+    <View>
+      {isLoggedIn ? (
+        <>
+          <ScrollView>
+            <View style={{paddingBottom: 60}}>
+              <View
+                style={[headerContainer, {alignSelf: 'center', marginLeft: 0}]}
+              >
+                <Text style={[bigHeader, s.header]}>Create new post</Text>
+              </View>
+
+              <View style={s.container}>
+                <UploadForm navigation={navigation} />
+              </View>
+            </View>
+          </ScrollView>
+        </>
+      ) : (
+        <>
+          <View>
+            <LoginButton></LoginButton>
+          </View>
+        </>
+      )}
+    </View>
   );
 };
 
