@@ -1,17 +1,17 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import PropTypes from 'prop-types';
-import {favoriteURL, uploadsURL} from '../../utils/Variables';
-import Favorite from '../common/Favorite';
-import {View} from 'react-native';
-import {Image} from 'react-native';
-import {StyleSheet} from 'react-native';
-import {Dimensions} from 'react-native';
-import {Text} from 'react-native';
-import {bigHeader, headerContainer} from '../../styles/BasicComponents';
+import React, {useContext, useEffect, useState} from 'react';
 import {
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Dimensions,
+  Text,
+} from 'react-native';
+import {Image} from 'react-native-elements';
+import PropTypes from 'prop-types';
+import {uploadsURL} from '../../utils/Variables';
+import Favorite from '../common/Favorite';
+import {bigHeader, headerContainer} from '../../styles/BasicComponents';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {Dimens} from '../../styles/Dimens';
 import {Colors} from '../../styles/Colors';
 import ProfileContainer from '../common/ProfileContainer';
@@ -19,8 +19,6 @@ import TagList from '../lists/TagList';
 import {useFavorites, useTag} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {Icon} from 'react-native-elements';
-import {ImageBackground} from 'react-native';
-import Animated from 'react-native-reanimated';
 
 // Layout for posts in the home page
 const PostDefault = ({navigation, data}) => {
@@ -98,6 +96,9 @@ const PostDefault = ({navigation, data}) => {
                   resizeMode="stretch"
                   style={s.image}
                   source={{uri: uploadsURL + data.thumbnails.w640}}
+                  PlaceholderContent={
+                    <ActivityIndicator size="large" color={Colors.primary} />
+                  }
                 ></Image>
               </View>
             )}
