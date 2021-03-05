@@ -237,7 +237,6 @@ const Profile = ({navigation, route}) => {
                     type: 'font-awesome',
                     color: 'black',
                     size: 25,
-                    marginTop: 30,
                   }}
                 />
                 <Text style={styles.fullName}>{displayedUser.full_name}</Text>

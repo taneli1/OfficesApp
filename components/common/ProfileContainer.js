@@ -12,11 +12,13 @@ import {appTag, uploadsURL} from '../../utils/Variables';
 import {MainContext} from '../../contexts/MainContext';
 
 const ProfileContainer = ({navigation, userId}) => {
-  const [user, setUser] = useState({username: 'user'});
+  const {isLoggedIn} = useContext(MainContext);
+  const [user, setUser] = useState(
+    isLoggedIn ? {username: 'loading'} : {username: 'user'}
+  );
   const [avatar, setAvatar] = useState();
   const {getUser} = useUser();
   const {getByTag} = useTag();
-  const {isLoggedIn} = useContext(MainContext);
 
   useEffect(() => {
     const getUsersData = async () => {
