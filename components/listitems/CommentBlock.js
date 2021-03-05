@@ -4,7 +4,10 @@ import ProfileContainer from '../common/ProfileContainer';
 import PropTypes from 'prop-types';
 import {StyleSheet} from 'react-native';
 
-// CommentData passed here
+/*
+  Single component for the CommentList, renders
+  the user and the comment left by them.
+*/
 const CommentBlock = ({navigation, data}) => {
   return (
     <View style={s.container}>
