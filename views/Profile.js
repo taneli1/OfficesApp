@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
@@ -17,6 +18,7 @@ import List from '../components/lists/List';
 import {Dimens} from '../styles/Dimens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import LoginButton from '../components/LoginButton';
 
 const Profile = ({navigation, route}) => {
   let displayedUserId;
@@ -38,11 +40,12 @@ const Profile = ({navigation, route}) => {
     isOwnProfile = true;
   }
 
-  const {setIsLoggedIn} = useContext(MainContext);
+  const {isLoggedIn, setIsLoggedIn} = useContext(MainContext);
   const [displayedUser, setDisplayedUser] = useState(userToDisplay);
-  const [avatar, setAvatar] = useState(require('../assets/placeholder.png'));
-  const [image, setImage] = useState(null);
+  const [avatar, setAvatar] = useState();
+  const [imageToUpload, setImageToUpload] = useState(null);
   const [profilePictureUpdated, setProfilePictureUpdated] = useState(0);
+  const [profilePicturePicking, setProfilePicturePicking] = useState(false);
   const [profilePicturePicked, setProfilePicturePicked] = useState(false);
   const usersPostsOnly = true;
   const data = useLoadMedia(usersPostsOnly, displayedUserId);
@@ -53,11 +56,14 @@ const Profile = ({navigation, route}) => {
   const logout = async () => {
     setIsLoggedIn(false);
     await AsyncStorage.clear();
-    navigation.navigate('Login');
   };
 
   // Function for picking a new profile picture
   const pickImage = async () => {
+    setProfilePicturePicking(true);
+    // Current avatar is hidden while picking a new one
+    setAvatar();
+
     if (Platform.OS !== 'web') {
       const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
@@ -76,17 +82,25 @@ const Profile = ({navigation, route}) => {
     console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImageToUpload(result.uri);
       console.log(result.uri);
       setProfilePicturePicked(true);
       setAvatar({uri: result.uri});
+    } else {
+      setProfilePicturePicked(false);
+      // Refreshes the profile picture component with useEffect and a state variable
+      setProfilePictureUpdated(profilePictureUpdated + 1);
     }
+    setProfilePicturePicking(false);
   };
 
   // Function for uploading the picked profile picture
   const doUpload = async () => {
     try {
-      const isUploaded = await uploadAvatarPicture(image, displayedUserId);
+      const isUploaded = await uploadAvatarPicture(
+        imageToUpload,
+        displayedUserId
+      );
       console.log('Upload returned: ', isUploaded);
       if (isUploaded) {
         try {
@@ -123,12 +137,14 @@ const Profile = ({navigation, route}) => {
         const avatarList = await getByTag(appTag + 'avatar_' + displayedUserId);
         if (avatarList.length > 0) {
           setAvatar({uri: uploadsURL + avatarList.pop().filename});
+        } else {
+          setAvatar(require('../assets/placeholder.png'));
         }
       } catch (error) {
         console.error(error.message);
       }
     };
-    if (!isOwnProfile) {
+    if (!isOwnProfile && isLoggedIn) {
       getAnotherUsersData();
     }
     fetchAvatar();
@@ -136,83 +152,110 @@ const Profile = ({navigation, route}) => {
 
   return (
     <View>
-      <View style={styles.logoutButtonContainer}>
-        {/* Logout button is rendered only if the profile is the user's own profile. */}
-        {isOwnProfile && (
-          <Button
-            title="Logout"
-            buttonStyle={styles.logoutButton}
-            onPress={logout}
-          ></Button>
-        )}
-      </View>
-      <View style={styles.userInfoContainer}>
-        <View style={styles.profileImageContainer}>
-          <Image
-            source={avatar}
-            style={styles.profileImage}
-            PlaceholderContent={<ActivityIndicator />}
-          />
-          {/* Buttons related to changing the profile picture are only rendered if the profile is the user's own profile. */}
-          {isOwnProfile && (
-            <View style={styles.profileImageButtonContainer}>
-              {/* Confirm and cancel buttons are only rendered when a new profile picture has been picked. Otherwise the change profile
-              picture button is rendered. */}
-              {!profilePicturePicked ? (
-                <>
-                  <Button
-                    title="Change profile picture"
-                    buttonStyle={styles.smallButton}
-                    titleStyle={styles.smallButtonTitle}
-                    onPress={pickImage}
-                  ></Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    title="Confirm"
-                    buttonStyle={styles.confirmButton}
-                    titleStyle={styles.smallButtonTitle}
-                    onPress={doUpload}
-                  ></Button>
-                  {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
-                  state variable is updated to make the useEffect fetch the original profile picture back. */}
-                  <Button
-                    title="Cancel"
-                    buttonStyle={styles.cancelButton}
-                    titleStyle={styles.smallButtonTitle}
-                    onPress={() => {
-                      setProfilePicturePicked(false);
-                      setProfilePictureUpdated(profilePictureUpdated + 1);
-                    }}
-                  ></Button>
-                </>
+      {isLoggedIn ? (
+        <>
+          <View style={styles.logoutButtonContainer}>
+            {/* Logout button is rendered only if the profile is the user's own profile. */}
+            {isOwnProfile && (
+              <Button
+                title="Logout"
+                buttonStyle={styles.logoutButton}
+                onPress={logout}
+              ></Button>
+            )}
+          </View>
+          <View style={styles.userInfoContainer}>
+            <View style={styles.profileImageContainer}>
+              <Image
+                source={avatar}
+                style={styles.profileImage}
+                PlaceholderContent={
+                  <ActivityIndicator size="large" color={Colors.primary} />
+                }
+              />
+              {/* Buttons related to changing the profile picture are only rendered if the profile is the user's own profile. */}
+              {isOwnProfile && (
+                <View style={styles.profileImageButtonContainer}>
+                  {/* Confirm and cancel buttons are only rendered when a new profile picture has been picked. Otherwise the change profile
+                  picture button is rendered. */}
+                  {!profilePicturePicking && !profilePicturePicked ? (
+                    <>
+                      <Button
+                        title="Change profile picture"
+                        buttonStyle={styles.smallButton}
+                        titleStyle={styles.smallButtonTitle}
+                        onPress={pickImage}
+                      ></Button>
+                    </>
+                  ) : (
+                    <>
+                      {profilePicturePicked ? (
+                        <>
+                          <Button
+                            title="Confirm"
+                            buttonStyle={styles.confirmButton}
+                            titleStyle={styles.smallButtonTitle}
+                            onPress={doUpload}
+                          ></Button>
+                          {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
+                          state variable is updated to make the useEffect fetch the original profile picture back. */}
+                          <Button
+                            title="Cancel"
+                            buttonStyle={styles.cancelButton}
+                            titleStyle={styles.smallButtonTitle}
+                            onPress={() => {
+                              setProfilePicturePicked(false);
+                              setProfilePictureUpdated(
+                                profilePictureUpdated + 1
+                              );
+                            }}
+                          ></Button>
+                        </>
+                      ) : (
+                        <>
+                          <View style={styles.activityIndicatorContainer}>
+                            <ActivityIndicator
+                              size="small"
+                              color={Colors.primary}
+                            />
+                          </View>
+                        </>
+                      )}
+                    </>
+                  )}
+                </View>
               )}
             </View>
-          )}
-        </View>
-        <View style={styles.userTextContainer}>
-          <View style={[headerContainer, styles.headerContainer]}>
-            <Text style={bigHeader}>{displayedUser.username}</Text>
+            <View style={styles.userTextContainer}>
+              <View style={[headerContainer, styles.headerContainer]}>
+                <Text style={bigHeader}>{displayedUser.username}</Text>
+              </View>
+              <View style={styles.fullNameContainer}>
+                <Avatar
+                  icon={{
+                    name: 'user',
+                    type: 'font-awesome',
+                    color: 'black',
+                    size: 25,
+                    marginTop: 30,
+                  }}
+                />
+                <Text style={styles.fullName}>{displayedUser.full_name}</Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.fullNameContainer}>
-            <Avatar
-              icon={{
-                name: 'user',
-                type: 'font-awesome',
-                color: 'black',
-                size: 25,
-                marginTop: 30,
-              }}
-            />
-            <Text style={styles.fullName}>{displayedUser.full_name}</Text>
+          <Text style={styles.postsHeader}>Posts</Text>
+          <View style={styles.listContainer}>
+            <List navigation={navigation} mediaArray={data} layout="profile" />
           </View>
-        </View>
-      </View>
-      <Text style={styles.postsHeader}>Posts</Text>
-      <View style={styles.listContainer}>
-        <List navigation={navigation} mediaArray={data} layout="profile" />
-      </View>
+        </>
+      ) : (
+        <>
+          <View>
+            <LoginButton></LoginButton>
+          </View>
+        </>
+      )}
     </View>
   );
 };
@@ -266,6 +309,12 @@ const styles = StyleSheet.create({
   },
   smallButtonTitle: {
     fontSize: Dimens.fontSizes.textSmall,
+  },
+  activityIndicatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginLeft: 60,
+    marginRight: 60,
   },
   userTextContainer: {
     flex: 1,

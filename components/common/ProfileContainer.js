@@ -1,20 +1,22 @@
-import React, {useEffect, useState} from 'react';
-import {Image} from 'react-native';
-import {View, Text} from 'react-native';
+/* eslint-disable no-undef */
+import React, {useContext, useEffect, useState} from 'react';
+import {ActivityIndicator, View, Text, StyleSheet} from 'react-native';
+import {Image} from 'react-native-elements';
 import PropTypes from 'prop-types';
-import {StyleSheet} from 'react-native';
 import {Dimens} from '../../styles/Dimens';
 import {Colors} from '../../styles/Colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTag, useUser} from '../../hooks/ApiHooks';
 import {appTag, uploadsURL} from '../../utils/Variables';
+import {MainContext} from '../../contexts/MainContext';
 
 const ProfileContainer = ({navigation, userId}) => {
-  const [user, setUser] = useState({username: 'loading'});
-  const [avatar, setAvatar] = useState(require('../../assets/placeholder.png'));
+  const [user, setUser] = useState({username: 'user'});
+  const [avatar, setAvatar] = useState();
   const {getUser} = useUser();
   const {getByTag} = useTag();
+  const {isLoggedIn} = useContext(MainContext);
 
   useEffect(() => {
     const getUsersData = async () => {
@@ -32,12 +34,16 @@ const ProfileContainer = ({navigation, userId}) => {
         const avatarList = await getByTag(appTag + 'avatar_' + userId);
         if (avatarList.length > 0) {
           setAvatar({uri: uploadsURL + avatarList.pop().filename});
+        } else {
+          setAvatar(require('../../assets/placeholder.png'));
         }
       } catch (error) {
         console.error(error.message);
       }
     };
-    getUsersData();
+    if (isLoggedIn) {
+      getUsersData();
+    }
     fetchAvatar();
   }, []);
 
@@ -47,7 +53,13 @@ const ProfileContainer = ({navigation, userId}) => {
     >
       <View style={styles.profileContainer}>
         <View style={styles.container}>
-          <Image style={styles.image} source={avatar}></Image>
+          <Image
+            style={styles.image}
+            source={avatar}
+            PlaceholderContent={
+              <ActivityIndicator size="small" color={Colors.primary} />
+            }
+          ></Image>
           <Text style={styles.profileText}>{user.username}</Text>
         </View>
       </View>
