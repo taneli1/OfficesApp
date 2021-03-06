@@ -157,7 +157,7 @@ const useTag = () => {
    Any new tags in the tagArray are saved to a hidden post, which
    contains all the user created tags in the app.
    */
-  const uploadPost = async (image, inputs, tagArray) => {
+  const uploadPost = async (image, inputs, tagArray, descriptionObject) => {
     const axios = require('axios').default;
     const userToken = await AsyncStorage.getItem('userToken');
     const filename = image.split('/').pop();
@@ -172,8 +172,9 @@ const useTag = () => {
     const formData = new FormData();
     formData.append('file', {uri: image, name: filename, type});
     formData.append('title', inputs.title);
-    formData.append('description', inputs.description);
+    formData.append('description', JSON.stringify(descriptionObject));
 
+    console.log('formdata : ', formData);
     const options = {
       url: mediaURL,
       method: 'POST',
@@ -184,16 +185,19 @@ const useTag = () => {
       data: formData,
     };
 
+    console.log('options: ', options);
+
     try {
       await axios(options).then((res) => {
         if (res.status == 201) {
           console.log('Upload res ok: ', res.data.file_id);
           // Add the main tag for app
           addTag(res.data.file_id, '');
-          // Add extra tags
+          // Add extra tags user has created
           for (const i in tagArray) {
             const thisTag = tagArray[i];
             addTag(res.data.file_id, thisTag);
+            // If the tag is new, also save it to the hidden post
             if (!oldTags.includes(thisTag)) {
               saveNewTag(thisTag);
             }
@@ -204,7 +208,7 @@ const useTag = () => {
         }
       });
     } catch (error) {
-      console.log('uploaderror: ', error.message);
+      console.log('uploaderror: ', error);
     }
     return ok;
   };

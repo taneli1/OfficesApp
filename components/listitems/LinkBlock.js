@@ -6,13 +6,16 @@ import {Dimens} from '../../styles/Dimens';
 import {Card} from 'react-native-elements';
 import {Colors} from '../../styles/Colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Linking} from 'react-native';
 
 const LinkBlock = ({item}) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => Linking.openURL('https://' + item.itemLink)}
+    >
       <Card containerStyle={s.container}>
-        <Text style={s.item}>ItemName</Text>
-        <Text style={s.link}>web.page.com/item/thisone</Text>
+        <Text style={s.item}>{item.itemName}</Text>
+        <Text style={s.link}>{item.itemLink}</Text>
       </Card>
     </TouchableOpacity>
   );
@@ -38,7 +41,7 @@ const s = StyleSheet.create({
 });
 
 LinkBlock.propTypes = {
-  items: PropTypes.object,
+  item: PropTypes.object,
 };
 
 export default LinkBlock;

@@ -3,7 +3,10 @@ import {FlatList} from 'react-native';
 import CommentBlock from '../listitems/CommentBlock';
 import PropTypes from 'prop-types';
 
-// Pass all the comment data fetched
+/*
+  Component providing the comment section to a post screen.
+  Pass all the comment data fetched here
+*/
 const CommentList = ({navigation, commentData}) => {
   return (
     <FlatList

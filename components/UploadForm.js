@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 import React, {useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {Input, Button} from 'react-native-elements';
@@ -15,7 +16,8 @@ import {Text} from 'react-native';
 import {Dimens} from '../styles/Dimens';
 import {Icon} from 'react-native-elements';
 import {smallHeader, headerContainer} from '../styles/BasicComponents';
-import {TagSelector, getSelectedTags} from './tag/TagSelector';
+import {TagSelector, getSelectedTags} from './functional/TagSelector';
+import {LinkCreator, getCreatedLinkObjects} from './functional/LinkCreator';
 
 const UploadForm = ({navigation}) => {
   const {
@@ -57,8 +59,20 @@ const UploadForm = ({navigation}) => {
       return;
     }
 
+    /*
+      Create the description array here, which contains the description
+      itself, and the ItemLinkObjects if the user has added any
+     */
+    const listOfObjects = getCreatedLinkObjects();
+    const data = [inputs.description, listOfObjects];
+
     try {
-      const isUploaded = await uploadPost(image, inputs, getSelectedTags());
+      const isUploaded = await uploadPost(
+        image,
+        inputs,
+        getSelectedTags(),
+        data
+      );
       console.log('Upload returned: ', isUploaded);
       if (isUploaded) {
         setUpdate(update + 1); // Refresh home data
@@ -149,6 +163,10 @@ const UploadForm = ({navigation}) => {
 
       <View style={s.inputContainer}>
         <TagSelector></TagSelector>
+      </View>
+
+      <View>
+        <LinkCreator />
       </View>
 
       <Button
