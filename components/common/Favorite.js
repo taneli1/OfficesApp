@@ -1,12 +1,11 @@
 /* eslint-disable guard-for-in */
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Alert, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Colors} from '../../styles/Colors';
 import {Icon} from 'react-native-elements';
 import {Dimens} from '../../styles/Dimens';
-import {StyleSheet} from 'react-native';
 import {useFavorites} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 /*
@@ -18,7 +17,9 @@ const Favorite = ({postData}) => {
   const [favStatus, setFavStatus] = useState(false);
   const {getPostFavoriteData, favoriteInteraction} = useFavorites();
   // Check from context if there is neeed to rerender the favorite component.
-  const {user, updtFavorites, setUpdtFavorites} = useContext(MainContext);
+  const {user, updtFavorites, setUpdtFavorites, isLoggedIn} = useContext(
+    MainContext
+  );
 
   // Gets the data for the post favorite status
   const getSetFavData = async () => {
@@ -48,7 +49,15 @@ const Favorite = ({postData}) => {
   };
 
   return (
-    <TouchableOpacity onPress={() => interact()}>
+    <TouchableOpacity
+      onPress={() => {
+        if (isLoggedIn) {
+          interact();
+        } else {
+          Alert.alert('You need to login or register to use favorites!');
+        }
+      }}
+    >
       <View style={styles.containerHeart}>
         {favStatus ? (
           <Icon color={Colors.red} name="favorite"></Icon>

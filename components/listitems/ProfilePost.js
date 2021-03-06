@@ -1,36 +1,78 @@
-import React from 'react';
-import {StyleSheet, ActivityIndicator} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  ActivityIndicator,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {Text, Image} from 'react-native-elements';
-import {View} from 'react-native';
-import {TouchableOpacity} from 'react-native';
 import {uploadsURL} from '../../utils/Variables';
 import Favorite from '../common/Favorite';
+import {Colors} from '../../styles/Colors';
+import TagList from '../lists/TagList';
+import {useTag} from '../../hooks/ApiHooks';
 
 const ProfilePost = ({navigation, data}) => {
+  let title = data.title;
+  if (title.length > 15) {
+    title = title.substr(0, 15) + '...';
+  }
+
+  let description = data.description;
+  if (description.length > 45) {
+    description = description.substr(0, 45) + '...';
+  }
+
+  const [postTags, setPostTags] = useState([]);
+  const {getTagsForPost} = useTag();
+  const [refresh, setRefresh] = useState([]);
+
+  const fetchTags = async () => {
+    const res = await getTagsForPost(data.file_id);
+    setPostTags(res);
+  };
+
+  useEffect(() => {
+    fetchTags();
+  }, [refresh]);
+
   return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Single', {data: data});
-      }}
-    >
-      <View style={styles.usersPostCard}>
-        <View style={styles.imageContainer}>
+    <View style={styles.usersPostCard}>
+      <View style={styles.imageContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push('Single', {data: data});
+          }}
+        >
           <Image
             source={{uri: uploadsURL + data.thumbnails.w160}}
             style={styles.postImage}
-            PlaceholderContent={<ActivityIndicator />}
+            PlaceholderContent={
+              <ActivityIndicator size="large" color={Colors.primary} />
+            }
           />
-        </View>
-        <View style={styles.postTextContainer}>
-          <Text style={styles.postTitle}>{data.title}</Text>
-          <Text style={styles.postDescription}>{data.description}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.postTextContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push('Single', {data: data});
+          }}
+        >
+          <Text style={styles.postTitle}>{title}</Text>
+          <Text style={styles.postDescription}>{description}</Text>
+        </TouchableOpacity>
+        <View style={styles.tagsAndFavoriteContainer}>
+          <View style={styles.tagsContainer}>
+            <TagList tags={postTags} />
+          </View>
           <View style={styles.favoriteContainer}>
             <Favorite postData={data}></Favorite>
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -68,12 +110,24 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
+  tagsAndFavoriteContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+  tagsContainer: {
+    flex: 2,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    margin: 5,
+  },
   favoriteContainer: {
-    alignSelf: 'flex-end',
+    flex: 1,
     margin: 5,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'lightgray',
+    alignItems: 'center',
   },
 });
 

@@ -4,13 +4,10 @@ import List from '../components/lists/List';
 import GlobalStyles from '../styles/GlobalStyles';
 import PropTypes from 'prop-types';
 import {useLoadMedia} from '../hooks/ApiHooks';
-import {MainContext} from '../contexts/MainContext';
 import {Colors} from '../styles/Colors';
 
 const Home = ({navigation}) => {
-  const usersPostsOnly = false;
-  const {user} = useContext(MainContext);
-  const data = useLoadMedia(usersPostsOnly, user.user_id);
+  const data = useLoadMedia();
 
   return (
     <SafeAreaView style={GlobalStyles.droidSafeArea}>
