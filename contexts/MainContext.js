@@ -9,6 +9,7 @@ const MainProvider = ({children}) => {
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(0);
   const [updtFavorites, setUpdtFavorites] = useState(0);
+  const [refreshItemLinks, setRefreshItemLinks] = useState(0);
 
   return (
     <MainContext.Provider
@@ -23,6 +24,8 @@ const MainProvider = ({children}) => {
         setUpdate,
         updtFavorites,
         setUpdtFavorites,
+        refreshItemLinks,
+        setRefreshItemLinks,
       }}
     >
       {children}

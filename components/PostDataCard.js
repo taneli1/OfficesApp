@@ -1,6 +1,8 @@
+/* eslint-disable guard-for-in */
 import React, {useContext, useEffect, useState} from 'react';
 import {View, Alert, StyleSheet} from 'react-native';
 import {Card, Input, Text, Icon} from 'react-native-elements';
+
 import PropTypes from 'prop-types';
 import {
   bigHeader,
@@ -17,7 +19,24 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTag, useComments} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 
+/*
+  Layout for the single screen card, without the image of the post.
+*/
 const PostDataCard = ({navigation, postData}) => {
+  /**
+    DesciptionData is saved as an array to the DB.
+
+    First index of this array contains a string, which is the description
+    itself.
+
+    Second index contains the itemLinkArray, which in turn
+    consist of all the ItemLinkObjects the user added to the post.
+    @see LinkCreator
+  */
+  const descriptionData = JSON.parse(postData.description);
+  const postDescription = descriptionData[0];
+  const postLinkData = descriptionData[1];
+
   const [postTags, setPostTags] = useState([]);
   const [comments, setComments] = useState([]);
   const [refresh, setRefresh] = useState([false]);
@@ -53,7 +72,6 @@ const PostDataCard = ({navigation, postData}) => {
     fetchCommentData();
   }, [refresh]);
 
-  console.log('postData: ', postData);
   return (
     <View removeClippedSubviews={false}>
       <View style={headerContainer}>
@@ -74,7 +92,7 @@ const PostDataCard = ({navigation, postData}) => {
           </View>
         </View>
 
-        <Text style={styles.description}>{postData.description}</Text>
+        <Text style={styles.description}>{postDescription}</Text>
 
         <View>
           <CommentList
@@ -135,9 +153,14 @@ const PostDataCard = ({navigation, postData}) => {
 
         <Card.Divider style={styles.divider}></Card.Divider>
 
-        <View>
-          <LinkList items={[0, 2]}></LinkList>
-        </View>
+        {postLinkData.size != 0 && (
+          <View>
+            <Text style={{marginLeft: 10, color: Colors.primary}}>
+              See links to items:
+            </Text>
+            <LinkList items={postLinkData}></LinkList>
+          </View>
+        )}
 
         <Card.Divider style={[styles.divider, {marginTop: 20}]}></Card.Divider>
       </Card>
