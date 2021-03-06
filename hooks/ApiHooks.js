@@ -188,15 +188,15 @@ const useTag = () => {
     console.log('options: ', options);
 
     try {
-      await axios(options).then((res) => {
+      await axios(options).then(async (res) => {
         if (res.status == 201) {
           console.log('Upload res ok: ', res.data.file_id);
           // Add the main tag for app
-          addTag(res.data.file_id, '');
+          await addTag(res.data.file_id, '');
           // Add extra tags user has created
           for (const i in tagArray) {
             const thisTag = tagArray[i];
-            addTag(res.data.file_id, thisTag);
+            await addTag(res.data.file_id, thisTag);
             // If the tag is new, also save it to the hidden post
             if (!oldTags.includes(thisTag)) {
               saveNewTag(thisTag);

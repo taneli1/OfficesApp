@@ -95,7 +95,7 @@ const PostDefault = ({navigation, data}) => {
             ) : (
               <View style={s.whiteC}>
                 <Image
-                  resizeMode="stretch"
+                  resizeMode="contain"
                   style={s.image}
                   source={{uri: uploadsURL + data.thumbnails.w640}}
                 ></Image>
@@ -133,13 +133,13 @@ const s = StyleSheet.create({
   },
   image: {
     width: Dimensions.get('window').width * 0.9,
-    height: 200,
+    height: Dimensions.get('window').height * 0.3172,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
   },
   feedbackImage: {
     width: Dimensions.get('window').width * 0.9,
-    height: 200,
+    height: Dimensions.get('window').height * 0.3172,
     backgroundColor: Colors.white,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,

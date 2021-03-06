@@ -66,7 +66,7 @@ const TagSelector = () => {
     setSearchQuery(clean);
     // Filter the tags based on the query
     const filtered = TAGS.filter(
-      (it) => it.title.indexOf(clean.toLowerCase()) !== -1
+      (it) => it.title.indexOf(clean.toLowerCase()) !== -1 // All tags are lowercase
     );
 
     /*
@@ -92,13 +92,13 @@ const TagSelector = () => {
     setTagsVisible(false);
   };
 
-  function update() {
+  const update = () => {
     setTagsVisible(true);
     onChangeSearch('');
-  }
+  };
 
   return (
-    <View>
+    <View style={{paddingTop: 14}}>
       <SearchBar
         lightTheme={true}
         placeholder="Create new or use existing"
