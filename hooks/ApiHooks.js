@@ -518,7 +518,37 @@ const useComments = () => {
     }
   };
 
-  return {getPostComments, postComment};
+  const deleteComment = async (commentId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: commentURL + commentId,
+      method: 'DELETE',
+      headers: {
+        'x-access-token': userToken,
+      },
+    };
+
+    let ok = false;
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status === 200) {
+            ok = true;
+          } else console.log('Response was not 200, but: ', res);
+        },
+        (err) => {
+          console.log('Something went wrong deleting comment: ', err);
+        }
+      );
+    } catch (err) {
+      console.log('Error deleting comment: ', err);
+    }
+    return ok;
+  };
+
+  return {getPostComments, postComment, deleteComment};
 };
 
 export {useLoadMedia, useLogin, useUser, useTag, useFavorites, useComments};

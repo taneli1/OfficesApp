@@ -1,5 +1,5 @@
 /* eslint-disable guard-for-in */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Card, Input, Text} from 'react-native-elements';
 import {View} from 'react-native';
@@ -14,10 +14,11 @@ import Favorite from './common/Favorite';
 import TagList from './lists/TagList';
 import {Colors} from '../styles/Colors';
 import LinkList from './lists/LinkList';
-import CommentList from './lists/CommentList';
+import {CommentList, CommentContext} from './lists/CommentList';
 import {Icon} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTag, useComments} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
 
 /*
   Layout for the single screen card, without the image of the post.
@@ -44,6 +45,7 @@ const PostDataCard = ({navigation, postData}) => {
   let commentInput = '';
   const {getTagsForPost} = useTag();
   const {getPostComments, postComment} = useComments();
+  const {updateSinglePostData} = useContext(MainContext);
 
   const fetchTags = async () => {
     const res = await getTagsForPost(postData.file_id);
@@ -65,6 +67,10 @@ const PostDataCard = ({navigation, postData}) => {
     commentInput = txt;
     console.log(commentInput);
   };
+
+  useEffect(() => {
+    fetchCommentData();
+  }, [updateSinglePostData]);
 
   useEffect(() => {
     fetchTags();

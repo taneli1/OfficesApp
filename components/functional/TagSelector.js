@@ -16,6 +16,7 @@ import {Button} from 'react-native-elements';
 import Tag from '../listitems/Tag';
 import {useTag} from '../../hooks/ApiHooks';
 
+const MAX_TAG_LENGTH = 16;
 /*
     Fetch all tags from database first -> Make them into objects with: state (checked = false).
 
@@ -60,19 +61,21 @@ const TagSelector = () => {
   }
 
   const onChangeSearch = (query) => {
-    setSearchQuery(query);
+    // Drop illegal chars
+    const clean = query.replace(/[^a-z0-9 ]/gi, '');
+    setSearchQuery(clean);
     // Filter the tags based on the query
     const filtered = TAGS.filter(
-      (it) => it.title.indexOf(query.toLowerCase()) !== -1
+      (it) => it.title.indexOf(clean.toLowerCase()) !== -1
     );
 
     /*
       Display the option to add a new tag if the user input does not match
       any current existing tags
     */
-    if (query != '' && !tagNames.includes(query.toLowerCase())) {
+    if (clean != '' && !tagNames.includes(clean.toLowerCase())) {
       filtered.push({
-        title: query.toLowerCase(),
+        title: clean.toLowerCase(),
         checked: false,
         newTag: true,
       });
@@ -102,6 +105,7 @@ const TagSelector = () => {
         onFocus={() => update()}
         containerStyle={s.container}
         style={{color: Colors.darkGreen}}
+        maxLength={MAX_TAG_LENGTH}
         onChangeText={onChangeSearch}
         value={searchQuery}
       />
