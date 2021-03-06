@@ -1,14 +1,13 @@
 /* eslint-disable guard-for-in */
 import React, {useContext, useEffect, useState} from 'react';
+import {View, Alert, StyleSheet} from 'react-native';
+import {Card, Input, Text, Icon} from 'react-native-elements';
 import PropTypes from 'prop-types';
-import {Card, Input, Text} from 'react-native-elements';
-import {View} from 'react-native';
 import {
   bigHeader,
   headerContainer,
   cardLayout,
 } from '../styles/BasicComponents';
-import {StyleSheet} from 'react-native';
 import ProfileContainer from './common/ProfileContainer';
 import Favorite from './common/Favorite';
 import TagList from './lists/TagList';
@@ -46,6 +45,7 @@ const PostDataCard = ({navigation, postData}) => {
   const {getTagsForPost} = useTag();
   const {getPostComments, postComment} = useComments();
   const {updateSinglePostData} = useContext(MainContext);
+  const {isLoggedIn} = useContext(MainContext);
 
   const fetchTags = async () => {
     const res = await getTagsForPost(postData.file_id);
@@ -133,7 +133,15 @@ const PostDataCard = ({navigation, postData}) => {
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity onPress={() => setCommentWrite(true)}>
+            <TouchableOpacity
+              onPress={() => {
+                if (isLoggedIn) {
+                  setCommentWrite(true);
+                } else {
+                  Alert.alert('You need to login or register to comment!');
+                }
+              }}
+            >
               <Icon
                 style={{marginTop: 10, marginLeft: 10}}
                 size={32}
