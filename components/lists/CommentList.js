@@ -26,4 +26,4 @@ CommentList.propTypes = {
   commentData: PropTypes.array,
 };
 
-export {CommentList};
+export default CommentList;
