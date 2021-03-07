@@ -1,5 +1,5 @@
-import {Dimensions} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
+import {Colors} from '../Colors';
 
 const singlePostStyles = StyleSheet.create({
   bgContainer: {
@@ -15,11 +15,30 @@ const singlePostStyles = StyleSheet.create({
     width: '100%',
     resizeMode: 'contain', // or 'stretch'
   },
+  backButtonContainer: {
+    alignSelf: 'baseline',
+    marginLeft: 15,
+    marginTop: 15,
+  },
+  backButtonIcon: {
+    backgroundColor: Colors.primary,
+    borderRadius: 20,
+    elevation: 5,
+  },
+  postOptionsButtonContainer: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    zIndex: 1,
+  },
   container: {
     paddingTop: Dimensions.get('window').height / 1.8 - 50,
     marginStart: 10,
     marginEnd: 10,
     overflow: 'visible',
+  },
+  fillerElement: {
+    marginTop: Dimensions.get('window').height / 1.8,
   },
 });
 

@@ -6,7 +6,6 @@ import singlePostStyles from '../styles/SinglePost/SinglePostStyles';
 import {uploadsURL} from '../utils/Variables';
 import {View} from 'react-native';
 import {ImageBackground} from 'react-native';
-import {Dimensions} from 'react-native';
 import PostOptionsButton from '../components/PostOptionsButton';
 import {MainContext} from '../contexts/MainContext';
 import {Icon} from 'react-native-elements';
@@ -43,48 +42,21 @@ const Single = ({navigation, route}) => {
             <TouchableWithoutFeedback
               opacity="0.5"
               onPress={() => navigation.goBack()}
-              style={{alignSelf: 'baseline', marginLeft: 15, marginTop: 15}}
+              style={singlePostStyles.backButtonContainer}
             >
               <Icon
                 name="keyboard-arrow-left"
                 size={40}
                 color={Colors.white}
-                style={{
-                  backgroundColor: Colors.primary,
-                  borderRadius: 20,
-                  borderColor: Colors.white,
-                  elevation: 5,
-                }}
+                style={singlePostStyles.backButtonIcon}
               ></Icon>
             </TouchableWithoutFeedback>
           </ImageBackground>
         </ImageBackground>
       </View>
-
-      <ScrollView
-        style={singlePostStyles.container}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-        removeClippedSubviews={false}
-        alwaysBounceVertical={true}
-      >
-        <PostDataCard
-          style={singlePostStyles.postData}
-          navigation={navigation}
-          postData={data}
-        ></PostDataCard>
-        {/* This makes the component scrollable all the way to the bottom*/}
-        <View style={{marginTop: Dimensions.get('window').height / 1.8}}></View>
-      </ScrollView>
       {isOwnFile && (
         <>
-          <View
-            style={{
-              position: 'absolute',
-              top: 20,
-              right: 20,
-            }}
-          >
+          <View style={singlePostStyles.postOptionsButtonContainer}>
             <PostOptionsButton
               navigation={navigation}
               postData={data}
@@ -92,6 +64,17 @@ const Single = ({navigation, route}) => {
           </View>
         </>
       )}
+      <ScrollView
+        style={singlePostStyles.container}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+        removeClippedSubviews={false}
+        alwaysBounceVertical={true}
+      >
+        <PostDataCard navigation={navigation} postData={data}></PostDataCard>
+        {/* This makes the component scrollable all the way to the bottom*/}
+        <View style={singlePostStyles.fillerElement}></View>
+      </ScrollView>
     </View>
   );
 };
