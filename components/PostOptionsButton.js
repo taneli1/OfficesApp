@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
-import {Alert, View} from 'react-native';
-import {Avatar} from 'react-native-elements';
+import {Alert, View, StyleSheet} from 'react-native';
+import {Icon} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -12,6 +12,7 @@ import {
 import {useMedia} from '../hooks/ApiHooks';
 import {Colors} from '../styles/Colors';
 import {MainContext} from '../contexts/MainContext';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const PostOptionsButton = ({navigation, postData}) => {
   const {deleteFile} = useMedia();
@@ -29,29 +30,19 @@ const PostOptionsButton = ({navigation, postData}) => {
     }
   };
 
-  const doEdit = () => {};
-
   return (
-    <View
-      style={{
-        width: 40,
-        height: 40,
-        backgroundColor: Colors.primary,
-        borderRadius: 50 / 2,
-        alignItems: 'center',
-      }}
-    >
+    <View style={styles.postOptionsButton}>
       <Menu>
         <MenuTrigger>
-          <Avatar
-            avatarStyle={{marginTop: 5}}
-            icon={{
-              name: 'more-vertical',
-              type: 'feather',
-              color: 'white',
-              size: 30,
-            }}
-          />
+          <TouchableOpacity>
+            <Icon
+              name="more-vertical"
+              type="feather"
+              color="white"
+              size={30}
+              style={styles.icon}
+            ></Icon>
+          </TouchableOpacity>
         </MenuTrigger>
         <MenuOptions>
           <MenuOption
@@ -74,12 +65,28 @@ const PostOptionsButton = ({navigation, postData}) => {
             }
             text="Delete"
           />
-          <MenuOption onSelect={doEdit} text="Edit" />
+          <MenuOption
+            onSelect={() => navigation.push('Edit Post')}
+            text="Edit"
+          />
         </MenuOptions>
       </Menu>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  postOptionsButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: Colors.primary,
+    borderRadius: 50 / 2,
+    alignItems: 'center',
+  },
+  icon: {
+    marginTop: 4,
+  },
+});
 
 PostOptionsButton.propTypes = {
   navigation: PropTypes.object,

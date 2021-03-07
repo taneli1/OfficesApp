@@ -15,6 +15,7 @@ import Single from '../views/Single';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import {Colors} from '../styles/Colors';
+import EditPost from '../views/EditPost';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -73,6 +74,7 @@ const StackScreen = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Edit Post" component={EditPost} />
         </>
       ) : (
         <>

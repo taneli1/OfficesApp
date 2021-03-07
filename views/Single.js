@@ -43,18 +43,20 @@ const Single = ({navigation, route}) => {
         <View style={{marginTop: Dimensions.get('window').height / 1.8}}></View>
       </ScrollView>
       {isOwnFile && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 20,
-            right: 20,
-          }}
-        >
-          <PostOptionsButton
-            navigation={navigation}
-            postData={data}
-          ></PostOptionsButton>
-        </View>
+        <>
+          <View
+            style={{
+              position: 'absolute',
+              top: 20,
+              right: 20,
+            }}
+          >
+            <PostOptionsButton
+              navigation={navigation}
+              postData={data}
+            ></PostOptionsButton>
+          </View>
+        </>
       )}
     </View>
   );
