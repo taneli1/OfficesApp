@@ -2,7 +2,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View, Alert, StyleSheet} from 'react-native';
 import {Card, Input, Text, Icon} from 'react-native-elements';
-
 import PropTypes from 'prop-types';
 import {
   bigHeader,
@@ -14,6 +13,7 @@ import Favorite from './common/Favorite';
 import TagList from './lists/TagList';
 import {Colors} from '../styles/Colors';
 import LinkList from './lists/LinkList';
+import {Icon} from 'react-native-elements';
 import CommentList from './lists/CommentList';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTag, useComments} from '../hooks/ApiHooks';
@@ -44,7 +44,9 @@ const PostDataCard = ({navigation, postData}) => {
   let commentInput = '';
   const {getTagsForPost} = useTag();
   const {getPostComments, postComment} = useComments();
+  const {updateSinglePostData} = useContext(MainContext);
   const {isLoggedIn} = useContext(MainContext);
+
 
   const fetchTags = async () => {
     const res = await getTagsForPost(postData.file_id);
@@ -68,6 +70,10 @@ const PostDataCard = ({navigation, postData}) => {
   };
 
   useEffect(() => {
+    fetchCommentData();
+  }, [updateSinglePostData]);
+
+  useEffect(() => {
     fetchTags();
     fetchCommentData();
   }, [refresh]);
@@ -78,7 +84,12 @@ const PostDataCard = ({navigation, postData}) => {
         <Text style={bigHeader}>{postData.title}</Text>
       </View>
 
-      <Card containerStyle={[cardLayout, {borderColor: Colors.primary}]}>
+      <Card
+        containerStyle={[
+          cardLayout,
+          {borderColor: Colors.primary, paddingBottom: 30},
+        ]}
+      >
         <View style={styles.topContainer}>
           <ProfileContainer
             navigation={navigation}
@@ -151,18 +162,18 @@ const PostDataCard = ({navigation, postData}) => {
           <TagList style={{marginLeft: 30}} tags={postTags} />
         </View>
 
-        <Card.Divider style={styles.divider}></Card.Divider>
-
-        {postLinkData.size != 0 && (
+        {postLinkData.length != 0 && (
           <View>
+            <Card.Divider style={styles.divider}></Card.Divider>
             <Text style={{marginLeft: 10, color: Colors.primary}}>
               See links to items:
             </Text>
             <LinkList items={postLinkData}></LinkList>
+            <Card.Divider
+              style={[styles.divider, {marginTop: 20}]}
+            ></Card.Divider>
           </View>
         )}
-
-        <Card.Divider style={[styles.divider, {marginTop: 20}]}></Card.Divider>
       </Card>
     </View>
   );
@@ -184,7 +195,7 @@ const styles = StyleSheet.create({
   tagContainer: {
     alignItems: 'center',
     padding: 8,
-    marginTop: 20,
+    marginTop: 30,
   },
   description: {
     marginTop: 15,

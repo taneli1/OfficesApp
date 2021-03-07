@@ -10,6 +10,7 @@ const MainProvider = ({children}) => {
   const [update, setUpdate] = useState(0);
   const [updtFavorites, setUpdtFavorites] = useState(0);
   const [refreshItemLinks, setRefreshItemLinks] = useState(0);
+  const [updateSinglePostData, setUpdateSinglePostData] = useState(false);
 
   return (
     <MainContext.Provider
@@ -26,6 +27,8 @@ const MainProvider = ({children}) => {
         setUpdtFavorites,
         refreshItemLinks,
         setRefreshItemLinks,
+        updateSinglePostData,
+        setUpdateSinglePostData,
       }}
     >
       {children}

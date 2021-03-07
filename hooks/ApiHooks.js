@@ -188,15 +188,15 @@ const useTag = () => {
     console.log('options: ', options);
 
     try {
-      await axios(options).then((res) => {
+      await axios(options).then(async (res) => {
         if (res.status == 201) {
           console.log('Upload res ok: ', res.data.file_id);
           // Add the main tag for app
-          addTag(res.data.file_id, '');
+          await addTag(res.data.file_id, '');
           // Add extra tags user has created
           for (const i in tagArray) {
             const thisTag = tagArray[i];
-            addTag(res.data.file_id, thisTag);
+            await addTag(res.data.file_id, thisTag);
             // If the tag is new, also save it to the hidden post
             if (!oldTags.includes(thisTag)) {
               saveNewTag(thisTag);
@@ -518,7 +518,37 @@ const useComments = () => {
     }
   };
 
-  return {getPostComments, postComment};
+  const deleteComment = async (commentId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: commentURL + commentId,
+      method: 'DELETE',
+      headers: {
+        'x-access-token': userToken,
+      },
+    };
+
+    let ok = false;
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status === 200) {
+            ok = true;
+          } else console.log('Response was not 200, but: ', res);
+        },
+        (err) => {
+          console.log('Something went wrong deleting comment: ', err);
+        }
+      );
+    } catch (err) {
+      console.log('Error deleting comment: ', err);
+    }
+    return ok;
+  };
+
+  return {getPostComments, postComment, deleteComment};
 };
 
 export {useLoadMedia, useLogin, useUser, useTag, useFavorites, useComments};
