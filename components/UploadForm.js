@@ -5,7 +5,6 @@ import {Input, Button} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import useUploadForm from '../hooks/UploadHooks';
 import * as ImagePicker from 'expo-image-picker';
-import {StackActions} from '@react-navigation/native';
 import {useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {Alert} from 'react-native';

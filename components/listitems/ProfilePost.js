@@ -14,12 +14,15 @@ import TagList from '../lists/TagList';
 import {useTag} from '../../hooks/ApiHooks';
 
 const ProfilePost = ({navigation, data}) => {
+  const descriptionData = JSON.parse(data.description);
+  const postDescription = descriptionData[0];
+
   let title = data.title;
   if (title.length > 15) {
     title = title.substr(0, 15) + '...';
   }
 
-  let description = data.description;
+  let description = postDescription;
   if (description.length > 45) {
     description = description.substr(0, 45) + '...';
   }

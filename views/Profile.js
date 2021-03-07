@@ -154,16 +154,6 @@ const Profile = ({navigation, route}) => {
     <View>
       {isLoggedIn ? (
         <>
-          <View style={styles.logoutButtonContainer}>
-            {/* Logout button is rendered only if the profile is the user's own profile. */}
-            {isOwnProfile && (
-              <Button
-                title="Logout"
-                buttonStyle={styles.logoutButton}
-                onPress={logout}
-              ></Button>
-            )}
-          </View>
           <View style={styles.userInfoContainer}>
             <View style={styles.profileImageContainer}>
               <Image
@@ -237,7 +227,6 @@ const Profile = ({navigation, route}) => {
                     type: 'font-awesome',
                     color: 'black',
                     size: 25,
-                    marginTop: 30,
                   }}
                 />
                 <Text style={styles.fullName}>{displayedUser.full_name}</Text>
@@ -248,6 +237,16 @@ const Profile = ({navigation, route}) => {
           <View style={styles.listContainer}>
             <List navigation={navigation} mediaArray={data} layout="profile" />
           </View>
+          {/* Logout button is rendered only if the profile is the user's own profile. */}
+          {isOwnProfile && (
+            <View style={styles.logoutButtonContainer}>
+              <Button
+                title="Logout"
+                buttonStyle={styles.logoutButton}
+                onPress={logout}
+              ></Button>
+            </View>
+          )}
         </>
       ) : (
         <>
@@ -261,17 +260,9 @@ const Profile = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
-  logoutButtonContainer: {
-    height: '10%',
-  },
-  logoutButton: {
-    backgroundColor: Colors.primary,
-    alignSelf: 'flex-end',
-    margin: 10,
-  },
   userInfoContainer: {
     flexDirection: 'row',
-    height: '30%',
+    height: '35%',
   },
   profileImageContainer: {
     flex: 1,
@@ -282,7 +273,7 @@ const styles = StyleSheet.create({
     height: 120,
     aspectRatio: 1,
     borderRadius: 120 / 2,
-    marginTop: 10,
+    marginTop: 40,
     marginLeft: 10,
     marginRight: 10,
   },
@@ -322,7 +313,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginLeft: 0,
     marginRight: 10,
-    marginTop: 30,
+    marginTop: 60,
     marginBottom: 20,
   },
   fullNameContainer: {
@@ -334,19 +325,28 @@ const styles = StyleSheet.create({
   },
   postsHeader: {
     fontSize: Dimens.fontSizes.textMedium,
-    color: 'white',
+    color: Colors.white,
     backgroundColor: Colors.primary,
     borderTopRightRadius: 10,
     borderBottomLeftRadius: 10,
     padding: 5,
     paddingLeft: 10,
     paddingRight: 100,
-    margin: 15,
     marginLeft: 30,
+    marginTop: 20,
+    marginBottom: 10,
     alignSelf: 'flex-start',
   },
   listContainer: {
-    height: '50%',
+    height: '55%',
+  },
+  logoutButtonContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  logoutButton: {
+    backgroundColor: Colors.primary,
   },
 });
 

@@ -296,7 +296,7 @@ const useTag = () => {
     }
   };
 
-  // Uploads a new avatar picture and adds a avatar tag to it.
+  // Uploads a new avatar picture and adds an avatar tag to it.
   const uploadAvatarPicture = async (image, userId) => {
     const axios = require('axios').default;
     const userToken = await AsyncStorage.getItem('userToken');
@@ -551,4 +551,46 @@ const useComments = () => {
   return {getPostComments, postComment, deleteComment};
 };
 
-export {useLoadMedia, useLogin, useUser, useTag, useFavorites, useComments};
+const useMedia = () => {
+  const updateFile = async (fileId, fileInfo, token) => {
+    const options = {
+      method: 'PUT',
+      headers: {
+        'x-access-token': token,
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(fileInfo),
+    };
+    try {
+      const result = await doFetch(mediaURL + fileId, options);
+      return result;
+    } catch (error) {
+      throw new Error('updateFile error: ' + error.message);
+    }
+  };
+
+  const deleteFile = async (fileId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token},
+    };
+    try {
+      const result = await doFetch(mediaURL + fileId, options);
+      return result;
+    } catch (error) {
+      throw new Error('deleteFile error: ' + error.message);
+    }
+  };
+
+  return {updateFile, deleteFile};
+};
+
+export {
+  useLoadMedia,
+  useLogin,
+  useUser,
+  useTag,
+  useFavorites,
+  useComments,
+  useMedia,
+};
