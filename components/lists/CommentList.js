@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {FlatList} from 'react-native';
 import CommentBlock from '../listitems/CommentBlock';
 import PropTypes from 'prop-types';
@@ -26,4 +26,4 @@ CommentList.propTypes = {
   commentData: PropTypes.array,
 };
 
-export default CommentList;
+export {CommentList};

@@ -6,7 +6,7 @@ import {Dimens} from './Dimens';
 // --- SinglePost header
 const bigHeader = {
   fontSize: Dimens.fontSizes.bigHeader,
-  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  backgroundColor: 'rgba(255, 255, 255, 1)',
   color: Colors.darkGreen,
   paddingTop: 5,
   paddingBottom: 5,

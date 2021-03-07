@@ -9,6 +9,10 @@ import {ImageBackground} from 'react-native';
 import {Dimensions} from 'react-native';
 import PostOptionsButton from '../components/PostOptionsButton';
 import {MainContext} from '../contexts/MainContext';
+import {Icon} from 'react-native-elements';
+import {LogBox} from 'react-native';
+import {Colors} from '../styles/Colors';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const Single = ({navigation, route}) => {
   const {data} = route.params;
@@ -19,13 +23,42 @@ const Single = ({navigation, route}) => {
     isOwnFile = true;
   }
 
+  console.log('adata; ', data);
+
   return (
     <View style={{flex: 1}}>
       <View style={singlePostStyles.bgContainer}>
         <ImageBackground
           style={singlePostStyles.bgImage}
-          source={{uri: uploadsURL + data.filename}}
-        />
+          source={{uri: uploadsURL + data.thumbnails.w320}}
+          resizeMode="stretch"
+          blurRadius={20}
+          opacity={0.7}
+        >
+          <ImageBackground
+            style={singlePostStyles.bgImage}
+            source={{uri: uploadsURL + data.filename}}
+            resizeMode="contain"
+          >
+            <TouchableWithoutFeedback
+              opacity="0.5"
+              onPress={() => navigation.goBack()}
+              style={{alignSelf: 'baseline', marginLeft: 15, marginTop: 15}}
+            >
+              <Icon
+                name="keyboard-arrow-left"
+                size={40}
+                color={Colors.white}
+                style={{
+                  backgroundColor: Colors.primary,
+                  borderRadius: 20,
+                  borderColor: Colors.white,
+                  elevation: 5,
+                }}
+              ></Icon>
+            </TouchableWithoutFeedback>
+          </ImageBackground>
+        </ImageBackground>
       </View>
 
       <ScrollView
@@ -33,6 +66,7 @@ const Single = ({navigation, route}) => {
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
         removeClippedSubviews={false}
+        alwaysBounceVertical={true}
       >
         <PostDataCard
           style={singlePostStyles.postData}
@@ -68,7 +102,6 @@ Single.propTypes = {
 };
 
 // Disables a warning
-import {LogBox} from 'react-native';
 LogBox.ignoreLogs([
   'VirtualizedLists should never be nested', // TODO: Remove when fixed
 ]);

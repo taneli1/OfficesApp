@@ -157,6 +157,7 @@ const s = StyleSheet.create({
   linkCreator: {
     marginStart: 20,
     marginEnd: 20,
+    marginTop: 20,
     alignItems: 'center',
   },
   linkObjectContainer: {
