@@ -13,7 +13,6 @@ import Favorite from './common/Favorite';
 import TagList from './lists/TagList';
 import {Colors} from '../styles/Colors';
 import LinkList from './lists/LinkList';
-import {Icon} from 'react-native-elements';
 import CommentList from './lists/CommentList';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTag, useComments} from '../hooks/ApiHooks';
@@ -46,7 +45,6 @@ const PostDataCard = ({navigation, postData}) => {
   const {getPostComments, postComment} = useComments();
   const {updateSinglePostData} = useContext(MainContext);
   const {isLoggedIn} = useContext(MainContext);
-
 
   const fetchTags = async () => {
     const res = await getTagsForPost(postData.file_id);
