@@ -25,6 +25,8 @@ const Profile = ({navigation, route}) => {
   let userToDisplay;
   let isOwnProfile;
 
+  const {user, setUser, isLoggedIn, setIsLoggedIn} = useContext(MainContext);
+
   // If route params are passed, i.e. the profile screen is accessed through the ProfileContainer rather than app navigation, the user is
   // set based on the user_id which is passed as a parameter. An initial user data shows 'loading' before it's fetched. Else the user is the
   // app's user.
@@ -34,13 +36,11 @@ const Profile = ({navigation, route}) => {
     userToDisplay = {username: 'loading', full_name: 'loading'};
     isOwnProfile = false;
   } else {
-    const {user} = useContext(MainContext);
     displayedUserId = user.user_id;
     userToDisplay = user;
     isOwnProfile = true;
   }
 
-  const {isLoggedIn, setIsLoggedIn} = useContext(MainContext);
   const [displayedUser, setDisplayedUser] = useState(userToDisplay);
   const [avatar, setAvatar] = useState();
   const [imageToUpload, setImageToUpload] = useState(null);
@@ -55,6 +55,7 @@ const Profile = ({navigation, route}) => {
   // Function for logging out
   const logout = async () => {
     setIsLoggedIn(false);
+    setUser({});
     await AsyncStorage.clear();
   };
 
