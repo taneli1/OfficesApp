@@ -6,7 +6,7 @@ import {Dimens} from './Dimens';
 // --- SinglePost header
 const bigHeader = {
   fontSize: Dimens.fontSizes.bigHeader,
-  backgroundColor: Colors.white,
+  backgroundColor: 'rgba(255, 255, 255, 1)',
   color: Colors.darkGreen,
   paddingTop: 5,
   paddingBottom: 5,
@@ -14,6 +14,7 @@ const bigHeader = {
   paddingRight: 15,
   borderBottomLeftRadius: 10,
   borderTopRightRadius: 10,
+  borderTopLeftRadius: 10,
   borderColor: Colors.primary,
   borderWidth: 1,
   elevation: Dimens.elevations.baseElevation,
@@ -38,14 +39,14 @@ const smallHeader = {
 // Wraps the header width to match content
 const headerContainer = {
   alignSelf: 'baseline',
-  marginLeft: 25,
+  marginLeft: 15,
 };
 
 // ------------------------ Basic building blocks --------------
 
 const cardLayout = {
   backgroundColor: Colors.white,
-  borderRadius: 20,
+  borderRadius: 15,
   elevation: Dimens.elevations.baseElevation,
 };
 

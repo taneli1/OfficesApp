@@ -1,10 +1,10 @@
+/* eslint-disable guard-for-in */
 import React, {useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {Input, Button} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import useUploadForm from '../hooks/UploadHooks';
 import * as ImagePicker from 'expo-image-picker';
-import {StackActions} from '@react-navigation/native';
 import {useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {Alert} from 'react-native';
@@ -15,7 +15,9 @@ import {Text} from 'react-native';
 import {Dimens} from '../styles/Dimens';
 import {Icon} from 'react-native-elements';
 import {smallHeader, headerContainer} from '../styles/BasicComponents';
-import {TagSelector, getSelectedTags} from './tag/TagSelector';
+import {TagSelector, getSelectedTags} from './functional/TagSelector';
+import {LinkCreator, getCreatedLinkObjects} from './functional/LinkCreator';
+import {ActivityIndicator} from 'react-native';
 
 const UploadForm = ({navigation}) => {
   const {
@@ -29,6 +31,7 @@ const UploadForm = ({navigation}) => {
   const [image, setImage] = useState(null);
   const {update, setUpdate} = useContext(MainContext);
   const {uploadPost} = useTag();
+  const [isUploading, setIsUploading] = useState(false);
 
   const chooseMedia = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -52,22 +55,38 @@ const UploadForm = ({navigation}) => {
   };
 
   const doUpload = async () => {
+    const selectedTags = getSelectedTags();
     console.log('Selected tags: ', getSelectedTags());
     if (!validateOnSend()) {
       return;
+    } else if (selectedTags.length === 0) {
+      Alert.alert('Select atleast one tag');
+      return;
     }
+    setIsUploading(true);
+
+    /*
+      Create the description array here, which contains the description
+      itself, and the ItemLinkObjects if the user has added any
+     */
+    const listOfObjects = getCreatedLinkObjects();
+    const data = [inputs.description, listOfObjects];
 
     try {
-      const isUploaded = await uploadPost(image, inputs, getSelectedTags());
+      const isUploaded = await uploadPost(image, inputs, selectedTags, data);
+      setIsUploading(false);
       console.log('Upload returned: ', isUploaded);
       if (isUploaded) {
         setUpdate(update + 1); // Refresh home data
         doReset();
-        const pushAction = StackActions.push('Home', {});
-        navigation.dispatch(pushAction);
+        setTimeout(() => {
+          navigation.navigate('Home');
+          setUpdate(update + 1);
+        }, 1000);
       } else Alert.alert('Something went wrong, try again');
     } catch (error) {
       console.log(error);
+      setIsUploading(false);
     }
   };
 
@@ -143,7 +162,7 @@ const UploadForm = ({navigation}) => {
 
       <View style={s.sHeaderContainer}>
         <View style={[headerContainer, {marginLeft: 15, marginTop: 0}]}>
-          <Text style={smallHeader}>Tags & Item links</Text>
+          <Text style={smallHeader}>Add tags to post</Text>
         </View>
       </View>
 
@@ -151,13 +170,31 @@ const UploadForm = ({navigation}) => {
         <TagSelector></TagSelector>
       </View>
 
-      <Button
-        buttonStyle={s.button}
-        containerStyle={{elevation: 4, marginTop: 14}}
-        title="Upload"
-        onPress={doUpload}
-        disabled={image != null ? false : true}
-      />
+      <View style={s.sHeaderContainer}>
+        <View style={[headerContainer, {marginLeft: 15, marginTop: 0}]}>
+          <Text style={smallHeader}>Link items in picture</Text>
+        </View>
+      </View>
+
+      <View>
+        <LinkCreator />
+      </View>
+
+      {isUploading === true ? (
+        <ActivityIndicator
+          style={{marginTop: 20, paddingBottom: 20}}
+          size="large"
+          color={Colors.primary}
+        />
+      ) : (
+        <Button
+          buttonStyle={s.button}
+          containerStyle={{elevation: 4, marginTop: 14}}
+          title="Upload"
+          onPress={doUpload}
+          disabled={image != null ? false : true}
+        />
+      )}
     </View>
   );
 };

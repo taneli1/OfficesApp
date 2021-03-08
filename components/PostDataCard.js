@@ -1,24 +1,41 @@
-import React, {useEffect, useRef, useState} from 'react';
+/* eslint-disable guard-for-in */
+import React, {useContext, useEffect, useState} from 'react';
+import {View, Alert, StyleSheet} from 'react-native';
+import {Card, Input, Text, Icon} from 'react-native-elements';
 import PropTypes from 'prop-types';
-import {Card, Input, Text} from 'react-native-elements';
-import {View} from 'react-native';
 import {
   bigHeader,
   headerContainer,
   cardLayout,
 } from '../styles/BasicComponents';
-import {StyleSheet} from 'react-native';
 import ProfileContainer from './common/ProfileContainer';
 import Favorite from './common/Favorite';
 import TagList from './lists/TagList';
 import {Colors} from '../styles/Colors';
 import LinkList from './lists/LinkList';
 import CommentList from './lists/CommentList';
-import {Icon} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTag, useComments} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
 
+/*
+  Layout for the single screen card, without the image of the post.
+*/
 const PostDataCard = ({navigation, postData}) => {
+  /**
+    DesciptionData is saved as an array to the DB.
+
+    First index of this array contains a string, which is the description
+    itself.
+
+    Second index contains the itemLinkArray, which in turn
+    consist of all the ItemLinkObjects the user added to the post.
+    @see LinkCreator
+  */
+  const descriptionData = JSON.parse(postData.description);
+  const postDescription = descriptionData[0];
+  const postLinkData = descriptionData[1];
+
   const [postTags, setPostTags] = useState([]);
   const [comments, setComments] = useState([]);
   const [refresh, setRefresh] = useState([false]);
@@ -26,6 +43,8 @@ const PostDataCard = ({navigation, postData}) => {
   let commentInput = '';
   const {getTagsForPost} = useTag();
   const {getPostComments, postComment} = useComments();
+  const {updateSinglePostData} = useContext(MainContext);
+  const {isLoggedIn} = useContext(MainContext);
 
   const fetchTags = async () => {
     const res = await getTagsForPost(postData.file_id);
@@ -49,22 +68,30 @@ const PostDataCard = ({navigation, postData}) => {
   };
 
   useEffect(() => {
+    fetchCommentData();
+  }, [updateSinglePostData]);
+
+  useEffect(() => {
     fetchTags();
     fetchCommentData();
   }, [refresh]);
 
-  console.log('postData: ', postData);
   return (
     <View removeClippedSubviews={false}>
       <View style={headerContainer}>
         <Text style={bigHeader}>{postData.title}</Text>
       </View>
 
-      <Card containerStyle={[cardLayout, {borderColor: Colors.primary}]}>
+      <Card
+        containerStyle={[
+          cardLayout,
+          {borderColor: Colors.primary, paddingBottom: 30},
+        ]}
+      >
         <View style={styles.topContainer}>
           <ProfileContainer
             navigation={navigation}
-            data={postData}
+            userId={postData.user_id}
           ></ProfileContainer>
           <View style={styles.favoriteContainer}>
             <Favorite
@@ -74,7 +101,7 @@ const PostDataCard = ({navigation, postData}) => {
           </View>
         </View>
 
-        <Text style={styles.description}>{postData.description}</Text>
+        <Text style={styles.description}>{postDescription}</Text>
 
         <View>
           <CommentList
@@ -110,7 +137,15 @@ const PostDataCard = ({navigation, postData}) => {
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity onPress={() => setCommentWrite(true)}>
+            <TouchableOpacity
+              onPress={() => {
+                if (isLoggedIn) {
+                  setCommentWrite(true);
+                } else {
+                  Alert.alert('You need to login or register to comment!');
+                }
+              }}
+            >
               <Icon
                 style={{marginTop: 10, marginLeft: 10}}
                 size={32}
@@ -125,13 +160,18 @@ const PostDataCard = ({navigation, postData}) => {
           <TagList style={{marginLeft: 30}} tags={postTags} />
         </View>
 
-        <Card.Divider style={styles.divider}></Card.Divider>
-
-        <View>
-          <LinkList items={[0, 2]}></LinkList>
-        </View>
-
-        <Card.Divider style={[styles.divider, {marginTop: 20}]}></Card.Divider>
+        {postLinkData.length != 0 && (
+          <View>
+            <Card.Divider style={styles.divider}></Card.Divider>
+            <Text style={{marginLeft: 10, color: Colors.primary}}>
+              See links to items:
+            </Text>
+            <LinkList items={postLinkData}></LinkList>
+            <Card.Divider
+              style={[styles.divider, {marginTop: 20}]}
+            ></Card.Divider>
+          </View>
+        )}
       </Card>
     </View>
   );
@@ -153,7 +193,7 @@ const styles = StyleSheet.create({
   tagContainer: {
     alignItems: 'center',
     padding: 8,
-    marginTop: 20,
+    marginTop: 30,
   },
   description: {
     marginTop: 15,

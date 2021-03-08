@@ -25,7 +25,7 @@ const s = StyleSheet.create({
     color: Colors.white,
     padding: 5,
     borderRadius: 6,
-    fontSize: Dimens.fontSizes.textMedium,
+    fontSize: Dimens.fontSizes.textSmall,
     marginLeft: 10,
     paddingRight: 10,
     paddingLeft: 10,

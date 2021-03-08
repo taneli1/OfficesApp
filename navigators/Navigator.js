@@ -15,6 +15,7 @@ import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Discover from '../views/Discover';
 import {Colors} from '../styles/Colors';
+import EditPost from '../views/EditPost';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -55,10 +56,10 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const {isLoggedIn} = useContext(MainContext);
+  const {isLoggedIn, isUsingAnonymously} = useContext(MainContext);
   return (
     <Stack.Navigator>
-      {isLoggedIn ? (
+      {isLoggedIn || isUsingAnonymously ? (
         <>
           <Stack.Screen
             name="Home"
@@ -73,6 +74,7 @@ const StackScreen = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Edit Post" component={EditPost} />
         </>
       ) : (
         <>

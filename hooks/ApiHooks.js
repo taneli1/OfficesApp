@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 /* eslint-disable guard-for-in */
 import {useEffect, useState, useContext} from 'react';
 import {
@@ -190,6 +191,9 @@ const useUser = () => {
   return {postRegister, checkToken, checkIsUserAvailable, getUser};
 };
 
+/**
+ * @see Variables for explanation
+ */
 const useTag = () => {
   const getByTag = async (tag) => {
     try {
@@ -200,12 +204,19 @@ const useTag = () => {
     }
   };
 
-  /*
+  /**
    Uploads the post itself, and calls the required functions for the tag posting.
+
+   The function takes in a tagArray, which contains the user created tags as strings.
+   these tags are created in @see TagSelector
+
    All posts get the default appTag, and all the strings in tagArray gets added
-   to the post as tags. Also handles the stuff for new tag posting
+   to the post as tags.
+
+   Any new tags in the tagArray are saved to a hidden post, which
+   contains all the user created tags in the app.
    */
-  const uploadPost = async (image, inputs, tagArray) => {
+  const uploadPost = async (image, inputs, tagArray, descriptionObject) => {
     const axios = require('axios').default;
     const userToken = await AsyncStorage.getItem('userToken');
     const filename = image.split('/').pop();
@@ -220,8 +231,9 @@ const useTag = () => {
     const formData = new FormData();
     formData.append('file', {uri: image, name: filename, type});
     formData.append('title', inputs.title);
-    formData.append('description', inputs.description);
+    formData.append('description', JSON.stringify(descriptionObject));
 
+    console.log('formdata : ', formData);
     const options = {
       url: mediaURL,
       method: 'POST',
@@ -232,16 +244,19 @@ const useTag = () => {
       data: formData,
     };
 
+    console.log('options: ', options);
+
     try {
-      await axios(options).then((res) => {
+      await axios(options).then(async (res) => {
         if (res.status == 201) {
           console.log('Upload res ok: ', res.data.file_id);
           // Add the main tag for app
-          addTag(res.data.file_id, '');
-          // Add extra tags
+          await addTag(res.data.file_id, '');
+          // Add extra tags user has created
           for (const i in tagArray) {
             const thisTag = tagArray[i];
-            addTag(res.data.file_id, thisTag);
+            await addTag(res.data.file_id, thisTag);
+            // If the tag is new, also save it to the hidden post
             if (!oldTags.includes(thisTag)) {
               saveNewTag(thisTag);
             }
@@ -252,7 +267,7 @@ const useTag = () => {
         }
       });
     } catch (error) {
-      console.log('uploaderror: ', error.message);
+      console.log('uploaderror: ', error);
     }
     return ok;
   };
@@ -340,7 +355,61 @@ const useTag = () => {
     }
   };
 
-  return {getByTag, uploadPost, getAllTags, getTagsForPost};
+  // Uploads a new avatar picture and adds an avatar tag to it.
+  const uploadAvatarPicture = async (image, userId) => {
+    const axios = require('axios').default;
+    const userToken = await AsyncStorage.getItem('userToken');
+    const filename = image.split('/').pop();
+    let ok = false;
+
+    const formData = new FormData();
+    // Add a title to formData
+    formData.append('title', 'Profile picture');
+
+    // Infer the type of the image
+    const match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    if (type === 'image/jpg') type = 'image/jpeg';
+
+    // Add the image to formData
+    formData.append('file', {uri: image, name: filename, type});
+
+    const options = {
+      url: mediaURL,
+      method: 'POST',
+      headers: {
+        'content-type': 'multipart/form-data',
+        'x-access-token': userToken,
+      },
+      data: formData,
+    };
+
+    let fileId;
+    try {
+      await axios(options).then((res) => {
+        if (res.status == 201) {
+          fileId = res.data.file_id;
+          console.log('Upload res ok: ', fileId);
+          ok = true;
+        } else {
+          console.log('err Upload: ', res.status, res.message);
+        }
+      });
+    } catch (error) {
+      console.log('uploaderror: ', error.message);
+    }
+    // Add the avatar tag
+    await addTag(fileId, 'avatar_' + userId);
+    return ok;
+  };
+
+  return {
+    getByTag,
+    uploadPost,
+    getAllTags,
+    getTagsForPost,
+    uploadAvatarPicture,
+  };
 };
 
 // Methods for favorites
@@ -360,7 +429,13 @@ const useFavorites = () => {
     }
   };
 
-  const getPostFavoriteCount = async (postId) => {
+  /*
+    Return the amount of likes of the post and a boolean value whether
+    the passed in user has liked the post in question
+
+    returns { likeCount: number, userLiked: boolean }
+  */
+  const getPostFavoriteData = async (postId, userId) => {
     const options = {
       method: 'GET',
       data: {
@@ -372,8 +447,18 @@ const useFavorites = () => {
         favoriteURL + 'file/' + postId,
         options
       );
-      console.log('FavCountRes: ', postFavorites.length);
-      return postFavorites.length;
+
+      let userLikedPost = false;
+      // Loop the response and check if the logged in user has liked the post
+      if (userId != undefined && userId != null) {
+        for (const i in postFavorites) {
+          if (postFavorites[i].user_id == userId) {
+            userLikedPost = true;
+            break;
+          }
+        }
+      }
+      return {likeCount: postFavorites.length, userLiked: userLikedPost};
     } catch (error) {
       console.log('GetPostFavCount err: ', error);
     }
@@ -445,7 +530,7 @@ const useFavorites = () => {
     }
   };
 
-  return {favoriteInteraction, getUserFavorites, getPostFavoriteCount};
+  return {favoriteInteraction, getUserFavorites, getPostFavoriteData};
 };
 
 const useComments = () => {
@@ -492,7 +577,71 @@ const useComments = () => {
     }
   };
 
-  return {getPostComments, postComment};
+  const deleteComment = async (commentId) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const axios = require('axios').default;
+
+    const options = {
+      url: commentURL + commentId,
+      method: 'DELETE',
+      headers: {
+        'x-access-token': userToken,
+      },
+    };
+
+    let ok = false;
+    try {
+      await axios(options).then(
+        (res) => {
+          if (res.status === 200) {
+            ok = true;
+          } else console.log('Response was not 200, but: ', res);
+        },
+        (err) => {
+          console.log('Something went wrong deleting comment: ', err);
+        }
+      );
+    } catch (err) {
+      console.log('Error deleting comment: ', err);
+    }
+    return ok;
+  };
+
+  return {getPostComments, postComment, deleteComment};
+};
+
+const useMedia = () => {
+  const updateFile = async (fileId, fileInfo, token) => {
+    const options = {
+      method: 'PUT',
+      headers: {
+        'x-access-token': token,
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(fileInfo),
+    };
+    try {
+      const result = await doFetch(mediaURL + fileId, options);
+      return result;
+    } catch (error) {
+      throw new Error('updateFile error: ' + error.message);
+    }
+  };
+
+  const deleteFile = async (fileId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token},
+    };
+    try {
+      const result = await doFetch(mediaURL + fileId, options);
+      return result;
+    } catch (error) {
+      throw new Error('deleteFile error: ' + error.message);
+    }
+  };
+
+  return {updateFile, deleteFile};
 };
 
 export {
@@ -504,4 +653,5 @@ export {
   useTag,
   useFavorites,
   useComments,
+  useMedia,
 };
