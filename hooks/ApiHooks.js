@@ -56,32 +56,6 @@ const useSearchTitle = (string) => {
   return mediaArray;
 };
 
-// Supposedly should generate a MediaArray for when the button 'See More' is pressed on the discover page
-const useTagsLoadMediaMore = (tag) => {
-  const [mediaArray, setMediaArray] = useState([]);
-  const {update} = useContext(MainContext);
-
-  const tagloadMediaMore = async (tag) => {
-    try {
-      const postsData = await doFetch(tagURL + appTag + tag);
-      const media = await Promise.all(
-        postsData.map(async (item) => {
-          const postFile = await doFetch(mediaURL + item.file_id);
-          return postFile;
-        })
-      );
-      setMediaArray(media.reverse());
-    } catch (e) {
-      throwErr('loadMedia err: ', e.message);
-    }
-  };
-  useEffect(() => {
-    tagloadMediaMore();
-  }, [update]);
-
-  return mediaArray;
-};
-
 // Makes a MediaArray of a random tag for discover page
 const useTagsLoadMedia = (user) => {
   const [mediaArray, setMediaArray] = useState([]);
@@ -672,7 +646,6 @@ const useMedia = () => {
 export {
   useLoadMedia,
   useTagsLoadMedia,
-  useTagsLoadMediaMore,
   useSearchTitle,
   useLogin,
   useUser,

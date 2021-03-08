@@ -16,6 +16,7 @@ import Upload from '../views/Upload';
 import Discover from '../views/Discover';
 import {Colors} from '../styles/Colors';
 import EditPost from '../views/EditPost';
+import DiscoverMore from '../views/DiscoverMore';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -74,6 +75,7 @@ const StackScreen = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="DiscoverMore" component={DiscoverMore} />
           <Stack.Screen name="Edit Post" component={EditPost} />
         </>
       ) : (

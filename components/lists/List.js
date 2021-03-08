@@ -7,7 +7,6 @@ import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
 import {Button, Card, SearchBar} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
-import {useTagsLoadMediaMore} from '../../hooks/ApiHooks';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -60,12 +59,7 @@ const List = ({
 
         <Card>
           <Card.Title>{tagTitle}</Card.Title>
-          <Button
-            title="See more"
-            // onPress={() => useTagsLoadMediaMore(tagTitle)}
-          >
-            See more
-          </Button>
+
           <FlatList
             horizontal={true}
             data={mediaArray}
@@ -74,10 +68,17 @@ const List = ({
               <DiscoverDefault navigation={navigation} data={item} />
             )}
           />
+          <Button
+            title="See more"
+            onPress={() => {
+              navigation.navigate('DiscoverMore', {data: mediaArray});
+            }}
+          >
+            See more
+          </Button>
         </Card>
         <Card>
           <Card.Title>{tagTitle2}</Card.Title>
-          <Button title="See more">See more</Button>
           <FlatList
             horizontal={true}
             data={mediaArray2}
@@ -86,10 +87,17 @@ const List = ({
               <DiscoverDefault navigation={navigation} data={item} />
             )}
           />
+          <Button
+            title="See more"
+            onPress={() => {
+              navigation.navigate('DiscoverMore', {data: mediaArray2});
+            }}
+          >
+            See more
+          </Button>
         </Card>
         <Card>
           <Card.Title>{tagTitle3}</Card.Title>
-          <Button title="See more">See more</Button>
           <FlatList
             horizontal={true}
             data={mediaArray3}
@@ -98,6 +106,14 @@ const List = ({
               <DiscoverDefault navigation={navigation} data={item} />
             )}
           />
+          <Button
+            title="See more"
+            onPress={() => {
+              navigation.navigate('DiscoverMore', {data: mediaArray3});
+            }}
+          >
+            See more
+          </Button>
         </Card>
       </ScrollView>
     );
