@@ -15,6 +15,7 @@ import {useTagsLoadMediaMore} from '../../hooks/ApiHooks';
   Builds the layout with the required layout for the posts.
   Takes in layout prop which defines which post layout is used depending on the screen's name
  */
+
 const List = ({
   navigation,
   mediaArray,

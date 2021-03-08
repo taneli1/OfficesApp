@@ -13,7 +13,7 @@ import {
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getRandomTag} from '../components/tag/TagSelector';
+import {getRandomTag} from '../components/functional/TagSelector';
 
 const TAG = 'ApiHooks: ';
 // let randomTag = '';
@@ -29,6 +29,31 @@ const doFetch = async (url, options = {}) => {
 // Throwing errors with the tag
 const throwErr = (string) => {
   throw new Error(TAG + ' ' + string);
+};
+
+const useSearchTitle = (string) => {
+  const [mediaArray, setMediaArray] = useState([]);
+  const {update} = useContext(MainContext);
+
+  const searchTitle = async () => {
+    try {
+      const postsData = await doFetch(tagURL + appTag);
+      let media = await Promise.all(
+        postsData.map(async (item) => {
+          const postFile = await doFetch(mediaURL + item.file_id);
+          return postFile;
+        })
+      );
+      media = media.filter(media.title.includes(string));
+      setMediaArray(media.reverse());
+    } catch (e) {
+      throwErr('loadMedia err: ', e.message);
+    }
+  };
+  useEffect(() => {
+    searchTitle();
+  }, [update]);
+  return mediaArray;
 };
 
 // Supposedly should generate a MediaArray for when the button 'See More' is pressed on the discover page
@@ -67,7 +92,6 @@ const useTagsLoadMedia = (user) => {
     try {
       const tag = getRandomTag();
       const postsData = await doFetch(tagURL + appTag + tag);
-      console.log('useLoadMedia discover postsData randomTag', tag);
       const media = await Promise.all(
         postsData.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
@@ -95,13 +119,13 @@ const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
   const loadMedia = async () => {
     try {
       const postsData = await doFetch(tagURL + appTag);
-      console.log('useLoadMedia discover postsData', postsData);
       let media = await Promise.all(
         postsData.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
           return postFile;
         })
       );
+      console.log('media test', media[0].title);
       if (usersPostsOnly) {
         media = media.filter((item) => item.user_id === userId);
       }
@@ -113,6 +137,7 @@ const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
   useEffect(() => {
     loadMedia();
   }, [update]);
+
   return mediaArray;
 };
 
@@ -648,6 +673,7 @@ export {
   useLoadMedia,
   useTagsLoadMedia,
   useTagsLoadMediaMore,
+  useSearchTitle,
   useLogin,
   useUser,
   useTag,
