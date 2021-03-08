@@ -48,7 +48,8 @@ const Profile = ({navigation, route}) => {
   const [profilePicturePicking, setProfilePicturePicking] = useState(false);
   const [profilePicturePicked, setProfilePicturePicked] = useState(false);
   const usersPostsOnly = true;
-  const data = useLoadMedia(usersPostsOnly, displayedUserId);
+  const tagPostsOnly = false;
+  const data = useLoadMedia(usersPostsOnly, displayedUserId, tagPostsOnly);
   const {getUser} = useUser();
   const {getByTag, uploadAvatarPicture} = useTag();
 
