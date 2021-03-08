@@ -12,8 +12,10 @@ import {
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getRandomTag} from '../components/tag/TagSelector';
 
 const TAG = 'ApiHooks: ';
+// let randomTag = '';
 
 const doFetch = async (url, options = {}) => {
   const res = await fetch(url, options);
@@ -28,7 +30,63 @@ const throwErr = (string) => {
   throw new Error(TAG + ' ' + string);
 };
 
-const useLoadMedia = (usersPostsOnly, userId) => {
+// Supposedly should generate a MediaArray for when the button 'See More' is pressed on the discover page
+const useTagsLoadMediaMore = (tag) => {
+  const [mediaArray, setMediaArray] = useState([]);
+  const {update} = useContext(MainContext);
+
+  const tagloadMediaMore = async (tag) => {
+    try {
+      const postsData = await doFetch(tagURL + appTag + tag);
+      const media = await Promise.all(
+        postsData.map(async (item) => {
+          const postFile = await doFetch(mediaURL + item.file_id);
+          return postFile;
+        })
+      );
+      setMediaArray(media.reverse());
+    } catch (e) {
+      throwErr('loadMedia err: ', e.message);
+    }
+  };
+  useEffect(() => {
+    tagloadMediaMore();
+  }, [update]);
+
+  return mediaArray;
+};
+
+// Makes a MediaArray of a random tag for discover page
+const useTagsLoadMedia = (user) => {
+  const [mediaArray, setMediaArray] = useState([]);
+  const [tagTitle, setTagTitle] = useState();
+  const {update} = useContext(MainContext);
+
+  const tagloadMedia = async () => {
+    try {
+      const tag = getRandomTag();
+      const postsData = await doFetch(tagURL + appTag + tag);
+      console.log('useLoadMedia discover postsData randomTag', tag);
+      const media = await Promise.all(
+        postsData.map(async (item) => {
+          const postFile = await doFetch(mediaURL + item.file_id);
+          return postFile;
+        })
+      );
+      setMediaArray(media.reverse());
+      setTagTitle(tag);
+    } catch (e) {
+      throwErr('loadMedia err: ', e.message);
+    }
+  };
+  useEffect(() => {
+    tagloadMedia();
+  }, [update]);
+
+  return [mediaArray, tagTitle];
+};
+
+const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
 
@@ -36,6 +94,7 @@ const useLoadMedia = (usersPostsOnly, userId) => {
   const loadMedia = async () => {
     try {
       const postsData = await doFetch(tagURL + appTag);
+      console.log('useLoadMedia discover postsData', postsData);
       let media = await Promise.all(
         postsData.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
@@ -436,4 +495,13 @@ const useComments = () => {
   return {getPostComments, postComment};
 };
 
-export {useLoadMedia, useLogin, useUser, useTag, useFavorites, useComments};
+export {
+  useLoadMedia,
+  useTagsLoadMedia,
+  useTagsLoadMediaMore,
+  useLogin,
+  useUser,
+  useTag,
+  useFavorites,
+  useComments,
+};

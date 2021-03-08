@@ -7,9 +7,7 @@ import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
 import {Button, Card, SearchBar} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
-import Tag from '../listitems/Tag';
-import {arrayMaker, randomTag, TagSelector} from '../tag/TagSelector';
-import TAGS from '../tag/TagSelector';
+import {useTagsLoadMediaMore} from '../../hooks/ApiHooks';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -17,7 +15,17 @@ import TAGS from '../tag/TagSelector';
   Builds the layout with the required layout for the posts.
   Takes in layout prop which defines which post layout is used depending on the screen's name
  */
-const List = ({navigation, mediaArray, layout, tags}) => {
+const List = ({
+  navigation,
+  mediaArray,
+  mediaArray2,
+  mediaArray3,
+  layout,
+  tagTitle,
+  tagTitle2,
+  tagTitle3,
+  tags,
+}) => {
   const {user} = useContext(MainContext);
 
   if (layout === 'home') {
@@ -45,16 +53,16 @@ const List = ({navigation, mediaArray, layout, tags}) => {
       />
     );
   } else if (layout === 'discover') {
-    const tag1 = randomTag();
-    console.log('discover test random tag', tag1);
-    const tag2 = randomTag();
-    const tag3 = randomTag();
     return (
       <ScrollView>
         <SearchBar placeholder="Type Here..." />
+
         <Card>
-          <Card.Title>{tag1.title}</Card.Title>
-          <Button tittle="See more" containerViewStyle={{height: '10%'}}>
+          <Card.Title>{tagTitle}</Card.Title>
+          <Button
+            title="See more"
+            // onPress={() => useTagsLoadMediaMore(tagTitle)}
+          >
             See more
           </Button>
           <FlatList
@@ -67,11 +75,11 @@ const List = ({navigation, mediaArray, layout, tags}) => {
           />
         </Card>
         <Card>
-          <Card.Title>{tag2.title}</Card.Title>
-          <Button tittle="See more">See more</Button>
+          <Card.Title>{tagTitle2}</Card.Title>
+          <Button title="See more">See more</Button>
           <FlatList
             horizontal={true}
-            data={mediaArray}
+            data={mediaArray2}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <DiscoverDefault navigation={navigation} data={item} />
@@ -79,11 +87,11 @@ const List = ({navigation, mediaArray, layout, tags}) => {
           />
         </Card>
         <Card>
-          <Card.Title>{tag3.title}</Card.Title>
-          <Button tittle="See more">See more</Button>
+          <Card.Title>{tagTitle3}</Card.Title>
+          <Button title="See more">See more</Button>
           <FlatList
             horizontal={true}
-            data={mediaArray}
+            data={mediaArray3}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <DiscoverDefault navigation={navigation} data={item} />
@@ -91,6 +99,16 @@ const List = ({navigation, mediaArray, layout, tags}) => {
           />
         </Card>
       </ScrollView>
+    );
+  } else if (layout === 'discoverMore') {
+    return (
+      <FlatList
+        data={mediaArray}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <PostDefault navigation={navigation} data={item} />
+        )}
+      />
     );
   }
 };

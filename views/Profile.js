@@ -35,7 +35,8 @@ const Profile = ({navigation, route}) => {
   const [displayedUser, setDisplayedUser] = useState(userToDisplay);
   const [avatar, setAvatar] = useState(require('../assets/placeholder.png'));
   const usersPostsOnly = true;
-  const data = useLoadMedia(usersPostsOnly, displayedUserId);
+  const tagPostsOnly = false;
+  const data = useLoadMedia(usersPostsOnly, displayedUserId, tagPostsOnly);
   const {getUser} = useUser();
   const {getByTag} = useTag();
 

@@ -9,8 +9,9 @@ import {Colors} from '../styles/Colors';
 
 const Home = ({navigation}) => {
   const usersPostsOnly = false;
+  const tagPostsOnly = false;
   const {user} = useContext(MainContext);
-  const data = useLoadMedia(usersPostsOnly, user.user_id);
+  const data = useLoadMedia(usersPostsOnly, user.user_id, tagPostsOnly);
 
   return (
     <SafeAreaView style={GlobalStyles.droidSafeArea}>

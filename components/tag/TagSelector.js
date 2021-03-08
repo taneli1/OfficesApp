@@ -13,7 +13,8 @@ import {Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {Button} from 'react-native-elements';
 import Tag from '../listitems/Tag';
-import {useTag} from '../../hooks/ApiHooks';
+import {useTag, getByTag, doFecth, throwErr} from '../../hooks/ApiHooks';
+import {appTag, tagURL} from '../../utils/Variables';
 /*
     Fetch all tags from database first -> Make them to objects. Give all of them: checked = false.
     When an user creates a new tag, add it to TAGS, upload it with the post if it is in
@@ -37,10 +38,13 @@ const arrayMaker = async () => {
   TAGS = temp;
 };
 
-const randomTag = () => {
+const getRandomTag = () => {
   if (TAGS.length == 0) arrayMaker();
+
   const randomTag = TAGS[Math.floor(Math.random() * TAGS.length)];
-  return randomTag;
+  console.log('tagSelector getRandomTag randomTag title', randomTag.title);
+  const result = randomTag.title;
+  return result;
 };
 
 const TagSelector = () => {
@@ -239,4 +243,4 @@ const getSelectedTags = () => {
   return sTags;
 };
 
-export {TagSelector, getSelectedTags, randomTag};
+export {TagSelector, getSelectedTags, getRandomTag};
