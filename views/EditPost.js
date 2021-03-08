@@ -14,7 +14,7 @@ const EditPost = ({navigation, route}) => {
       <ScrollView>
         <View style={{paddingBottom: 60}}>
           <View style={[headerContainer, {alignSelf: 'center', marginLeft: 0}]}>
-            <Text style={[bigHeader, styles.header]}>Edit the post</Text>
+            <Text style={[bigHeader, styles.header]}>Edit post info</Text>
           </View>
 
           <View style={styles.container}>

@@ -195,7 +195,6 @@ const styles = StyleSheet.create({
   },
   text: {
     alignSelf: 'center',
-    padding: 10,
   },
 });
 

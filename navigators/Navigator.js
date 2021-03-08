@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import React, {useContext} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -26,16 +27,17 @@ const TabScreen = () => {
     <Tab.Navigator
       tabBarOptions={{
         keyboardHidesTabBar: true,
+        activeTintColor: Colors.primary,
       }}
       screenOptions={({route}) => ({
-        tabBarIcon: ({_, color, size}) => {
+        tabBarIcon: ({focused, color, size}) => {
           let iconName;
           switch (route.name) {
             case 'Home':
               iconName = 'home';
               break;
             case 'Discover':
-              iconName = 'account-box';
+              iconName = 'collections';
               break;
             case 'Upload':
               iconName = 'cloud-upload';

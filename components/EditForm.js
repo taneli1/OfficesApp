@@ -22,26 +22,32 @@ const EditForm = ({navigation, postData}) => {
   const {update, setUpdate} = useContext(MainContext);
 
   const {
-    handleInputChange,
     inputs,
     setInputs,
+    handleInputChange,
+    validateOnSend,
+    handleInputEnd,
     uploadErrors,
     reset,
   } = useUploadForm();
 
-  const updateDescriptionArray = async () => {
+  const doUpdate = async () => {
     descriptionData = [inputs.description, postLinks];
-    setInputs({
+    const inputsWithLinks = {
       title: inputs.title,
       description: JSON.stringify(descriptionData),
-    });
-  };
-
-  const doUpdate = async () => {
+    };
+    if (!validateOnSend()) {
+      return;
+    }
     try {
       setIsUploading(true);
       const userToken = await AsyncStorage.getItem('userToken');
-      const resp = await updateFile(postData.file_id, inputs, userToken);
+      const resp = await updateFile(
+        postData.file_id,
+        inputsWithLinks,
+        userToken
+      );
       console.log('update response', resp);
       setUpdate(update + 1);
       navigation.pop(2);
@@ -67,14 +73,11 @@ const EditForm = ({navigation, postData}) => {
   return (
     <View style={styles.container}>
       <View style={styles.sHeaderContainer}>
-        <TouchableOpacity onPress={doReset}>
-          <Icon
-            style={{alignSelf: 'flex-end', marginRight: 10}}
-            size={32}
-            color={Colors.primary}
-            name="refresh"
-          />
-        </TouchableOpacity>
+        <View style={styles.resetButtonContainer}>
+          <TouchableOpacity onPress={doReset}>
+            <Icon size={32} color={Colors.primary} name="refresh" />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <Input
@@ -84,6 +87,9 @@ const EditForm = ({navigation, postData}) => {
           placeholder="Title"
           value={inputs.title}
           onChangeText={(txt) => handleInputChange('title', txt)}
+          onEndEditing={(event) => {
+            handleInputEnd('title', event.nativeEvent.text);
+          }}
           errorMessage={uploadErrors.title}
         />
         <Input
@@ -93,7 +99,9 @@ const EditForm = ({navigation, postData}) => {
           value={inputs.description}
           placeholder="Description"
           onChangeText={(txt) => handleInputChange('description', txt)}
-          onEndEditing={updateDescriptionArray}
+          onEndEditing={(event) => {
+            handleInputEnd('description', event.nativeEvent.text);
+          }}
           errorMessage={uploadErrors.description}
         />
       </View>
@@ -121,10 +129,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   sHeaderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: 20,
-    alignContent: 'center',
+  },
+  resetButtonContainer: {
+    width: 42,
+    marginRight: 10,
+    alignSelf: 'flex-end',
   },
   inputContainer: {
     marginTop: 5,
