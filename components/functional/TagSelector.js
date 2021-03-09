@@ -44,7 +44,11 @@ const arrayMaker = async () => {
 };
 
 const getRandomTag = () => {
+  const tagNames = [];
   if (TAGS.length == 0) arrayMaker();
+  if (tagNames.length == 0) {
+    TAGS.forEach((it) => tagNames.push(it.title));
+  }
 
   const randomTag = TAGS[Math.floor(Math.random() * TAGS.length)];
   console.log('tagSelector getRandomTag randomTag title', randomTag.title);
@@ -255,4 +259,4 @@ const getSelectedTags = () => {
   return sTags;
 };
 
-export {TagSelector, getSelectedTags, getRandomTag};
+export {TagSelector, getSelectedTags, getRandomTag, arrayMaker};
