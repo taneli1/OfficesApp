@@ -91,6 +91,7 @@ const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
 
   // Fetches a list of posts, then fetch the media for those posts
   const loadMedia = async () => {
+    console.log('loadMedia, updateCalled');
     try {
       const postsData = await doFetch(tagURL + appTag);
       let media = await Promise.all(

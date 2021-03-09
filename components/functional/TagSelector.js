@@ -44,7 +44,10 @@ const arrayMaker = async () => {
 };
 
 const getRandomTag = () => {
-  if (TAGS.length == 0) arrayMaker();
+  if (TAGS.length == 0)
+    console.log(
+      'Calling arraymaker here gives errors/crashes application sometimes (TagSelector called from discover)'
+    ); //arrayMaker();
 
   const randomTag = TAGS[Math.floor(Math.random() * TAGS.length)];
   console.log('tagSelector getRandomTag randomTag title', randomTag.title);
@@ -136,7 +139,7 @@ const TagSelector = () => {
                 color: Colors.primary,
                 backgroundColor: Colors.primary,
               }}
-              title="Save"
+              title="Save tag"
               onPress={() => showTags()}
             ></Button>
           </TouchableHighlight>
