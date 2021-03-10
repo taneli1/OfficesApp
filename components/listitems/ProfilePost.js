@@ -51,6 +51,7 @@ const ProfilePost = ({navigation, data}) => {
           <Image
             source={{uri: uploadsURL + data.thumbnails.w160}}
             style={styles.postImage}
+            resizeMode="contain"
             PlaceholderContent={
               <ActivityIndicator size="large" color={Colors.primary} />
             }

@@ -15,30 +15,43 @@ const singlePostStyles = StyleSheet.create({
     width: '100%',
     resizeMode: 'contain', // or 'stretch'
   },
+  videoContainer: {
+    marginTop: 60,
+    marginBottom: 20,
+  },
   backButtonContainer: {
-    alignSelf: 'baseline',
-    marginLeft: 15,
-    marginTop: 15,
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 1,
   },
   backButtonIcon: {
     backgroundColor: Colors.primary,
-    borderRadius: 20,
+    borderRadius: 40 / 2,
     elevation: 5,
   },
   postOptionsButtonContainer: {
     position: 'absolute',
-    top: 15,
-    right: 15,
+    top: 10,
+    right: 10,
     zIndex: 1,
   },
-  container: {
+  postDataContainer: {
     paddingTop: Dimensions.get('window').height / 1.8 - 50,
+    marginStart: 10,
+    marginEnd: 10,
+    overflow: 'visible',
+  },
+  postDataContainerVideo: {
     marginStart: 10,
     marginEnd: 10,
     overflow: 'visible',
   },
   fillerElement: {
     marginTop: Dimensions.get('window').height / 1.8,
+  },
+  fillerElementVideo: {
+    marginTop: '10%',
   },
 });
 

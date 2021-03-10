@@ -18,6 +18,7 @@ import {smallHeader, headerContainer} from '../styles/BasicComponents';
 import {TagSelector, getSelectedTags} from './functional/TagSelector';
 import {LinkCreator, getCreatedLinkObjects} from './functional/LinkCreator';
 import {ActivityIndicator} from 'react-native';
+import {Video} from 'expo-av';
 
 const UploadForm = ({navigation}) => {
   const {
@@ -29,6 +30,7 @@ const UploadForm = ({navigation}) => {
     reset,
   } = useUploadForm();
   const [image, setImage] = useState(null);
+  const [filetype, setFiletype] = useState('');
   const {update, setUpdate} = useContext(MainContext);
   const {uploadPost} = useTag();
   const [isUploading, setIsUploading] = useState(false);
@@ -44,6 +46,7 @@ const UploadForm = ({navigation}) => {
     console.log(result);
 
     if (!result.cancelled) {
+      setFiletype(result.type);
       setImage(result.uri);
       console.log(result.uri);
     }
@@ -73,7 +76,13 @@ const UploadForm = ({navigation}) => {
     const data = [inputs.description, listOfObjects];
 
     try {
-      const isUploaded = await uploadPost(image, inputs, selectedTags, data);
+      const isUploaded = await uploadPost(
+        image,
+        filetype,
+        inputs,
+        selectedTags,
+        data
+      );
       setIsUploading(false);
       console.log('Upload returned: ', isUploaded);
       if (isUploaded) {
@@ -110,11 +119,27 @@ const UploadForm = ({navigation}) => {
           <Text style={s.imageText}>Choose Image</Text>
           <Icon name="add" color={Colors.white}></Icon>
         </View>
-        <Image
-          source={{uri: image}}
-          style={{width: '100%', height: 250}}
-          resizeMode="cover"
-        ></Image>
+        {filetype === 'video' ? (
+          <>
+            <Video
+              source={{uri: image}}
+              style={{
+                width: '100%',
+                height: undefined,
+                aspectRatio: 16 / 9,
+              }}
+              useNativeControls={true}
+            />
+          </>
+        ) : (
+          <>
+            <Image
+              source={{uri: image}}
+              style={{width: '100%', height: 250}}
+              resizeMode="cover"
+            ></Image>
+          </>
+        )}
       </TouchableOpacity>
 
       <View style={s.sHeaderContainer}>
@@ -214,7 +239,6 @@ const s = StyleSheet.create({
     color: Colors.white,
     fontSize: Dimens.fontSizes.bigHeader,
   },
-  input: {},
   button: {
     color: Colors.primary,
     backgroundColor: Colors.primary,

@@ -179,7 +179,6 @@ const s = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
-  tags: {},
   profileContainer: {
     transform: [{scaleX: 0.85}, {scaleY: 0.85}, {translateX: -4}],
     padding: 3,
