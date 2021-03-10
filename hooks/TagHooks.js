@@ -2,6 +2,8 @@ import {useEffect, useState, useContext} from 'react';
 import {appTag, tagURL, mediaURL} from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import {doFetch, useTag} from '../hooks/ApiHooks';
+import {allTagsId} from '../utils/Variables';
+
 // import {getRandomTag} from '../components/functional/TagSelector';
 
 const getRandomTag = async () => {
@@ -26,8 +28,11 @@ const useTagsLoadMedia = () => {
       // tag = tag.toString();
       // console.log('tagLoadMedia tag to string', tag);
       const postsData = await doFetch(tagURL + appTag + tag);
+      const filtered = postsData.filter(
+        (post) => post.file_id !== parseInt(allTagsId)
+      );
       const media = await Promise.all(
-        postsData.map(async (item) => {
+        filtered.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
           return postFile;
         })

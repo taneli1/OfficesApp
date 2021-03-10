@@ -3,11 +3,9 @@ import {
   LogBox,
   SafeAreaView,
   StatusBar,
-  View,
   ToastAndroid,
   Platform,
   AlertIOS,
-  Image,
 } from 'react-native';
 import List from '../components/lists/List';
 import GlobalStyles from '../styles/GlobalStyles';
@@ -15,8 +13,6 @@ import PropTypes from 'prop-types';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import {Colors} from '../styles/Colors';
 import {MainContext} from '../contexts/MainContext';
-import {ImageBackground} from 'react-native';
-import {headerContainer} from '../styles/BasicComponents';
 
 const Home = ({navigation}) => {
   const data = useLoadMedia();

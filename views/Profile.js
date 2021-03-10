@@ -14,7 +14,6 @@ import {useTag, useLoadMedia, useUser} from '../hooks/ApiHooks';
 import {appTag, uploadsURL} from '../utils/Variables';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
-import List from '../components/lists/List';
 import {Dimens} from '../styles/Dimens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';

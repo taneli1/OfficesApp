@@ -9,9 +9,9 @@ import {Colors} from '../styles/Colors';
 import {View} from 'react-native';
 
 const Discover = ({navigation}) => {
-  let [data, tagData] = useTagsLoadMedia();
+  const [data, tagData] = useTagsLoadMedia();
 
-  let [data2, tagData2] = useTagsLoadMedia();
+  const [data2, tagData2] = useTagsLoadMedia();
   /*
   if (tagData != undefined && tagData2 != undefined) {
     while (tagData === tagData2) {
@@ -20,7 +20,8 @@ const Discover = ({navigation}) => {
     }
   }
 */
-  let [data3, tagData3] = useTagsLoadMedia();
+  const [data3, tagData3] = useTagsLoadMedia();
+
   /*
   if (tagData3 != undefined && tagData2 != undefined && tagData != undefined) {
     while (tagData3 === tagData2 || tagData3 === tagData) {
