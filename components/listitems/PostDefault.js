@@ -109,7 +109,7 @@ const PostDefault = ({navigation, data}) => {
         <View style={s.profileContainer}>
           <ProfileContainer navigation={navigation} userId={data.user_id} />
         </View>
-        <TagList tags={postTags} style={s.tags} />
+        <TagList tags={postTags} style={s.tags} navigation={navigation} />
       </View>
     </View>
   );

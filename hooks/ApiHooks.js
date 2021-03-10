@@ -33,20 +33,6 @@ const throwErr = (string) => {
 
 const useSearchTitle = (string) => {
   const [mediaArray, setMediaArray] = useState([]);
-  /** *
-   * TODO update cannot be used in search/UseTagsMedia
-   * The update = useState(0) from mainContext cant be used
-   * for multiple components. The update value is used for home screen posts,
-   * and should only be used for those.
-   *
-   * If the same update hook is used in multiple funcions useEffect() methods
-   * all of these fuctions get called whenever the update receives any state
-   * changes. This causes all kinds of problems:
-   *
-   * 1. We update stuff that is not required / rendered -> Performance issues
-   * 2. We try to access stuff that is not initialized yet, which causes yet more problems
-   * 3. This creates cycles, which again try to access uninitialized fields
-   * */
   const {update} = useContext(MainContext);
 
   const searchTitle = async () => {
@@ -219,8 +205,14 @@ const useTag = () => {
   };
 
   const loadTagPosts = async (tagName) => {
-    const res = await getByTag(appTag + tagName);
-    return res.reverse();
+    const postData = await getByTag(appTag + tagName);
+    const media = await Promise.all(
+      postData.map(async (item) => {
+        const postFile = await doFetch(mediaURL + item.file_id);
+        return postFile;
+      })
+    );
+    return media.reverse();
   };
 
   /**
@@ -428,6 +420,7 @@ const useTag = () => {
     getAllTags,
     getTagsForPost,
     uploadAvatarPicture,
+    loadTagPosts,
   };
 };
 

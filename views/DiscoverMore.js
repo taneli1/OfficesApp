@@ -9,7 +9,8 @@ import {Colors} from '../styles/Colors';
 const DiscoverMore = ({navigation, route}) => {
   const data = route.params;
   const media = data.data;
-  console.log('discover more data', data);
+  // console.log('discover more data', data);
+  console.log('discover more media', data);
   // const {user} = useContext(MainContext);
 
   return (

@@ -68,7 +68,7 @@ const ProfilePost = ({navigation, data}) => {
         </TouchableOpacity>
         <View style={styles.tagsAndFavoriteContainer}>
           <View style={styles.tagsContainer}>
-            <TagList tags={postTags} />
+            <TagList tags={postTags} navigation={navigation} />
           </View>
           <View style={styles.favoriteContainer}>
             <Favorite postData={data}></Favorite>
