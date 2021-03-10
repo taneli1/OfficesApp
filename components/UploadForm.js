@@ -59,10 +59,10 @@ const UploadForm = ({navigation}) => {
     console.log('Selected tags: ', getSelectedTags());
     if (!validateOnSend()) {
       return;
-    } else if (selectedTags.length === 0) {
+    } /* else if (selectedTags.length === 0) {
       Alert.alert('Select atleast one tag');
       return;
-    }
+    } */
     setIsUploading(true);
 
     /*

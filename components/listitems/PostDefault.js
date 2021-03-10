@@ -109,7 +109,7 @@ const PostDefault = ({navigation, data}) => {
         <View style={s.profileContainer}>
           <ProfileContainer navigation={navigation} userId={data.user_id} />
         </View>
-        <TagList tags={postTags} style={s.tags} />
+        <TagList tags={postTags} style={s.tags} navigation={navigation} />
       </View>
     </View>
   );
@@ -130,7 +130,6 @@ const s = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     marginTop: 60,
-    overflow: 'visible',
     borderRadius: 10,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
@@ -138,18 +137,18 @@ const s = StyleSheet.create({
   },
   image: {
     transform: [{translateX: -20}],
-
     height: imageHeight,
     width: imageWidth,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
   },
   feedbackImage: {
+    transform: [{translateX: -20}],
     width: imageWidth,
     height: imageHeight,
     backgroundColor: Colors.white,
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },

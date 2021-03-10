@@ -157,7 +157,11 @@ const PostDataCard = ({navigation, postData}) => {
         </View>
 
         <View style={styles.tagContainer}>
-          <TagList style={{marginLeft: 30}} tags={postTags} />
+          <TagList
+            style={{marginLeft: 30}}
+            tags={postTags}
+            navigation={navigation}
+          />
         </View>
 
         {postLinkData.length != 0 && (

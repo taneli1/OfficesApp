@@ -1,32 +1,35 @@
-import React, {useContext} from 'react';
-import {SafeAreaView, StatusBar, View} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import {
+  LogBox,
+  SafeAreaView,
+  StatusBar,
+  View,
+  ToastAndroid,
+  Platform,
+  AlertIOS,
+  Image,
+} from 'react-native';
 import List from '../components/lists/List';
 import GlobalStyles from '../styles/GlobalStyles';
 import PropTypes from 'prop-types';
 import {useLoadMedia} from '../hooks/ApiHooks';
 import {Colors} from '../styles/Colors';
-import {Icon} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
+import {ImageBackground} from 'react-native';
 import {headerContainer} from '../styles/BasicComponents';
 
 const Home = ({navigation}) => {
   const data = useLoadMedia();
-  const {update, setUpdate} = useContext(MainContext);
+  const {update} = useContext(MainContext);
+
+  useEffect(() => {
+    notifyMessage('Posts updated!');
+  }, [update]);
 
   return (
     <SafeAreaView style={GlobalStyles.droidSafeArea}>
-      <View style={(headerContainer, {width: 20})}>
-        <Icon
-          style={{}}
-          onPress={() => {
-            setUpdate(update + 1);
-          }}
-          name="refresh"
-          size={32}
-        ></Icon>
-      </View>
-
       <List navigation={navigation} mediaArray={data} layout="home" />
+
       <StatusBar style="auto" backgroundColor={Colors.darkGreen} />
     </SafeAreaView>
   );
@@ -35,5 +38,21 @@ const Home = ({navigation}) => {
 Home.propTypes = {
   navigation: PropTypes.object,
 };
+
+const notifyMessage = (msg) => {
+  if (Platform.OS === 'android') {
+    ToastAndroid.show(msg, ToastAndroid.SHORT);
+  } else {
+    AlertIOS.alert(msg);
+  }
+};
+
+/*
+  Disables a warning which comes from passing a data from Tag.js -> "Discover More" with navigation
+  push action, and providing a non-serializable value in the props.
+ */
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state', // TODO: Remove when fixed
+]);
 
 export default Home;
