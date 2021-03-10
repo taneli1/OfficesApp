@@ -77,7 +77,7 @@ const StackScreen = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Profile" component={Profile} />
-          <Stack.Screen name="DiscoverMore" component={DiscoverMore} />
+          <Stack.Screen name="Discover More" component={DiscoverMore} />
           <Stack.Screen name="Edit Post" component={EditPost} />
         </>
       ) : (

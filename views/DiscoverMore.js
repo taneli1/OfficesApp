@@ -8,14 +8,15 @@ import {Colors} from '../styles/Colors';
 
 const DiscoverMore = ({navigation, route}) => {
   const data = route.params;
-  const test = data.data;
-  const {user} = useContext(MainContext);
+  const media = data.data;
+  console.log('discover more data', data);
+  // const {user} = useContext(MainContext);
 
   return (
     <SafeAreaView style={GlobalStyles.droidSafeArea}>
       <List
         navigation={navigation}
-        mediaArray={test}
+        mediaArray={media}
         // tagTitle={tagData}
         layout="discoverMore"
       />

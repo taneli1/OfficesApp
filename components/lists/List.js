@@ -70,7 +70,7 @@ const List = ({
           <Button
             title="See more"
             onPress={() => {
-              navigation.navigate('DiscoverMore', {data: mediaArray});
+              navigation.navigate('Discover More', {data: mediaArray});
             }}
           >
             See more
@@ -89,7 +89,7 @@ const List = ({
           <Button
             title="See more"
             onPress={() => {
-              navigation.navigate('DiscoverMore', {data: mediaArray2});
+              navigation.navigate('Discover More', {data: mediaArray2});
             }}
           >
             See more
@@ -108,7 +108,7 @@ const List = ({
           <Button
             title="See more"
             onPress={() => {
-              navigation.navigate('DiscoverMore', {data: mediaArray3});
+              navigation.navigate('Discover More', {data: mediaArray3});
             }}
           >
             See more
