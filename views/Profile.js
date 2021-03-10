@@ -14,11 +14,12 @@ import {useTag, useLoadMedia, useUser} from '../hooks/ApiHooks';
 import {appTag, uploadsURL} from '../utils/Variables';
 import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
-import List from '../components/lists/List';
 import {Dimens} from '../styles/Dimens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import LoginButton from '../components/LoginButton';
+import {FlatList} from 'react-native-gesture-handler';
+import ProfilePost from '../components/listitems/ProfilePost';
 
 const Profile = ({navigation, route}) => {
   let displayedUserId;
@@ -152,119 +153,144 @@ const Profile = ({navigation, route}) => {
     fetchAvatar();
   }, [profilePictureUpdated]);
 
+  /*
+   * Made a small change to the profile component:
+   *
+   * Made the main element a Flatlist, which was copy pasted from
+   * List.js. All the data goes into this flatlist from here, so the profile section
+   * from List.js can be removed.
+   *
+   * Otherwise everything is the same, but removed the List.js component from
+   * the layout, and copy pasted everything what was left into the ListHeaderComponent,
+   * which renders the element in it before the list items itself start to render.
+   *
+   * This is done so the whole profile element is scrollable now.
+   */
   return (
-    <View>
-      {isLoggedIn ? (
-        <>
-          <View style={styles.userInfoContainer}>
-            <View style={styles.profileImageContainer}>
-              <Image
-                source={avatar}
-                style={styles.profileImage}
-                PlaceholderContent={
-                  <ActivityIndicator size="large" color={Colors.primary} />
-                }
-              />
-              {/* Buttons related to changing the profile picture are only rendered if the profile is the user's own profile. */}
-              {isOwnProfile && (
-                <View style={styles.profileImageButtonContainer}>
-                  {/* Confirm and cancel buttons are only rendered when a new profile picture has been picked. Otherwise the change profile
+    <FlatList
+      ListHeaderComponent={
+        <View>
+          {isLoggedIn ? (
+            <>
+              <View style={styles.userInfoContainer}>
+                <View style={styles.profileImageContainer}>
+                  <Image
+                    source={avatar}
+                    style={styles.profileImage}
+                    PlaceholderContent={
+                      <ActivityIndicator size="large" color={Colors.primary} />
+                    }
+                  />
+                  {/* Buttons related to changing the profile picture are only rendered if the profile is the user's own profile. */}
+                  {isOwnProfile && (
+                    <View style={styles.profileImageButtonContainer}>
+                      {/* Confirm and cancel buttons are only rendered when a new profile picture has been picked. Otherwise the change profile
                   picture button is rendered. */}
-                  {!profilePicturePicking && !profilePicturePicked ? (
-                    <>
-                      <Button
-                        title="Change profile picture"
-                        buttonStyle={styles.smallButton}
-                        titleStyle={styles.smallButtonTitle}
-                        onPress={pickImage}
-                      ></Button>
-                    </>
-                  ) : (
-                    <>
-                      {profilePicturePicked ? (
+                      {!profilePicturePicking && !profilePicturePicked ? (
                         <>
                           <Button
-                            title="Confirm"
-                            buttonStyle={styles.confirmButton}
+                            title="Change profile picture"
+                            buttonStyle={styles.smallButton}
                             titleStyle={styles.smallButtonTitle}
-                            onPress={doUpload}
-                          ></Button>
-                          {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
-                          state variable is updated to make the useEffect fetch the original profile picture back. */}
-                          <Button
-                            title="Cancel"
-                            buttonStyle={styles.cancelButton}
-                            titleStyle={styles.smallButtonTitle}
-                            onPress={() => {
-                              setProfilePicturePicked(false);
-                              setProfilePictureUpdated(
-                                profilePictureUpdated + 1
-                              );
-                            }}
+                            onPress={pickImage}
                           ></Button>
                         </>
                       ) : (
                         <>
-                          <View style={styles.activityIndicatorContainer}>
-                            <ActivityIndicator
-                              size="small"
-                              color={Colors.primary}
-                            />
-                          </View>
+                          {profilePicturePicked ? (
+                            <>
+                              <Button
+                                title="Confirm"
+                                buttonStyle={styles.confirmButton}
+                                titleStyle={styles.smallButtonTitle}
+                                onPress={doUpload}
+                              ></Button>
+                              {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
+                          state variable is updated to make the useEffect fetch the original profile picture back. */}
+                              <Button
+                                title="Cancel"
+                                buttonStyle={styles.cancelButton}
+                                titleStyle={styles.smallButtonTitle}
+                                onPress={() => {
+                                  setProfilePicturePicked(false);
+                                  setProfilePictureUpdated(
+                                    profilePictureUpdated + 1
+                                  );
+                                }}
+                              ></Button>
+                            </>
+                          ) : (
+                            <>
+                              <View style={styles.activityIndicatorContainer}>
+                                <ActivityIndicator
+                                  size="small"
+                                  color={Colors.primary}
+                                />
+                              </View>
+                            </>
+                          )}
                         </>
                       )}
-                    </>
+                    </View>
                   )}
                 </View>
+                <View style={styles.userTextContainer}>
+                  <View style={[headerContainer, styles.headerContainer]}>
+                    <Text style={bigHeader}>{displayedUser.username}</Text>
+                  </View>
+                  <View style={styles.fullNameContainer}>
+                    <Avatar
+                      icon={{
+                        name: 'user',
+                        type: 'font-awesome',
+                        color: 'black',
+                        size: 25,
+                      }}
+                    />
+                    <Text style={styles.fullName}>
+                      {displayedUser.full_name}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              {/* Logout button is rendered only if the profile is the user's own profile. */}
+              {isOwnProfile && (
+                <View style={styles.logoutButtonContainer}>
+                  <Button
+                    title="Logout"
+                    buttonStyle={styles.logoutButton}
+                    onPress={logout}
+                  ></Button>
+                </View>
               )}
-            </View>
-            <View style={styles.userTextContainer}>
-              <View style={[headerContainer, styles.headerContainer]}>
-                <Text style={bigHeader}>{displayedUser.username}</Text>
+            </>
+          ) : (
+            <>
+              <View>
+                <LoginButton></LoginButton>
               </View>
-              <View style={styles.fullNameContainer}>
-                <Avatar
-                  icon={{
-                    name: 'user',
-                    type: 'font-awesome',
-                    color: 'black',
-                    size: 25,
-                  }}
-                />
-                <Text style={styles.fullName}>{displayedUser.full_name}</Text>
-              </View>
-            </View>
-          </View>
-          <Text style={styles.postsHeader}>Posts</Text>
-          <View style={styles.listContainer}>
-            <List navigation={navigation} mediaArray={data} layout="profile" />
-          </View>
-          {/* Logout button is rendered only if the profile is the user's own profile. */}
-          {isOwnProfile && (
-            <View style={styles.logoutButtonContainer}>
-              <Button
-                title="Logout"
-                buttonStyle={styles.logoutButton}
-                onPress={logout}
-              ></Button>
-            </View>
+            </>
           )}
-        </>
-      ) : (
-        <>
-          <View>
-            <LoginButton></LoginButton>
-          </View>
-        </>
+        </View>
+      }
+      contentContainerStyle={{paddingBottom: 110, marginTop: 20}}
+      data={data}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({item}) => (
+        <ProfilePost
+          navigation={navigation}
+          data={item}
+          isUsersPost={item.user_id === user.user_id}
+        />
       )}
-    </View>
+    />
   );
 };
 
 const styles = StyleSheet.create({
   userInfoContainer: {
     flexDirection: 'row',
-    height: '35%',
+    height: '30%',
   },
   profileImageContainer: {
     flex: 1,
@@ -287,6 +313,8 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 5,
     padding: 2,
+    paddingStart: 5,
+    paddingEnd: 5,
   },
   confirmButton: {
     backgroundColor: '#25de14',
