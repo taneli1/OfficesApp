@@ -6,9 +6,11 @@ import React, {useContext} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import {Colors} from '../styles/Colors';
+import {View} from 'react-native';
 
 const Discover = ({navigation}) => {
-  const {user} = useContext(MainContext);
+  return <View></View>;
+  /*  const {user} = useContext(MainContext);
   const [data, tagData] = useTagsLoadMedia(user);
   let [data2, tagData2] = useTagsLoadMedia(user);
   if (tagData != undefined && tagData2 != undefined) {
@@ -38,7 +40,7 @@ const Discover = ({navigation}) => {
       />
       <StatusBar style="auto" backgroundColor={Colors.darkGreen} />
     </SafeAreaView>
-  );
+  ); */
 };
 
 Discover.propTypes = {

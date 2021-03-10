@@ -120,9 +120,13 @@ PostDefault.propTypes = {
   data: PropTypes.object,
 };
 
+const dimensions = Dimensions.get('window');
+const imageHeight = Math.round((dimensions.width * 9) / 13);
+const imageWidth = dimensions.width;
+
 const s = StyleSheet.create({
   container: {
-    width: Dimensions.get('window').width * 0.9,
+    width: imageWidth,
     alignItems: 'center',
     alignSelf: 'center',
     marginTop: 60,
@@ -133,14 +137,14 @@ const s = StyleSheet.create({
     elevation: 8,
   },
   image: {
-    width: Dimensions.get('window').width * 0.9,
-    height: Dimensions.get('window').height * 0.3172,
+    height: imageHeight,
+    width: imageWidth,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
   },
   feedbackImage: {
-    width: Dimensions.get('window').width * 0.9,
-    height: Dimensions.get('window').height * 0.3172,
+    width: imageWidth,
+    height: imageHeight,
     backgroundColor: Colors.white,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
