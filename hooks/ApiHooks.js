@@ -33,20 +33,6 @@ const throwErr = (string) => {
 
 const useSearchTitle = (string) => {
   const [mediaArray, setMediaArray] = useState([]);
-  /** *
-   * TODO update cannot be used in search/UseTagsMedia
-   * The update = useState(0) from mainContext cant be used
-   * for multiple components. The update value is used for home screen posts,
-   * and should only be used for those.
-   *
-   * If the same update hook is used in multiple funcions useEffect() methods
-   * all of these fuctions get called whenever the update receives any state
-   * changes. This causes all kinds of problems:
-   *
-   * 1. We update stuff that is not required / rendered -> Performance issues
-   * 2. We try to access stuff that is not initialized yet, which causes yet more problems
-   * 3. This creates cycles, which again try to access uninitialized fields
-   * */
   const {update} = useContext(MainContext);
 
   const searchTitle = async () => {
@@ -128,20 +114,6 @@ const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
   }, [update]);
 
   return mediaArray;
-};
-
-const loadTagPosts = async (tagName) => {
-  try {
-    const postsData = await doFetch(tagURL + appTag + tagName);
-    const media = await Promise.all(
-      postsData.map(async (item) => {
-        const postFile = await doFetch(mediaURL + item.file_id);
-        return postFile;
-      })
-    );
-  } catch (e) {
-    throwErr('loadMedia err: ', e.message);
-  }
 };
 
 const useLogin = () => {
@@ -230,6 +202,22 @@ const useTag = () => {
     } catch (e) {
       throwErr(e.message);
     }
+  };
+
+  const loadTagPosts = async (tagName) => {
+    const postData = await getByTag(appTag + tagName);
+    const filtered = postData.filter(
+      (post) => post.file_id !== parseInt(allTagsId)
+    );
+
+    const media = await Promise.all(
+      filtered.map(async (item) => {
+        const postFile = await doFetch(mediaURL + item.file_id);
+        return postFile;
+      })
+    );
+
+    return media;
   };
 
   /**
@@ -359,7 +347,7 @@ const useTag = () => {
     };
     try {
       const res = await doFetch(tagURL + 'file/' + allTagsId, options);
-      const tagList = res.filter((it) => it.tag !== appTag + '_all_tag_values'); // TODO Remove this tag
+      const tagList = res.filter((it) => it.tag !== '12843489398');
       const tagArray = [];
 
       for (const i in tagList) {
@@ -437,6 +425,7 @@ const useTag = () => {
     getAllTags,
     getTagsForPost,
     uploadAvatarPicture,
+    loadTagPosts,
   };
 };
 

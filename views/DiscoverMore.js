@@ -1,18 +1,17 @@
 import List from '../components/lists/List';
 import PropTypes from 'prop-types';
-import {MainContext} from '../contexts/MainContext';
-import React, {useContext} from 'react';
+import React from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import {Colors} from '../styles/Colors';
-import {Text} from 'react-native';
 
 const DiscoverMore = ({navigation, route}) => {
   const data = route.params;
   const media = data.data;
   const tag = data.title;
-  console.log('discover more data', data);
-  console.log('discover more data', tag);
+  console.log('discover more tag', tag);
+  // console.log('discover more data', data);
+  console.log('discover more media', data);
   // const {user} = useContext(MainContext);
 
   return (

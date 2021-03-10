@@ -5,11 +5,27 @@ import PropTypes from 'prop-types';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Colors} from '../../styles/Colors';
 import {Dimens} from '../../styles/Dimens';
+import {useTag} from '../../hooks/ApiHooks';
+import {CommonActions} from '@react-navigation/native';
 
 const Tag = ({navigation, tag}) => {
+  const {loadTagPosts} = useTag();
+
+  const navigateToTagPosts = async () => {
+    const postData = await loadTagPosts(tag);
+    navigation.push('Discover More', {
+      navigation: navigation,
+      data: postData,
+    });
+  };
+
   return (
     <View style={s.maincontainer}>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigateToTagPosts();
+        }}
+      >
         <Text style={s.tag}>{tag}</Text>
       </TouchableOpacity>
     </View>
