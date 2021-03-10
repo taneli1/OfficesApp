@@ -8,7 +8,7 @@ const uploadsURL = baseURL + 'uploads/';
 const loginURL = baseURL + 'login/';
 
 // All the tags of the app use this as the base
-const appTag = 'ofcapp_';
+const appTag = '189tjt3ads_';
 
 /*
   The application has a tag system for the posts. Users of the application
@@ -26,7 +26,7 @@ const appTag = 'ofcapp_';
   Whenever we need to see the tags of the application, we use a method in ApiHooks
   which returns all the tags in this hidden post.
 */
-const allTagsId = '402';
+const allTagsId = '871';
 
 export {
   mediaURL,

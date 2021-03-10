@@ -206,13 +206,18 @@ const useTag = () => {
 
   const loadTagPosts = async (tagName) => {
     const postData = await getByTag(appTag + tagName);
+    const filtered = postData.filter(
+      (post) => post.file_id !== parseInt(allTagsId)
+    );
+
     const media = await Promise.all(
-      postData.map(async (item) => {
+      filtered.map(async (item) => {
         const postFile = await doFetch(mediaURL + item.file_id);
         return postFile;
       })
     );
-    return media.reverse();
+
+    return media;
   };
 
   /**
@@ -342,7 +347,7 @@ const useTag = () => {
     };
     try {
       const res = await doFetch(tagURL + 'file/' + allTagsId, options);
-      const tagList = res.filter((it) => it.tag !== appTag + '_all_tag_values'); // TODO Remove this tag
+      const tagList = res.filter((it) => it.tag !== '12843489398');
       const tagArray = [];
 
       for (const i in tagList) {

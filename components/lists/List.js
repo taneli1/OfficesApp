@@ -1,12 +1,15 @@
 import React, {useContext} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import PostDefault from '../listitems/PostDefault';
 import ProfilePost from '../listitems/ProfilePost';
 import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
 import {Button, Card, SearchBar} from 'react-native-elements';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {View} from 'react-native';
+import {Icon} from 'react-native-elements';
+import {Colors} from '../../styles/Colors';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -25,11 +28,27 @@ const List = ({
   tagTitle3,
   tags,
 }) => {
-  const {user} = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
 
   if (layout === 'home') {
     return (
       <FlatList
+        ListHeaderComponent={
+          <TouchableOpacity
+            onPress={() => {
+              setUpdate(update + 1);
+            }}
+            style={{alignItems: 'center'}}
+          >
+            <Icon
+              style={{marginTop: 15}}
+              color={Colors.primary}
+              size={32}
+              name="refresh"
+            ></Icon>
+          </TouchableOpacity>
+        }
+        contentContainerStyle={{paddingBottom: 80}}
         data={mediaArray}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
@@ -37,9 +56,10 @@ const List = ({
         )}
       />
     );
-  } else if (layout === 'profile') {
+    /*   } else if (layout === 'profile') {     // Not needed here, profile implements this by itself
     return (
       <FlatList
+        contentContainerStyle={{paddingBottom: 80}}
         data={mediaArray}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
@@ -50,7 +70,7 @@ const List = ({
           />
         )}
       />
-    );
+    ); */
   } else if (layout === 'discover') {
     return (
       <ScrollView>
@@ -119,6 +139,7 @@ const List = ({
   } else if (layout === 'discoverMore') {
     return (
       <FlatList
+        contentContainerStyle={{paddingBottom: 80}}
         data={mediaArray}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (

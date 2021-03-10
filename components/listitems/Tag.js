@@ -13,15 +13,10 @@ const Tag = ({navigation, tag}) => {
 
   const navigateToTagPosts = async () => {
     const postData = await loadTagPosts(tag);
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: 'Discover More',
-        params: {
-          navigation: navigation,
-          data: postData,
-        },
-      })
-    );
+    navigation.push('Discover More', {
+      navigation: navigation,
+      data: postData,
+    });
   };
 
   return (
