@@ -55,6 +55,8 @@ const arrayMaker = async () => {
  *  which is not yet initialized.
  *
  * */
+
+/*
 const getRandomTag = () => {
   if (TAGS.length == 0)
     console.log(
@@ -66,6 +68,7 @@ const getRandomTag = () => {
   const result = randomTag.title;
   return result;
 };
+*/
 
 /**
   Provides the component to selecting/creating new tags in the app.
@@ -270,4 +273,9 @@ const getSelectedTags = () => {
   return sTags;
 };
 
-export {TagSelector, getSelectedTags, getRandomTag, arrayMaker};
+export {
+  TagSelector,
+  getSelectedTags,
+  // getRandomTag,
+  arrayMaker,
+};
