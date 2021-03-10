@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {FlatList} from 'react-native';
 import CommentBlock from '../listitems/CommentBlock';
 import PropTypes from 'prop-types';

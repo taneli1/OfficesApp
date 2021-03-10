@@ -18,12 +18,6 @@ const Upload = ({navigation}) => {
         <>
           <ScrollView>
             <View style={{paddingBottom: 60}}>
-              <View
-                style={[headerContainer, {alignSelf: 'center', marginLeft: 0}]}
-              >
-                <Text style={[bigHeader, s.header]}>Create new post</Text>
-              </View>
-
               <View style={s.container}>
                 <UploadForm navigation={navigation} />
               </View>
@@ -45,6 +39,7 @@ const s = StyleSheet.create({
   container: {
     marginStart: 20,
     marginEnd: 20,
+    marginTop: 40,
     backgroundColor: Colors.white,
     borderColor: Colors.primary,
     elevation: 10,

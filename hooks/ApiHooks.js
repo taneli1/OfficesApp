@@ -33,6 +33,20 @@ const throwErr = (string) => {
 
 const useSearchTitle = (string) => {
   const [mediaArray, setMediaArray] = useState([]);
+  /** *
+   * TODO update cannot be used in search/UseTagsMedia
+   * The update = useState(0) from mainContext cant be used
+   * for multiple components. The update value is used for home screen posts,
+   * and should only be used for those.
+   *
+   * If the same update hook is used in multiple funcions useEffect() methods
+   * all of these fuctions get called whenever the update receives any state
+   * changes. This causes all kinds of problems:
+   *
+   * 1. We update stuff that is not required / rendered -> Performance issues
+   * 2. We try to access stuff that is not initialized yet, which causes yet more problems
+   * 3. This creates cycles, which again try to access uninitialized fields
+   * */
   const {update} = useContext(MainContext);
 
   const searchTitle = async () => {
@@ -56,12 +70,42 @@ const useSearchTitle = (string) => {
   return mediaArray;
 };
 
+// Makes a MediaArray of a random tag for discover page
+const useTagsLoadMedia = (user) => {
+  const [mediaArray, setMediaArray] = useState([]);
+  const [tagTitle, setTagTitle] = useState();
+  const {update} = useContext(MainContext);
+
+  const tagloadMedia = async () => {
+    try {
+      const tag = ''; //getRandomTag();
+      const postsData = await doFetch(tagURL + appTag + tag);
+      const media = await Promise.all(
+        postsData.map(async (item) => {
+          const postFile = await doFetch(mediaURL + item.file_id);
+          return postFile;
+        })
+      );
+      setMediaArray(media.reverse());
+      setTagTitle(tag);
+    } catch (e) {
+      throwErr('loadMedia err: ', e.message);
+    }
+  };
+  useEffect(() => {
+    tagloadMedia();
+  }, [update]);
+
+  return [mediaArray, tagTitle];
+};
+
 const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update} = useContext(MainContext);
 
   // Fetches a list of posts, then fetch the media for those posts
   const loadMedia = async () => {
+    console.log('loadMedia, updateCalled');
     try {
       const postsData = await doFetch(tagURL + appTag);
       let media = await Promise.all(
