@@ -131,18 +131,17 @@ const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
 };
 
 const loadTagPosts = async (tagName) => {
-    try {
-      const postsData = await doFetch(tagURL + appTag + tagName);
-      const media = await Promise.all(
-        postsData.map(async (item) => {
-          const postFile = await doFetch(mediaURL + item.file_id);
-          return postFile;
-        })
-      );
-    } catch (e) {
-      throwErr('loadMedia err: ', e.message);
-    }
-  };
+  try {
+    const postsData = await doFetch(tagURL + appTag + tagName);
+    const media = await Promise.all(
+      postsData.map(async (item) => {
+        const postFile = await doFetch(mediaURL + item.file_id);
+        return postFile;
+      })
+    );
+  } catch (e) {
+    throwErr('loadMedia err: ', e.message);
+  }
 };
 
 const useLogin = () => {

@@ -5,11 +5,14 @@ import React, {useContext} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import {Colors} from '../styles/Colors';
+import {Text} from 'react-native';
 
 const DiscoverMore = ({navigation, route}) => {
   const data = route.params;
   const media = data.data;
+  const tag = data.title;
   console.log('discover more data', data);
+  console.log('discover more data', tag);
   // const {user} = useContext(MainContext);
 
   return (
@@ -17,7 +20,7 @@ const DiscoverMore = ({navigation, route}) => {
       <List
         navigation={navigation}
         mediaArray={media}
-        // tagTitle={tagData}
+        tagTitle={tag}
         layout="discoverMore"
       />
       <StatusBar style="auto" backgroundColor={Colors.darkGreen} />

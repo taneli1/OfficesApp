@@ -7,6 +7,17 @@ import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
 import {Button, Card, SearchBar} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
+import {View} from 'react-native';
+import {Text} from 'react-native';
+import {
+  bigHeader,
+  headerContainer,
+  cardLayout,
+} from '../../styles/BasicComponents';
+import {Colors} from '../../styles/Colors';
+import {Dimens} from '../../styles/Dimens';
+import {StyleSheet} from 'react-native';
+import singlePostStyles from '../../styles/SinglePost/SinglePostStyles';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -53,68 +64,84 @@ const List = ({
     );
   } else if (layout === 'discover') {
     return (
-      <ScrollView>
-        <SearchBar placeholder="Type Here..." />
+      <View>
+        <SearchBar
+          containerStyle={s.search}
+          inputContainerStyle={s.searchInput}
+          placeholder="Search posts by title"
+        />
+        <View containerStyle={[headerContainer, s.aaa]}>
+          {/* <Text style={[bigHeader, s.aaa]}>Check posts with these tags</Text> */}
+        </View>
+        <ScrollView>
+          <Card containerStyle={cardLayout}>
+            <View style={s.contentContainer}>
+              <Card.Title style={s.tag}>{tagTitle}</Card.Title>
+              <Button
+                buttonStyle={s.button}
+                title="See more"
+                onPress={() => {
+                  navigation.navigate('Discover More', {
+                    data: mediaArray,
+                    title: tagTitle,
+                  });
+                }}
+              >
+                See more
+              </Button>
+            </View>
 
-        <Card>
-          <Card.Title>{tagTitle}</Card.Title>
+            <FlatList
+              horizontal={true}
+              data={mediaArray}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <DiscoverDefault navigation={navigation} data={item} />
+              )}
+            />
+          </Card>
 
-          <FlatList
-            horizontal={true}
-            data={mediaArray}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
-              <DiscoverDefault navigation={navigation} data={item} />
-            )}
-          />
-          <Button
-            title="See more"
-            onPress={() => {
-              navigation.navigate('Discover More', {data: mediaArray});
-            }}
-          >
-            See more
-          </Button>
-        </Card>
-        <Card>
-          <Card.Title>{tagTitle2}</Card.Title>
-          <FlatList
-            horizontal={true}
-            data={mediaArray2}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
-              <DiscoverDefault navigation={navigation} data={item} />
-            )}
-          />
-          <Button
-            title="See more"
-            onPress={() => {
-              navigation.navigate('Discover More', {data: mediaArray2});
-            }}
-          >
-            See more
-          </Button>
-        </Card>
-        <Card>
-          <Card.Title>{tagTitle3}</Card.Title>
-          <FlatList
-            horizontal={true}
-            data={mediaArray3}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
-              <DiscoverDefault navigation={navigation} data={item} />
-            )}
-          />
-          <Button
-            title="See more"
-            onPress={() => {
-              navigation.navigate('Discover More', {data: mediaArray3});
-            }}
-          >
-            See more
-          </Button>
-        </Card>
-      </ScrollView>
+          <Card>
+            <Card.Title>{tagTitle2}</Card.Title>
+            <Button
+              title="See more"
+              onPress={() => {
+                navigation.navigate('Discover More', {data: mediaArray2});
+              }}
+            >
+              See more
+            </Button>
+            <FlatList
+              horizontal={true}
+              data={mediaArray2}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <DiscoverDefault navigation={navigation} data={item} />
+              )}
+            />
+          </Card>
+          <Card>
+            <Card.Title>{tagTitle3}</Card.Title>
+            <Button
+              title="See more"
+              onPress={() => {
+                navigation.navigate('Discover More', {data: mediaArray3});
+              }}
+            >
+              See more
+            </Button>
+            <FlatList
+              horizontal={true}
+              data={mediaArray3}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <DiscoverDefault navigation={navigation} data={item} />
+              )}
+            />
+          </Card>
+          <View style={singlePostStyles.fillerElement}></View>
+        </ScrollView>
+      </View>
     );
   } else if (layout === 'discoverMore') {
     return (
@@ -129,6 +156,59 @@ const List = ({
   }
 };
 
+const s = StyleSheet.create({
+  search: {
+    margin: 20,
+    backgroundColor: Colors.primary,
+    color: Colors.white,
+    borderRadius: 6,
+  },
+  searchInput: {
+    backgroundColor: Colors.white,
+    color: Colors.primary,
+  },
+  aaa: {
+    textAlign: 'justify',
+  },
+  maincontainer: {
+    flexDirection: 'row',
+    alignSelf: 'baseline',
+  },
+  tag: {
+    // paddingBottom: 6,
+    // paddingTop: 6,
+    flex: 1,
+    backgroundColor: Colors.primary,
+    color: Colors.white,
+    padding: 5,
+    borderRadius: 6,
+    fontSize: Dimens.fontSizes.textMedium,
+    marginRight: 20,
+    // paddingRight: 10,
+    // paddingLeft: 10,
+  },
+  button: {
+    flex: 2,
+    backgroundColor: Colors.primary,
+    color: Colors.white,
+    padding: 5,
+    borderRadius: 6,
+    fontSize: Dimens.fontSizes.textSmall,
+    marginLeft: 30,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    alignSelf: 'baseline',
+    // margin: 10,
+    // padding: 10,
+    // borderWidth: 1,
+    // borderRadius: 10,
+    // borderColor: 'gray',
+    // backgroundColor: 'white',
+  },
+});
 List.propTypes = {
   navigation: PropTypes.object,
   mediaArray: PropTypes.array,
