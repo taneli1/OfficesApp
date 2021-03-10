@@ -80,7 +80,7 @@ const PostDefault = ({navigation, data}) => {
         }}
       >
         {data.thumbnails != undefined && (
-          <View>
+          <View style={s.whiteC}>
             {runFeedback == true ? (
               <View style={s.feedbackImage}>
                 <Icon
@@ -121,12 +121,12 @@ PostDefault.propTypes = {
 };
 
 const dimensions = Dimensions.get('window');
-const imageHeight = Math.round((dimensions.width * 9) / 13);
+const imageHeight = Math.round((dimensions.width * 9) / 13.31);
 const imageWidth = dimensions.width;
 
 const s = StyleSheet.create({
   container: {
-    width: imageWidth,
+    width: imageWidth - 40,
     alignItems: 'center',
     alignSelf: 'center',
     marginTop: 60,
@@ -137,6 +137,8 @@ const s = StyleSheet.create({
     elevation: 8,
   },
   image: {
+    transform: [{translateX: -20}],
+
     height: imageHeight,
     width: imageWidth,
     borderTopRightRadius: 10,
@@ -183,10 +185,12 @@ const s = StyleSheet.create({
     padding: 3,
   },
   box: {
-    width: Dimensions.get('window').width * 0.9,
+    width: imageWidth * 0.9,
   },
   whiteC: {
-    backgroundColor: Colors.white,
+    width: imageWidth - 40,
+    height: imageHeight,
+    backgroundColor: Colors.grey,
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
   },

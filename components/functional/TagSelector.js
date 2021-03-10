@@ -151,7 +151,7 @@ const TagSelector = () => {
                 color: Colors.primary,
                 backgroundColor: Colors.primary,
               }}
-              title="Save tag"
+              title="Save tags"
               onPress={() => showTags()}
             ></Button>
           </TouchableHighlight>
