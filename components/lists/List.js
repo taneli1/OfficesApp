@@ -4,11 +4,17 @@ import PropTypes from 'prop-types';
 import PostDefault from '../listitems/PostDefault';
 import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
-import {SearchBar} from 'react-native-elements';
+import {Button, Card, SearchBar} from 'react-native-elements';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {View} from 'react-native';
-import {Icon} from 'react-native-elements';
+import {headerContainer, cardLayout} from '../../styles/BasicComponents';
 import {Colors} from '../../styles/Colors';
+import {Dimens} from '../../styles/Dimens';
+import singlePostStyles from '../../styles/SinglePost/SinglePostStyles';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Icon} from 'react-native-elements';
+import Input from 'react-select/src/components/Input';
+import useSearch from '../../hooks/SearchHooks';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -28,6 +34,7 @@ const List = ({
   tags,
 }) => {
   const {update, setUpdate} = useContext(MainContext);
+  const {inputs, handleInputChange} = useSearch();
 
   if (layout === 'home') {
     return (
@@ -58,12 +65,27 @@ const List = ({
   } else if (layout === 'discover') {
     return (
       <ScrollView>
-        <SearchBar
-          lightTheme={true}
-          containerStyle={styles.search}
-          placeholder="Type Here..."
-        />
-
+        <View style={styles.searchContainer}>
+          <SearchBar
+            lightTheme={true}
+            containerStyle={styles.search}
+            placeholder="Search posts by title"
+            value={inputs.search}
+            onChangeText={(txt) => handleInputChange('search', txt)}
+            inputStyle={styles.button}
+          />
+          <Text
+            onPress={() => {
+              navigation.navigate('Search', {
+                data: mediaArray,
+                search: inputs,
+              });
+            }}
+            style={[styles.button, {marginTop: 50, marginLeft: 6}]}
+          >
+            Go!
+          </Text>
+        </View>
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <TouchableOpacity
@@ -173,10 +195,27 @@ const List = ({
         )}
       />
     );
+  } else if (layout === 'search') {
+    return (
+      <FlatList
+        contentContainerStyle={{paddingBottom: 80}}
+        data={mediaArray}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <PostDefault navigation={navigation} data={item} />
+        )}
+      />
+    );
   }
 };
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    width: Dimensions.get('window').width,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   container: {
     alignItems: 'flex-start',
     marginTop: 50,
@@ -205,7 +244,7 @@ const styles = StyleSheet.create({
   },
   search: {
     width: Dimensions.get('window').width - 60,
-    marginLeft: 30,
+    marginLeft: 20,
     marginTop: 50,
   },
 });

@@ -13,6 +13,7 @@ import {
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useSearch from './SearchHooks';
 // import {getRandomTag} from '../components/functional/TagSelector';
 
 const TAG = 'ApiHooks: ';
@@ -30,60 +31,6 @@ const doFetch = async (url, options = {}) => {
 const throwErr = (string) => {
   throw new Error(TAG + ' ' + string);
 };
-
-const useSearchTitle = (string) => {
-  const [mediaArray, setMediaArray] = useState([]);
-  const {update} = useContext(MainContext);
-
-  const searchTitle = async () => {
-    try {
-      const postsData = await doFetch(tagURL + appTag);
-      let media = await Promise.all(
-        postsData.map(async (item) => {
-          const postFile = await doFetch(mediaURL + item.file_id);
-          return postFile;
-        })
-      );
-      media = media.filter(media.title.includes(string));
-      setMediaArray(media.reverse());
-    } catch (e) {
-      throwErr('loadMedia err: ', e.message);
-    }
-  };
-  useEffect(() => {
-    searchTitle();
-  }, [update]);
-  return mediaArray;
-};
-
-// Makes a MediaArray of a random tag for discover page
-// const useTagsLoadMedia = (user) => {
-//   const [mediaArray, setMediaArray] = useState([]);
-//   const [tagTitle, setTagTitle] = useState();
-//   const {update} = useContext(MainContext);
-
-//   const tagloadMedia = async () => {
-//     try {
-//       const tag = ''; //getRandomTag();
-//       const postsData = await doFetch(tagURL + appTag + tag);
-//       const media = await Promise.all(
-//         postsData.map(async (item) => {
-//           const postFile = await doFetch(mediaURL + item.file_id);
-//           return postFile;
-//         })
-//       );
-//       setMediaArray(media.reverse());
-//       setTagTitle(tag);
-//     } catch (e) {
-//       throwErr('loadMedia err: ', e.message);
-//     }
-//   };
-//   useEffect(() => {
-//     tagloadMedia();
-//   }, [update]);
-
-//   return [mediaArray, tagTitle];
-// };
 
 const useLoadMedia = (usersPostsOnly, userId, tagPostsOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
@@ -669,8 +616,6 @@ const useMedia = () => {
 
 export {
   useLoadMedia,
-  // useTagsLoadMedia,
-  useSearchTitle,
   useLogin,
   useUser,
   useTag,

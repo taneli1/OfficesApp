@@ -9,6 +9,7 @@ const MainProvider = ({children}) => {
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(0);
   const [updateDisc, setUpdateDisc] = useState(0);
+  const [updateSearch, setUpdateSearch] = useState(0);
   const [updtFavorites, setUpdtFavorites] = useState(0);
   const [refreshItemLinks, setRefreshItemLinks] = useState(0);
   const [updateSinglePostData, setUpdateSinglePostData] = useState(false);
@@ -26,6 +27,8 @@ const MainProvider = ({children}) => {
         setUpdate,
         updateDisc,
         setUpdateDisc,
+        updateSearch,
+        setUpdateSearch,
         updtFavorites,
         setUpdtFavorites,
         refreshItemLinks,
