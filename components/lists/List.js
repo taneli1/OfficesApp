@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {FlatList} from 'react-native';
+import {Dimensions, FlatList, StyleSheet, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import PostDefault from '../listitems/PostDefault';
 import {MainContext} from '../../contexts/MainContext';
@@ -80,96 +80,110 @@ const List = ({
     ); */
   } else if (layout === 'discover') {
     return (
-      <View>
+      <ScrollView>
         <SearchBar
-          containerStyle={s.search}
-          inputContainerStyle={s.searchInput}
-          placeholder="Search posts by title"
-          onChangeText={(txt) => handleInputChange('search', txt)}
-          // onChangeText={this.updateSearch}
-          // value={txt}
+          lightTheme={true}
+          containerStyle={styles.search}
+          placeholder="Type Here..."
         />
-        <Button
-          onPress={() => {
-            navigation.navigate('Search', {
-              data: mediaArray,
-              // title: tagTitle,
-              // search: inputs,
-            });
-          }}
-        />
-        <View containerStyle={[headerContainer, s.aaa]}>
-          {/* <Text style={[bigHeader, s.aaa]}>Check posts with these tags</Text> */}
+
+        <View style={styles.container}>
+          <View style={styles.textContainer}>
+            <TouchableOpacity
+              style={{alignSelf: 'flex-start'}}
+              onPress={() => {
+                navigation.navigate('Discover More', {data: mediaArray});
+              }}
+            >
+              <Text style={styles.tagHeader}>{tagTitle}</Text>
+            </TouchableOpacity>
+            <Text
+              onPress={() => {
+                navigation.navigate('Discover More', {data: mediaArray});
+              }}
+              style={styles.button}
+            >
+              See more &gt;
+            </Text>
+          </View>
+
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            ListFooterComponent={<View style={{marginLeft: 30}} />}
+            horizontal={true}
+            data={mediaArray}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <DiscoverDefault navigation={navigation} data={item} />
+            )}
+          />
         </View>
-        <ScrollView>
-          <Card containerStyle={cardLayout}>
-            <View style={s.contentContainer}>
-              <Card.Title style={s.tag}>{tagTitle}</Card.Title>
-              <Button
-                buttonStyle={s.button}
-                title="See more"
-                onPress={() => {
-                  navigation.navigate('Discover More', {
-                    data: mediaArray,
-                    title: tagTitle,
-                  });
-                }}
-              >
-                See more
-              </Button>
-            </View>
 
-            <FlatList
-              horizontal={true}
-              data={mediaArray}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
-                <DiscoverDefault navigation={navigation} data={item} />
-              )}
-            />
-          </Card>
-
-          <Card>
-            <Card.Title>{tagTitle2}</Card.Title>
-            <Button
-              title="See more"
+        <View style={styles.container}>
+          <View style={styles.textContainer}>
+            <TouchableOpacity
+              style={{alignSelf: 'flex-start'}}
               onPress={() => {
                 navigation.navigate('Discover More', {data: mediaArray2});
               }}
             >
-              See more
-            </Button>
-            <FlatList
-              horizontal={true}
-              data={mediaArray2}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
-                <DiscoverDefault navigation={navigation} data={item} />
-              )}
-            />
-          </Card>
-          <Card>
-            <Card.Title>{tagTitle3}</Card.Title>
-            <Button
-              title="See more"
+              <Text style={styles.tagHeader}>{tagTitle2}</Text>
+            </TouchableOpacity>
+            <Text
+              onPress={() => {
+                navigation.navigate('Discover More', {data: mediaArray2});
+              }}
+              style={styles.button}
+            >
+              See more &gt;
+            </Text>
+          </View>
+
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            ListFooterComponent={<View style={{marginLeft: 30}} />}
+            horizontal={true}
+            data={mediaArray2}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <DiscoverDefault navigation={navigation} data={item} />
+            )}
+          />
+        </View>
+
+        <View style={styles.container}>
+          <View style={styles.textContainer}>
+            <TouchableOpacity
+              style={{alignSelf: 'flex-start'}}
               onPress={() => {
                 navigation.navigate('Discover More', {data: mediaArray3});
               }}
             >
-              See more
-            </Button>
-            <FlatList
-              horizontal={true}
-              data={mediaArray3}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
-                <DiscoverDefault navigation={navigation} data={item} />
-              )}
-            />
-          </Card>
-          <View style={singlePostStyles.fillerElement}></View>
-        </ScrollView>
-      </View>
+              <Text style={styles.tagHeader}>{tagTitle3}</Text>
+            </TouchableOpacity>
+            <Text
+              onPress={() => {
+                navigation.navigate('Discover More', {data: mediaArray3});
+              }}
+              style={styles.button}
+            >
+              See more &gt;
+            </Text>
+          </View>
+
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            ListFooterComponent={<View style={{marginLeft: 30}} />}
+            style={{paddingBottom: 50}}
+            horizontal={true}
+            data={mediaArray3}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <DiscoverDefault navigation={navigation} data={item} />
+            )}
+          />
+        </View>
+      </ScrollView>
     );
   } else if (layout === 'discoverMore') {
     return (
@@ -196,59 +210,40 @@ const List = ({
   }
 };
 
-const s = StyleSheet.create({
-  search: {
-    margin: 20,
-    backgroundColor: Colors.primary,
-    color: Colors.white,
-    borderRadius: 6,
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'flex-start',
+    marginTop: 50,
   },
-  searchInput: {
-    backgroundColor: Colors.white,
-    color: Colors.primary,
-  },
-  aaa: {
-    textAlign: 'justify',
-  },
-  maincontainer: {
+  textContainer: {
+    width: Dimensions.get('window').width,
     flexDirection: 'row',
-    alignSelf: 'baseline',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  tag: {
-    // paddingBottom: 6,
-    // paddingTop: 6,
-    flex: 1,
+  tagHeader: {
     backgroundColor: Colors.primary,
     color: Colors.white,
+    borderColor: Colors.white,
+    borderWidth: 1,
     padding: 5,
-    borderRadius: 6,
-    fontSize: Dimens.fontSizes.textMedium,
-    marginRight: 20,
-    // paddingRight: 10,
-    // paddingLeft: 10,
+    paddingLeft: 10,
+    borderRadius: 5,
+    fontSize: 16,
+    marginLeft: 15,
   },
   button: {
-    flex: 2,
-    backgroundColor: Colors.primary,
-    color: Colors.white,
-    padding: 5,
-    borderRadius: 6,
-    fontSize: Dimens.fontSizes.textSmall,
-    marginLeft: 30,
-    paddingRight: 10,
-    paddingLeft: 10,
+    color: Colors.primary,
+    fontSize: 16,
+    marginRight: 25,
   },
-  contentContainer: {
-    flexDirection: 'row',
-    alignSelf: 'baseline',
-    // margin: 10,
-    // padding: 10,
-    // borderWidth: 1,
-    // borderRadius: 10,
-    // borderColor: 'gray',
-    // backgroundColor: 'white',
+  search: {
+    width: Dimensions.get('window').width - 60,
+    marginLeft: 30,
+    marginTop: 50,
   },
 });
+
 List.propTypes = {
   navigation: PropTypes.object,
   mediaArray: PropTypes.array,

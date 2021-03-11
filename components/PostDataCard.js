@@ -22,6 +22,8 @@ import {MainContext} from '../contexts/MainContext';
   Layout for the single screen card, without the image of the post.
 */
 const PostDataCard = ({navigation, postData}) => {
+  console.log(postData);
+
   /**
     DesciptionData is saved as an array to the DB.
 
@@ -65,6 +67,19 @@ const PostDataCard = ({navigation, postData}) => {
   const changeInput = (txt) => {
     commentInput = txt;
     console.log(commentInput);
+  };
+
+  const formattedTime = () => {
+    const dateData = new Date(postData.time_added);
+    return `${dateData.getHours()}:${dateData.getMinutes()}`;
+  };
+
+  const formattedDate = () => {
+    const dateData = new Date(postData.time_added);
+    return dateData
+      .toLocaleDateString('fi-FI')
+      .replace('/', '.')
+      .replace('/', '.');
   };
 
   useEffect(() => {
@@ -176,6 +191,10 @@ const PostDataCard = ({navigation, postData}) => {
             ></Card.Divider>
           </View>
         )}
+        <View style={styles.description}>
+          <Text style={{color: Colors.grey}}>klo {formattedTime()}</Text>
+          <Text style={{color: Colors.grey}}>{formattedDate()}</Text>
+        </View>
       </Card>
     </View>
   );
