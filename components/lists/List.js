@@ -10,7 +10,6 @@ import {View} from 'react-native';
 import {headerContainer, cardLayout} from '../../styles/BasicComponents';
 import {Colors} from '../../styles/Colors';
 import {Dimens} from '../../styles/Dimens';
-import {StyleSheet} from 'react-native';
 import singlePostStyles from '../../styles/SinglePost/SinglePostStyles';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Icon} from 'react-native-elements';
@@ -81,12 +80,26 @@ const List = ({
   } else if (layout === 'discover') {
     return (
       <ScrollView>
-        <SearchBar
-          lightTheme={true}
-          containerStyle={styles.search}
-          placeholder="Type Here..."
-        />
-
+        <View style={styles.searchContainer}>
+          <SearchBar
+            lightTheme={true}
+            containerStyle={styles.search}
+            placeholder="Search posts by title"
+            onChangeText={(txt) => handleInputChange('search', txt)}
+          />
+          <Text
+            onPress={() => {
+              navigation.navigate('Search', {
+                data: mediaArray,
+                // title: tagTitle,
+                // search: inputs,
+              });
+            }}
+            style={[styles.button, {marginTop: 50, marginLeft: 6}]}
+          >
+            Go!
+          </Text>
+        </View>
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <TouchableOpacity
@@ -211,6 +224,12 @@ const List = ({
 };
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    width: Dimensions.get('window').width,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   container: {
     alignItems: 'flex-start',
     marginTop: 50,
@@ -239,7 +258,7 @@ const styles = StyleSheet.create({
   },
   search: {
     width: Dimensions.get('window').width - 60,
-    marginLeft: 30,
+    marginLeft: 20,
     marginTop: 50,
   },
 });

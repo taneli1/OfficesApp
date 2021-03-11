@@ -31,15 +31,17 @@ const doFetch = async (url, options = {}) => {
 const throwErr = (string) => {
   throw new Error(TAG + ' ' + string);
 };
-
+/*
 const useSearchTitle = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const {updateSearch} = useContext(MainContext);
-  const {inputs, handleInputChange} = useSearch();
-  console.log('useSearchTitle inputs', inputs);
-  console.log('useSearchTitle inputs.search', inputs.search);
 
   const searchTitle = async () => {
+    const {inputs, handleInputChange} = useSearch();
+    let word = inputs.search;
+    // console.log('useSearchTitle inputs', inputs);
+    console.log('useSearchTitle word', word);
+    word = 'a';
     try {
       const postsData = await doFetch(tagURL + appTag);
       let media = await Promise.all(
@@ -49,9 +51,9 @@ const useSearchTitle = () => {
           return postFile;
         })
       );
-      console.log('useSearchTitle media', inputs.search);
-      console.log('useSearchTitle inputs.search', inputs.search);
-      media = media.filter(media.title.includes(inputs.search));
+      console.log('useSearchTitle media', media);
+      console.log('useSearchTitle word inside', word);
+      media = media.filter(media.title.includes(word));
       setMediaArray(media.reverse());
     } catch (e) {
       throwErr('searchTitle err: ', e.message);
@@ -62,6 +64,7 @@ const useSearchTitle = () => {
   }, [updateSearch]);
   return mediaArray;
 };
+*/
 
 // Makes a MediaArray of a random tag for discover page
 // const useTagsLoadMedia = (user) => {
@@ -671,7 +674,7 @@ const useMedia = () => {
 export {
   useLoadMedia,
   // useTagsLoadMedia,
-  useSearchTitle,
+  // useSearchTitle,
   useLogin,
   useUser,
   useTag,

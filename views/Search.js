@@ -13,9 +13,16 @@ import {useLoadMedia} from '../hooks/ApiHooks';
 
 const Search = ({navigation, route}) => {
   const {inputs, handleInputChange} = useSearch();
-  const media = useLoadMedia();
-  console.log('search media', media);
-  const mediaSearch = media.filter(media.title.includes(inputs.search));
+  let media = useLoadMedia();
+  // const media = useSearchTitle();
+  // console.log('search media', media);
+  // inputs.search = 'k';
+
+  media = media.filter((item) => item.title.includes(inputs.search));
+  console.log('search inputs.search', inputs.search);
+  console.log('search media2 ', media);
+
+  // const mediaSearch = media.filter(media.title.includes('a'));
   // const mediaSearch = useSearchTitle();
   // const {inputs, handleInputChange} = useSearch();
   // console.log('search 1', route);
@@ -28,7 +35,7 @@ const Search = ({navigation, route}) => {
     <SafeAreaView style={GlobalStyles.droidSafeArea}>
       <List
         navigation={navigation}
-        mediaArray={mediaSearch}
+        mediaArray={media}
         // tagTitle={tag}
         layout="search"
       />
