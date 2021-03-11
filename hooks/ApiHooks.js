@@ -232,16 +232,22 @@ const useTag = () => {
    Any new tags in the tagArray are saved to a hidden post, which
    contains all the user created tags in the app.
    */
-  const uploadPost = async (image, inputs, tagArray, descriptionObject) => {
+  const uploadPost = async (
+    image,
+    filetype,
+    inputs,
+    tagArray,
+    descriptionObject
+  ) => {
     const axios = require('axios').default;
     const userToken = await AsyncStorage.getItem('userToken');
     const filename = image.split('/').pop();
     const oldTags = await getAllTags();
     let ok = false;
 
-    // Infer the type of the image
+    // Infer the type of the image/video
     const match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
+    let type = match ? `${filetype}/${match[1]}` : filetype;
     if (type === 'image/jpg') type = 'image/jpeg';
 
     const formData = new FormData();

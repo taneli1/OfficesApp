@@ -353,23 +353,6 @@ const styles = StyleSheet.create({
     fontSize: Dimens.fontSizes.textMedium,
     margin: 5,
   },
-  postsHeader: {
-    fontSize: Dimens.fontSizes.textMedium,
-    color: Colors.white,
-    backgroundColor: Colors.primary,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    padding: 5,
-    paddingLeft: 10,
-    paddingRight: 100,
-    marginLeft: 30,
-    marginTop: 20,
-    marginBottom: 10,
-    alignSelf: 'flex-start',
-  },
-  listContainer: {
-    height: '55%',
-  },
   logoutButtonContainer: {
     position: 'absolute',
     top: 10,
