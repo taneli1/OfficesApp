@@ -12,15 +12,21 @@ import {useSearchTitle} from '../hooks/ApiHooks';
 import {useLoadMedia} from '../hooks/ApiHooks';
 
 const Search = ({navigation, route}) => {
-  const {inputs, handleInputChange} = useSearch();
+  const {inputs} = useSearch();
   let media = useLoadMedia();
   // const media = useSearchTitle();
   // console.log('search media', media);
   // inputs.search = 'k';
-
-  media = media.filter((item) => item.title.includes(inputs.search));
+  const word = route.params.search.search;
+  console.log('search test', word);
+  // console.log('search route', route);
+  console.log('search inputs', inputs);
   console.log('search inputs.search', inputs.search);
-  console.log('search media2 ', media);
+  media = media.filter((item) =>
+    item.title.toLowerCase().includes(word.toLowerCase())
+  );
+  // console.log('search inputs.search', inputs.search);
+  // console.log('search media2 ', media);
 
   // const mediaSearch = media.filter(media.title.includes('a'));
   // const mediaSearch = useSearchTitle();

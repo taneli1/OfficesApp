@@ -85,14 +85,17 @@ const List = ({
             lightTheme={true}
             containerStyle={styles.search}
             placeholder="Search posts by title"
+            value={inputs.search}
             onChangeText={(txt) => handleInputChange('search', txt)}
+            inputStyle={styles.button}
+            // onChangeText={(search) => this.setState({search})}
           />
           <Text
             onPress={() => {
               navigation.navigate('Search', {
                 data: mediaArray,
                 // title: tagTitle,
-                // search: inputs,
+                search: inputs,
               });
             }}
             style={[styles.button, {marginTop: 50, marginLeft: 6}]}
