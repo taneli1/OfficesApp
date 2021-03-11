@@ -2,10 +2,9 @@ import React, {useContext} from 'react';
 import {Dimensions, FlatList, StyleSheet, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import PostDefault from '../listitems/PostDefault';
-import ProfilePost from '../listitems/ProfilePost';
 import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
-import {Button, Card, SearchBar} from 'react-native-elements';
+import {SearchBar} from 'react-native-elements';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {View} from 'react-native';
 import {Icon} from 'react-native-elements';
@@ -56,21 +55,6 @@ const List = ({
         )}
       />
     );
-    /*   } else if (layout === 'profile') {     // Not needed here, profile implements this by itself
-    return (
-      <FlatList
-        contentContainerStyle={{paddingBottom: 80}}
-        data={mediaArray}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => (
-          <ProfilePost
-            navigation={navigation}
-            data={item}
-            isUsersPost={item.user_id === user.user_id}
-          />
-        )}
-      />
-    ); */
   } else if (layout === 'discover') {
     return (
       <ScrollView>

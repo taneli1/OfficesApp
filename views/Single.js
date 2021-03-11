@@ -102,6 +102,7 @@ const Single = ({navigation, route}) => {
             style={{width: '100%', height: undefined, aspectRatio: 16 / 9}}
             useNativeControls={true}
             resizeMode="contain"
+            shouldPlay={true}
             onError={(err) => {
               console.error('video', err);
             }}
