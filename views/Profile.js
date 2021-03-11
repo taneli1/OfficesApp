@@ -75,7 +75,7 @@ const Profile = ({navigation, route}) => {
     }
 
     const options = {
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,

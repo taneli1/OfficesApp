@@ -56,11 +56,11 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     getToken();
-    // A half second timeout to prevent the login form from appearing for a short time before getting to the home screen when the user is
+    // A one second timeout to prevent the login form from appearing for a short time before getting to the home screen when the user is
     // already logged in or used the app previously anonymously.
     const timer = setTimeout(() => {
       setLogInStatusChecked(true);
-    }, 500);
+    }, 1000);
     return () => {
       clearTimeout(timer);
     };
