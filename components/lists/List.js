@@ -5,7 +5,7 @@ import PostDefault from '../listitems/PostDefault';
 import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
 import {Button, Card, SearchBar} from 'react-native-elements';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {View} from 'react-native';
 import {headerContainer, cardLayout} from '../../styles/BasicComponents';
 import {Colors} from '../../styles/Colors';

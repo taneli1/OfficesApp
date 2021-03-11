@@ -153,24 +153,13 @@ const Profile = ({navigation, route}) => {
     fetchAvatar();
   }, [profilePictureUpdated]);
 
-  /*
-   * Made a small change to the profile component:
-   *
-   * Made the main element a Flatlist, which was copy pasted from
-   * List.js. All the data goes into this flatlist from here, so the profile section
-   * from List.js can be removed.
-   *
-   * Otherwise everything is the same, but removed the List.js component from
-   * the layout, and copy pasted everything what was left into the ListHeaderComponent,
-   * which renders the element in it before the list items itself start to render.
-   *
-   * This is done so the whole profile element is scrollable now.
-   */
   return (
-    <FlatList
-      ListHeaderComponent={
-        <View>
-          {isLoggedIn ? (
+    <View>
+      {/* If the user is logged in, the profile page is rendered, if not, a login/register button is rendered instead.
+      The list header component includes all the user info components and after that the user's posts are rendered in the list. */}
+      {isLoggedIn ? (
+        <FlatList
+          ListHeaderComponent={
             <>
               <View style={styles.userInfoContainer}>
                 <View style={styles.profileImageContainer}>
@@ -185,16 +174,14 @@ const Profile = ({navigation, route}) => {
                   {isOwnProfile && (
                     <View style={styles.profileImageButtonContainer}>
                       {/* Confirm and cancel buttons are only rendered when a new profile picture has been picked. Otherwise the change profile
-                  picture button is rendered. */}
+                      picture button is rendered. */}
                       {!profilePicturePicking && !profilePicturePicked ? (
-                        <>
-                          <Button
-                            title="Change profile picture"
-                            buttonStyle={styles.smallButton}
-                            titleStyle={styles.smallButtonTitle}
-                            onPress={pickImage}
-                          ></Button>
-                        </>
+                        <Button
+                          title="Change profile picture"
+                          buttonStyle={styles.smallButton}
+                          titleStyle={styles.smallButtonTitle}
+                          onPress={pickImage}
+                        ></Button>
                       ) : (
                         <>
                           {profilePicturePicked ? (
@@ -205,8 +192,8 @@ const Profile = ({navigation, route}) => {
                                 titleStyle={styles.smallButtonTitle}
                                 onPress={doUpload}
                               ></Button>
-                              {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the profilePictureUpdated
-                          state variable is updated to make the useEffect fetch the original profile picture back. */}
+                              {/* When the cancel button is pressed, the profilePicturePicked state variable is set to false and the
+                              profilePictureUpdated state variable is updated to make the useEffect fetch the original profile picture back. */}
                               <Button
                                 title="Cancel"
                                 buttonStyle={styles.cancelButton}
@@ -220,14 +207,12 @@ const Profile = ({navigation, route}) => {
                               ></Button>
                             </>
                           ) : (
-                            <>
-                              <View style={styles.activityIndicatorContainer}>
-                                <ActivityIndicator
-                                  size="small"
-                                  color={Colors.primary}
-                                />
-                              </View>
-                            </>
+                            <View style={styles.activityIndicatorContainer}>
+                              <ActivityIndicator
+                                size="small"
+                                color={Colors.primary}
+                              />
+                            </View>
                           )}
                         </>
                       )}
@@ -253,6 +238,7 @@ const Profile = ({navigation, route}) => {
                   </View>
                 </View>
               </View>
+              <Text style={styles.postsHeader}>Posts</Text>
               {/* Logout button is rendered only if the profile is the user's own profile. */}
               {isOwnProfile && (
                 <View style={styles.logoutButtonContainer}>
@@ -264,33 +250,34 @@ const Profile = ({navigation, route}) => {
                 </View>
               )}
             </>
-          ) : (
-            <>
-              <View>
-                <LoginButton></LoginButton>
-              </View>
-            </>
+          }
+          contentContainerStyle={styles.listComponent}
+          data={data}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => (
+            <ProfilePost
+              navigation={navigation}
+              data={item}
+              isUsersPost={item.user_id === user.user_id}
+            />
           )}
-        </View>
-      }
-      contentContainerStyle={{paddingBottom: 110, marginTop: 20}}
-      data={data}
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={({item}) => (
-        <ProfilePost
-          navigation={navigation}
-          data={item}
-          isUsersPost={item.user_id === user.user_id}
         />
+      ) : (
+        <View>
+          <LoginButton></LoginButton>
+        </View>
       )}
-    />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  listComponent: {
+    paddingBottom: 50,
+  },
   userInfoContainer: {
     flexDirection: 'row',
-    height: '30%',
+    height: 230,
   },
   profileImageContainer: {
     flex: 1,
@@ -301,7 +288,7 @@ const styles = StyleSheet.create({
     height: 120,
     aspectRatio: 1,
     borderRadius: 120 / 2,
-    marginTop: 40,
+    marginTop: 50,
     marginLeft: 10,
     marginRight: 10,
   },
@@ -343,7 +330,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginLeft: 0,
     marginRight: 10,
-    marginTop: 60,
+    marginTop: 70,
     marginBottom: 20,
   },
   fullNameContainer: {
@@ -363,12 +350,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 100,
     marginLeft: 30,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
     alignSelf: 'flex-start',
-  },
-  listContainer: {
-    height: '55%',
   },
   logoutButtonContainer: {
     position: 'absolute',

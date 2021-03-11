@@ -1,21 +1,26 @@
-import React, {useContext} from 'react';
-import {ScrollView} from 'react-native';
+import React, {useContext, useState, useEffect} from 'react';
+import {
+  ScrollView,
+  View,
+  ImageBackground,
+  LogBox,
+  TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import PostDataCard from '../components/PostDataCard';
 import singlePostStyles from '../styles/SinglePost/SinglePostStyles';
 import {uploadsURL} from '../utils/Variables';
-import {View} from 'react-native';
-import {ImageBackground} from 'react-native';
 import PostOptionsButton from '../components/PostOptionsButton';
 import {MainContext} from '../contexts/MainContext';
 import {Icon} from 'react-native-elements';
-import {LogBox} from 'react-native';
 import {Colors} from '../styles/Colors';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {Video} from 'expo-av';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const Single = ({navigation, route}) => {
   const {data} = route.params;
   const {user} = useContext(MainContext);
+  const [videoRef, setVideoRef] = useState(null);
 
   let isOwnFile;
   if (data.user_id === user.user_id) {
@@ -24,57 +29,130 @@ const Single = ({navigation, route}) => {
 
   console.log('adata; ', data);
 
+  const unlock = async () => {
+    try {
+      await ScreenOrientation.unlockAsync();
+    } catch (error) {
+      console.error('unlock', error.message);
+    }
+  };
+
+  const lock = async () => {
+    try {
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
+    } catch (error) {
+      console.error('lock', error.message);
+    }
+  };
+
+  const handleVideoRef = (component) => {
+    setVideoRef(component);
+  };
+
+  const showVideoInFullscreen = async () => {
+    try {
+      if (videoRef) await videoRef.presentFullscreenPlayer();
+    } catch (error) {
+      console.error('fullscreen', error.message);
+    }
+  };
+
+  useEffect(() => {
+    unlock();
+
+    const orientSub = ScreenOrientation.addOrientationChangeListener((evt) => {
+      console.log('orientation', evt);
+      if (evt.orientationInfo.orientation > 2) {
+        // show video in fullscreen
+        showVideoInFullscreen();
+      }
+    });
+
+    return () => {
+      ScreenOrientation.removeOrientationChangeListener(orientSub);
+      lock();
+    };
+  }, [videoRef]);
+
   return (
     <View style={{flex: 1}}>
-      <View style={singlePostStyles.bgContainer}>
-        <ImageBackground
-          style={singlePostStyles.bgImage}
-          source={{uri: uploadsURL + data.thumbnails.w320}}
-          resizeMode="stretch"
-          blurRadius={20}
-          opacity={0.7}
-        >
+      {data.media_type === 'image' ? (
+        <View style={singlePostStyles.bgContainer}>
           <ImageBackground
             style={singlePostStyles.bgImage}
-            source={{uri: uploadsURL + data.filename}}
-            resizeMode="contain"
+            source={{uri: uploadsURL + data.thumbnails.w320}}
+            resizeMode="stretch"
+            blurRadius={20}
+            opacity={0.7}
           >
-            <TouchableWithoutFeedback
-              opacity="0.5"
-              onPress={() => navigation.goBack()}
-              style={singlePostStyles.backButtonContainer}
-            >
-              <Icon
-                name="keyboard-arrow-left"
-                size={40}
-                color={Colors.white}
-                style={singlePostStyles.backButtonIcon}
-              ></Icon>
-            </TouchableWithoutFeedback>
+            <ImageBackground
+              style={singlePostStyles.bgImage}
+              source={{uri: uploadsURL + data.filename}}
+              resizeMode="contain"
+            ></ImageBackground>
           </ImageBackground>
-        </ImageBackground>
+        </View>
+      ) : (
+        <View style={singlePostStyles.videoContainer}>
+          <Video
+            ref={handleVideoRef}
+            source={{uri: uploadsURL + data.filename}}
+            style={{width: '100%', height: undefined, aspectRatio: 16 / 9}}
+            useNativeControls={true}
+            resizeMode="contain"
+            shouldPlay={true}
+            onError={(err) => {
+              console.error('video', err);
+            }}
+            posterSource={{uri: uploadsURL + data.screenshot}}
+          />
+        </View>
+      )}
+      <View style={singlePostStyles.backButtonContainer}>
+        <TouchableOpacity onPress={() => navigation.pop()}>
+          <Icon
+            name="keyboard-arrow-left"
+            size={40}
+            color={Colors.white}
+            style={singlePostStyles.backButtonIcon}
+          ></Icon>
+        </TouchableOpacity>
       </View>
       {isOwnFile && (
-        <>
-          <View style={singlePostStyles.postOptionsButtonContainer}>
-            <PostOptionsButton
-              navigation={navigation}
-              postData={data}
-            ></PostOptionsButton>
-          </View>
-        </>
+        <View style={singlePostStyles.postOptionsButtonContainer}>
+          <PostOptionsButton
+            navigation={navigation}
+            postData={data}
+          ></PostOptionsButton>
+        </View>
       )}
-      <ScrollView
-        style={singlePostStyles.container}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-        removeClippedSubviews={false}
-        alwaysBounceVertical={true}
-      >
-        <PostDataCard navigation={navigation} postData={data}></PostDataCard>
-        {/* This makes the component scrollable all the way to the bottom*/}
-        <View style={singlePostStyles.fillerElement}></View>
-      </ScrollView>
+      {data.media_type === 'image' ? (
+        <ScrollView
+          style={singlePostStyles.postDataContainer}
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}
+          removeClippedSubviews={false}
+          alwaysBounceVertical={true}
+        >
+          <PostDataCard navigation={navigation} postData={data}></PostDataCard>
+          {/* This makes the component scrollable all the way to the bottom*/}
+          <View style={singlePostStyles.fillerElement}></View>
+        </ScrollView>
+      ) : (
+        <ScrollView
+          style={singlePostStyles.postDataContainerVideo}
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}
+          removeClippedSubviews={false}
+          alwaysBounceVertical={true}
+        >
+          <PostDataCard navigation={navigation} postData={data}></PostDataCard>
+          {/* This makes the component scrollable all the way to the bottom*/}
+          <View style={singlePostStyles.fillerElementVideo}></View>
+        </ScrollView>
+      )}
     </View>
   );
 };
