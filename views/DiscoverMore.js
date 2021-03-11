@@ -9,10 +9,6 @@ const DiscoverMore = ({navigation, route}) => {
   const data = route.params;
   const media = data.data;
   const tag = data.title;
-  // console.log('discover more tag', tag);
-  // console.log('discover more data', data);
-  // console.log('discover more media', data);
-  // const {user} = useContext(MainContext);
 
   return (
     <SafeAreaView style={GlobalStyles.droidSafeArea}>

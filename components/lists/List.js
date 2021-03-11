@@ -62,21 +62,6 @@ const List = ({
         )}
       />
     );
-    /*   } else if (layout === 'profile') {     // Not needed here, profile implements this by itself
-    return (
-      <FlatList
-        contentContainerStyle={{paddingBottom: 80}}
-        data={mediaArray}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => (
-          <ProfilePost
-            navigation={navigation}
-            data={item}
-            isUsersPost={item.user_id === user.user_id}
-          />
-        )}
-      />
-    ); */
   } else if (layout === 'discover') {
     return (
       <ScrollView>
@@ -88,13 +73,11 @@ const List = ({
             value={inputs.search}
             onChangeText={(txt) => handleInputChange('search', txt)}
             inputStyle={styles.button}
-            // onChangeText={(search) => this.setState({search})}
           />
           <Text
             onPress={() => {
               navigation.navigate('Search', {
                 data: mediaArray,
-                // title: tagTitle,
                 search: inputs,
               });
             }}
