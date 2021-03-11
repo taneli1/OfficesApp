@@ -20,6 +20,7 @@ import {LinkCreator, getCreatedLinkObjects} from './functional/LinkCreator';
 import {ActivityIndicator} from 'react-native';
 import {Video} from 'expo-av';
 
+// Form used in the upload screen.
 const UploadForm = ({navigation}) => {
   const {
     inputs,
