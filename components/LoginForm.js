@@ -32,14 +32,16 @@ const LoginForm = ({navigation}) => {
   return (
     <View>
       <Input
+        containerStyle={{paddingLeft: 15, paddingRight: 15}}
         autoCapitalize="none"
-        placeholder="username"
+        placeholder="Username"
         onChangeText={(txt) => handleInputChange('username', txt)}
-        style={[styles.inputField, {marginTop: 20}]}
+        style={[styles.inputField, {marginTop: 25}]}
       />
       <Input
+        containerStyle={{paddingLeft: 15, paddingRight: 15}}
         autoCapitalize="none"
-        placeholder="password"
+        placeholder="Password"
         onChangeText={(txt) => handleInputChange('password', txt)}
         secureTextEntry={true}
         style={styles.inputField}
@@ -65,7 +67,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: Colors.primary,
-    padding: 5,
+    padding: 6,
+    paddingLeft: 10,
   },
 });
 

@@ -44,33 +44,6 @@ const arrayMaker = async () => {
 };
 
 /**
- * TODO getRandomTags
- *  Getting the tags here is not the most convenient way of getting them
- *
- *  Easier way is to call the function getAllTags() from apiHooks,
- *  which returns the tags in an array of strings.
- *
- *  Getting the tags that way also eliminates the errors which are
- *  caused by the discover trying to access the TAGS array here
- *  which is not yet initialized.
- *
- * */
-
-/*
-const getRandomTag = () => {
-  if (TAGS.length == 0)
-    console.log(
-      'Calling arraymaker here gives errors/crashes application sometimes (TagSelector called from outside before its initialized)'
-    ); // arrayMaker();
-
-  const randomTag = TAGS[Math.floor(Math.random() * TAGS.length)];
-  console.log('tagSelector getRandomTag randomTag title', randomTag.title);
-  const result = randomTag.title;
-  return result;
-};
-*/
-
-/**
   Provides the component to selecting/creating new tags in the app.
   @see Variables for explanation
 */

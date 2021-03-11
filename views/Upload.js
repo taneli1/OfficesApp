@@ -1,7 +1,6 @@
 import React, {useContext} from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import PropTypes from 'prop-types';
-import {bigHeader, headerContainer} from '../styles/BasicComponents';
 import {Colors} from '../styles/Colors';
 import {StyleSheet} from 'react-native';
 import UploadForm from '../components/UploadForm';

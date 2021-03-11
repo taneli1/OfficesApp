@@ -6,7 +6,6 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Colors} from '../../styles/Colors';
 import {Dimens} from '../../styles/Dimens';
 import {useTag} from '../../hooks/ApiHooks';
-import {CommonActions} from '@react-navigation/native';
 
 const Tag = ({navigation, tag}) => {
   const {loadTagPosts} = useTag();

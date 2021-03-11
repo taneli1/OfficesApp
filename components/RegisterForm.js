@@ -47,8 +47,9 @@ const RegisterForm = ({navigation}) => {
   return (
     <View>
       <Input
+        containerStyle={{paddingLeft: 15, paddingRight: 15}}
         autoCapitalize="none"
-        placeholder="username"
+        placeholder="Username"
         onChangeText={(txt) => handleInputChange('username', txt)}
         onEndEditing={(event) => {
           // console.log(event.nativeEvent.text);
@@ -56,11 +57,12 @@ const RegisterForm = ({navigation}) => {
           handleInputEnd('username', event.nativeEvent.text);
         }}
         errorMessage={registerErrors.username}
-        style={[styles.inputField, {marginTop: 20}]}
+        style={[styles.inputField, {marginTop: 25}]}
       />
       <Input
+        containerStyle={{paddingLeft: 15, paddingRight: 15}}
         autoCapitalize="none"
-        placeholder="password"
+        placeholder="Password"
         onChangeText={(txt) => handleInputChange('password', txt)}
         onEndEditing={(event) =>
           handleInputEnd('password', event.nativeEvent.text)
@@ -70,8 +72,9 @@ const RegisterForm = ({navigation}) => {
         style={styles.inputField}
       />
       <Input
+        containerStyle={{paddingLeft: 15, paddingRight: 15}}
         autoCapitalize="none"
-        placeholder="confirm password"
+        placeholder="Confirm password"
         onChangeText={(txt) => handleInputChange('confirmPassword', txt)}
         onEndEditing={(event) =>
           handleInputEnd('confirmPassword', event.nativeEvent.text)
@@ -81,8 +84,9 @@ const RegisterForm = ({navigation}) => {
         style={styles.inputField}
       />
       <Input
+        containerStyle={{paddingLeft: 15, paddingRight: 15}}
         autoCapitalize="none"
-        placeholder="email"
+        placeholder="Email"
         onChangeText={(txt) => handleInputChange('email', txt)}
         onEndEditing={(event) =>
           handleInputEnd('email', event.nativeEvent.text)
@@ -91,8 +95,9 @@ const RegisterForm = ({navigation}) => {
         style={styles.inputField}
       />
       <Input
+        containerStyle={{paddingLeft: 15, paddingRight: 15}}
         autoCapitalize="none"
-        placeholder="full name"
+        placeholder="Full name"
         onChangeText={(txt) => handleInputChange('full_name', txt)}
         onEndEditing={(event) =>
           handleInputEnd('full_name', event.nativeEvent.text)
@@ -120,7 +125,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: Colors.primary,
-    padding: 5,
+    padding: 6,
+    paddingLeft: 10,
   },
 });
 
