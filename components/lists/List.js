@@ -4,16 +4,11 @@ import PropTypes from 'prop-types';
 import PostDefault from '../listitems/PostDefault';
 import {MainContext} from '../../contexts/MainContext';
 import DiscoverDefault from '../listitems/DiscoverDefault';
-import {Button, Card, SearchBar} from 'react-native-elements';
+import {SearchBar} from 'react-native-elements';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {View} from 'react-native';
-import {headerContainer, cardLayout} from '../../styles/BasicComponents';
 import {Colors} from '../../styles/Colors';
-import {Dimens} from '../../styles/Dimens';
-import singlePostStyles from '../../styles/SinglePost/SinglePostStyles';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Icon} from 'react-native-elements';
-import Input from 'react-select/src/components/Input';
 import useSearch from '../../hooks/SearchHooks';
 
 /*
