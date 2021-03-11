@@ -13,6 +13,7 @@ import {
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useSearch from './SearchHooks';
 // import {getRandomTag} from '../components/functional/TagSelector';
 
 const TAG = 'ApiHooks: ';
@@ -31,9 +32,12 @@ const throwErr = (string) => {
   throw new Error(TAG + ' ' + string);
 };
 
-const useSearchTitle = (string) => {
+const useSearchTitle = () => {
   const [mediaArray, setMediaArray] = useState([]);
-  const {update} = useContext(MainContext);
+  const {updateSearch} = useContext(MainContext);
+  const {inputs, handleInputChange} = useSearch();
+  console.log('useSearchTitle inputs', inputs);
+  console.log('useSearchTitle inputs.search', inputs.search);
 
   const searchTitle = async () => {
     try {
@@ -41,18 +45,21 @@ const useSearchTitle = (string) => {
       let media = await Promise.all(
         postsData.map(async (item) => {
           const postFile = await doFetch(mediaURL + item.file_id);
+          console.log('useSearchTitle postFile', postFile);
           return postFile;
         })
       );
-      media = media.filter(media.title.includes(string));
+      console.log('useSearchTitle media', inputs.search);
+      console.log('useSearchTitle inputs.search', inputs.search);
+      media = media.filter(media.title.includes(inputs.search));
       setMediaArray(media.reverse());
     } catch (e) {
-      throwErr('loadMedia err: ', e.message);
+      throwErr('searchTitle err: ', e.message);
     }
   };
   useEffect(() => {
     searchTitle();
-  }, [update]);
+  }, [updateSearch]);
   return mediaArray;
 };
 

@@ -18,6 +18,7 @@ import Discover from '../views/Discover';
 import {Colors} from '../styles/Colors';
 import EditPost from '../views/EditPost';
 import DiscoverMore from '../views/DiscoverMore';
+import Search from '../views/Search';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -78,6 +79,7 @@ const StackScreen = () => {
           />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Discover More" component={DiscoverMore} />
+          <Stack.Screen name="Search" component={Search} />
           <Stack.Screen name="Edit Post" component={EditPost} />
         </>
       ) : (

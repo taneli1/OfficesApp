@@ -14,6 +14,8 @@ import {StyleSheet} from 'react-native';
 import singlePostStyles from '../../styles/SinglePost/SinglePostStyles';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Icon} from 'react-native-elements';
+import Input from 'react-select/src/components/Input';
+import useSearch from '../../hooks/SearchHooks';
 
 /*
   This list component can be used when the app needs a list of posts.
@@ -33,6 +35,7 @@ const List = ({
   tags,
 }) => {
   const {update, setUpdate} = useContext(MainContext);
+  const {inputs, handleInputChange} = useSearch();
 
   if (layout === 'home') {
     return (
@@ -82,6 +85,18 @@ const List = ({
           containerStyle={s.search}
           inputContainerStyle={s.searchInput}
           placeholder="Search posts by title"
+          onChangeText={(txt) => handleInputChange('search', txt)}
+          // onChangeText={this.updateSearch}
+          // value={txt}
+        />
+        <Button
+          onPress={() => {
+            navigation.navigate('Search', {
+              data: mediaArray,
+              // title: tagTitle,
+              // search: inputs,
+            });
+          }}
         />
         <View containerStyle={[headerContainer, s.aaa]}>
           {/* <Text style={[bigHeader, s.aaa]}>Check posts with these tags</Text> */}
@@ -157,6 +172,17 @@ const List = ({
       </View>
     );
   } else if (layout === 'discoverMore') {
+    return (
+      <FlatList
+        contentContainerStyle={{paddingBottom: 80}}
+        data={mediaArray}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <PostDefault navigation={navigation} data={item} />
+        )}
+      />
+    );
+  } else if (layout === 'search') {
     return (
       <FlatList
         contentContainerStyle={{paddingBottom: 80}}
