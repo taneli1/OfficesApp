@@ -80,8 +80,9 @@ const Login = ({navigation}) => {
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.content}>
                   <ImageBackground
-                    source={require('../assets/background.png')}
+                    source={require('../assets/image.png')}
                     style={styles.image}
+                    resizeMode="cover"
                   >
                     <View style={styles.form}>
                       {formToggle ? (
@@ -109,15 +110,17 @@ const Login = ({navigation}) => {
                             setFormToggle(!formToggle);
                           }}
                         >
-                          <ListItem containerStyle={styles.listItem}>
+                          <ListItem
+                            containerStyle={[styles.listItem, {marginTop: 20}]}
+                          >
                             <ListItem.Content>
                               <Text style={styles.text}>
                                 {formToggle
-                                  ? 'No account? Register here.'
+                                  ? 'New user? Register here.'
                                   : 'Already registered? Login here.'}
                               </Text>
                             </ListItem.Content>
-                            <ListItem.Chevron />
+                            <ListItem.Chevron color={Colors.primary} />
                           </ListItem>
                         </TouchableHighlight>
                         <TouchableHighlight
@@ -130,7 +133,7 @@ const Login = ({navigation}) => {
                                 Continue without logging in
                               </Text>
                             </ListItem.Content>
-                            <ListItem.Chevron />
+                            <ListItem.Chevron color={Colors.primary} />
                           </ListItem>
                         </TouchableHighlight>
                       </Card>
@@ -178,23 +181,27 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 30,
     alignSelf: 'flex-start',
-    padding: 10,
+    padding: 5,
+    paddingStart: 10,
+    paddingEnd: 10,
     marginLeft: 30,
     borderTopRightRadius: 10,
     borderBottomLeftRadius: 10,
   },
   card: {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderTopLeftRadius: 40,
-    borderBottomRightRadius: 40,
+    borderTopRightRadius: 40,
+    borderBottomLeftRadius: 40,
     marginLeft: 30,
     marginRight: 30,
+    elevation: 2,
   },
   listItem: {
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
   text: {
     alignSelf: 'center',
+    color: Colors.primary,
   },
 });
 

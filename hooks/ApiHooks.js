@@ -13,11 +13,8 @@ import {
 } from '../utils/Variables';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import useSearch from './SearchHooks';
-// import {getRandomTag} from '../components/functional/TagSelector';
 
 const TAG = 'ApiHooks: ';
-// let randomTag = '';
 
 const doFetch = async (url, options = {}) => {
   const res = await fetch(url, options);

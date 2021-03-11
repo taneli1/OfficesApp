@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Card} from 'react-native-elements';
 import {uploadsURL} from '../../utils/Variables';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {bigHeader, headerContainer} from '../../styles/BasicComponents';
