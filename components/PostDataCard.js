@@ -192,8 +192,8 @@ const PostDataCard = ({navigation, postData}) => {
           </View>
         )}
         <View style={styles.description}>
-          <Text style={{color: Colors.grey}}>klo {formattedTime()}</Text>
           <Text style={{color: Colors.grey}}>{formattedDate()}</Text>
+          <Text style={{color: Colors.grey}}>at {formattedTime()}</Text>
         </View>
       </Card>
     </View>

@@ -15,7 +15,7 @@ import useSearch from '../../hooks/SearchHooks';
   This list component can be used when the app needs a list of posts.
   Takes in the media displayed as a parameter mediaArray.
   Builds the layout with the required layout for the posts.
-  Takes in layout prop which defines which post layout is used depending on the screen's name
+  Takes in layout prop which defines which post layout is used depending on the screen's name.
  */
 const List = ({
   navigation,

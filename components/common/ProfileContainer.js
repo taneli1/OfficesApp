@@ -11,6 +11,7 @@ import {useTag, useUser} from '../../hooks/ApiHooks';
 import {appTag, uploadsURL} from '../../utils/Variables';
 import {MainContext} from '../../contexts/MainContext';
 
+// Component for displaying the user's profile picture and username in different screens.
 const ProfileContainer = ({navigation, userId}) => {
   const {isLoggedIn} = useContext(MainContext);
   const [user, setUser] = useState(

@@ -13,10 +13,12 @@ import {Colors} from '../../styles/Colors';
 import TagList from '../lists/TagList';
 import {useTag} from '../../hooks/ApiHooks';
 
+// List item displayed in the list of posts in the profile screen.
 const ProfilePost = ({navigation, data}) => {
   const descriptionData = JSON.parse(data.description);
   const postDescription = descriptionData[0];
 
+  // Title and description are shortened if they are too long to fit properly in the UI.
   let title = data.title;
   if (title.length > 15) {
     title = title.substr(0, 15) + '...';

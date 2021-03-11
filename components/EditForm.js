@@ -12,6 +12,7 @@ import {useMedia} from '../hooks/ApiHooks';
 import useUploadForm from '../hooks/UploadHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Form used in the edit post screen.
 const EditForm = ({navigation, postData}) => {
   let descriptionData = JSON.parse(postData.description);
   const postDescription = descriptionData[0];

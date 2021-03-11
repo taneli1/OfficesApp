@@ -8,6 +8,7 @@ import {useLogin} from '../hooks/ApiHooks';
 import useLoginForm from '../hooks/LoginHooks';
 import {Colors} from '../styles/Colors';
 
+// Form used in the login screen.
 const LoginForm = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const {inputs, handleInputChange} = useLoginForm();

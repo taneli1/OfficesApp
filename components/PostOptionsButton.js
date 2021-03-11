@@ -14,6 +14,7 @@ import {Colors} from '../styles/Colors';
 import {MainContext} from '../contexts/MainContext';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
+// Button displayed in the single screen which opens a popup menu containing options.
 const PostOptionsButton = ({navigation, postData}) => {
   const {deleteFile} = useMedia();
   const {update, setUpdate} = useContext(MainContext);

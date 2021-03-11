@@ -9,6 +9,7 @@ import {MainContext} from '../contexts/MainContext';
 import {Input, Button} from 'react-native-elements';
 import {Colors} from '../styles/Colors';
 
+// Form used in the register screen.
 const RegisterForm = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
   const {
